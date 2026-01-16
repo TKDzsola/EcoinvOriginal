@@ -1,0 +1,163 @@
+﻿<Window x:Class="Ecoinv.Forms.SERVICESFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+        xmlns:components="clr-namespace:Ecoinv.Components"
+        mc:Ignorable="d"
+        x:Name="DataFormName"
+        Title="Szolgáltatások törzsadatok"
+        Height="480" Width="600">
+
+  <Window.DataContext>
+    <dataContext:SERVICESDataContext />
+  </Window.DataContext>
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Components/RoundedButton.xaml" />
+        <ResourceDictionary Source="../Components/ShadowLabel.xaml" />
+        <ResourceDictionary Source="../Components/Converters.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid Margin="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- 📋 Adatlista -->
+    <DataGrid Grid.Row="0"
+              Margin="0,0,0,10"
+              AutoGenerateColumns="False"
+              IsReadOnly="True"
+              AlternatingRowBackground="BlanchedAlmond"
+              SelectedItem="{Binding SelectedSERVICES, Mode=TwoWay}"
+              ItemsSource="{Binding SERVICESList}"
+              IsEnabled="{Binding IsGridBrowsing}">
+      <DataGrid.Columns>
+        <DataGridTextColumn Width="50" Header="ID" Binding="{Binding ID}" />
+        <DataGridTextColumn Width="*" Header="Szolg. neve" Binding="{Binding NAME}" />
+        <DataGridTextColumn Width="2*" Header="Leírás" Binding="{Binding DESCRIPTION}" />
+        <DataGridTextColumn Width="80" Header="Nettó ár" Binding="{Binding NETPRICE}" />
+        <DataGridTextColumn Width="80" Header="Bruttó ár" Binding="{Binding GROSSPRICE}" />
+        <DataGridCheckBoxColumn Width="60" Header="Aktív" Binding="{Binding SACTIVE, Converter={StaticResource in2bool}}" />
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <!-- 🧾 Részletes panel -->
+    <Border Grid.Row="1"
+            Margin="0,0,0,10"
+            Padding="10"
+            BorderBrush="#FF64CCF1"
+            BorderThickness="1"
+            CornerRadius="3"
+            Background="AntiqueWhite"
+            IsEnabled="{Binding IsEditing}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <!-- 🆔 Azonosító -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Azonosító:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 Height="19"
+                 Width="50"
+                 HorizontalAlignment="Left"
+                 Margin="5,2,0,2"
+                 IsEnabled="False"
+                 Text="{Binding SelectedSERVICES.ID}" />
+
+        <!-- 🧾 Szolgáltatás neve -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Szolgáltatás neve:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Height="19"
+                 Width="100"
+                 Margin="5,2,0,2"
+                 HorizontalAlignment="Left"
+                 MaxLength="32"
+                 Text="{Binding SelectedSERVICES.NAME, Mode=TwoWay}" />
+
+        <!-- 📝 Leírás -->
+        <Label Grid.Row="2" Grid.Column="0" Content="Leírás:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Width="200"
+                 Height="19"
+                 MaxLength="128"
+                 Margin="5,2,0,2"
+                 HorizontalAlignment="Left"
+                 Text="{Binding SelectedSERVICES.DESCRIPTION, Mode=TwoWay}" />
+
+        <!-- 💰 Nettó ár -->
+        <Label Grid.Row="3" Grid.Column="0" Content="Nettó ár:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Width="70"
+                 Height="19"
+                 Margin="5,2,0,2"
+                 HorizontalAlignment="Left"
+                 HorizontalContentAlignment="Right"
+                 Text="{Binding SelectedSERVICES.NETPRICE, Mode=TwoWay}" />
+
+        <!-- 💵 Bruttó ár -->
+        <Label Grid.Row="4" Grid.Column="0" Content="Bruttó ár:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1"
+                 Width="70"
+                 Height="19"
+                 Margin="5,2,0,2"
+                 HorizontalAlignment="Left"
+                 HorizontalContentAlignment="Right"
+                 Text="{Binding SelectedSERVICES.GROSSPRICE, Mode=TwoWay}" />
+
+        <!-- ✅ Aktív -->
+        <Label Grid.Row="5" Grid.Column="0" Content="Aktív:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="5" Grid.Column="1"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="5,2,0,2"
+                  IsChecked="{Binding SelectedSERVICES.SACTIVE, Converter={StaticResource in2bool}}" />
+      </Grid>
+    </Border>
+
+    <!-- 🔘 Gombok -->
+    <StackPanel Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Background="AntiqueWhite"
+                Margin="0,5,0,0">
+      <Button Content="{Binding ContentBtnNewSave}"
+              Command="{Binding CommandNewSave}"
+              Style="{DynamicResource RoundedButtonStyle}"
+              Width="80" Margin="5" />
+      <Button Content="{Binding ContentBtnModifyCancel}"
+              Command="{Binding CommandModifyCancel}"
+              Style="{DynamicResource RoundedButtonStyle}"
+              Width="80" Margin="5" />
+      <Button Content="Töröl"
+              Command="{Binding CommandDelete}"
+              Style="{DynamicResource RoundedButtonStyle}"
+              Width="80" Margin="5" />
+      <Button Content="Kilép"
+              Command="{Binding CommandQuitBase}"
+              CommandParameter="{Binding ElementName=DataFormName}"
+              Style="{DynamicResource RoundedButtonStyle}"
+              Width="80" Margin="5" />
+    </StackPanel>
+
+  </Grid>
+</Window>

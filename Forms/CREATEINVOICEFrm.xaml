@@ -1,0 +1,309 @@
+﻿<Window x:Class="Ecoinv.Forms.CREATEINVOICEFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+        Title="Számla kiállítása"
+        Height="930"
+        Width="980"
+        WindowStartupLocation="CenterScreen"
+        Background="#F9FAFB">
+
+    <!-- ================= DATACONTEXT ================= -->
+    <Window.DataContext>
+        <dataContext:CreateInvoiceDataContext/>
+    </Window.DataContext>
+
+    <!-- ================= ERŐFORRÁSOK ================= -->
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <DropShadowEffect x:Key="DropShadowEffect"
+                              ShadowDepth="3"
+                              Color="#33000000"
+                              Opacity="0.35"
+                              BlurRadius="10"/>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Components/RoundedButton.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ========================================================= -->
+            <!-- SZÁMLA FEJLÉC: SZÁMLASZÁM + ÜGYFÉL -->
+            <!-- ========================================================= -->
+            <Border Grid.Row="0"
+                    Padding="15"
+                    Margin="0,0,0,20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    Effect="{StaticResource DropShadowEffect}">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Számlaszám -->
+                    <TextBlock Grid.Column="0"
+                               Text="Számlaszám:"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+
+                    <TextBox Grid.Column="1"
+                             Height="28"
+                             Text="{Binding InvoiceNumber, Mode=TwoWay}"/>
+
+                    <!-- elválasztó -->
+                    <TextBlock Grid.Column="2"/>
+
+                    <!-- Ügyfél -->
+                    <TextBlock Grid.Column="3"
+                               Text="Ügyfél:"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+
+                    <TextBox Grid.Column="4"
+                             Height="28"
+                             IsReadOnly="True"
+                             Background="#F3F4F6"
+                             BorderBrush="#CBD5E1"
+                             Text="{Binding SelectedClientName}"/>
+
+                    <Button Grid.Column="5"
+                            Width="110"
+                            Margin="10,0,0,0"
+                            Content="🔍 Keresés"
+                            Command="{Binding CommandMenuCLIENTSClick}"
+                            Style="{DynamicResource RoundedButtonStyle}"/>
+                </Grid>
+            </Border>
+
+            <!-- ========================================================= -->
+            <!-- SZÁMLATÉTELEK -->
+            <!-- ========================================================= -->
+            <Border Grid.Row="1"
+                    Padding="20"
+                    Margin="0,0,0,20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    Effect="{StaticResource DropShadowEffect}">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="📦 Számlatételek"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="0,0,0,15"/>
+
+                    <!-- TÁBLÁZAT -->
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding InvoiceDetails}"
+                              SelectedItem="{Binding SelectedInvoiceDetail}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              Margin="0,0,0,10">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Megnevezés"
+                                                Binding="{Binding SERVICE_NAME}"
+                                                Width="3*"/>
+                            <DataGridTextColumn Header="Menny."
+                                                Binding="{Binding QTY}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Nettó"
+                                                Binding="{Binding NET_UNIT_PRICE}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="ÁFA %"
+                                                Binding="{Binding VAT_PERCENT}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Bruttó"
+                                                Binding="{Binding LINE_TOTAL_GROSS}"
+                                                Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- ÚJ TÉTEL PANEL – A GOMBOK FELETT -->
+                    <Border Grid.Row="2"
+                            Margin="0,0,0,10"
+                            Padding="15"
+                            Background="#F9FAFB"
+                            CornerRadius="10"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            Visibility="{Binding IsAddItemPanelVisible,
+                                                 Converter={StaticResource BoolToVisibilityConverter}}">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Szolgáltatás"/>
+                                <ComboBox ItemsSource="{Binding Services}"
+                                          SelectedItem="{Binding SelectedService}"
+                                          DisplayMemberPath="NAME"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                <TextBlock Text="Menny."/>
+                                <TextBox Text="{Binding EditQty}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                                <TextBlock Text="Nettó ár"/>
+                                <TextBox Text="{Binding EditNetUnitPrice}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="ÁFA %"/>
+                                <ComboBox ItemsSource="{Binding VatRates}"
+                                          SelectedItem="{Binding SelectedVatRate}"
+                                          DisplayMemberPath="RATES"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- GOMBOK -->
+                    <StackPanel Grid.Row="3"
+                                Orientation="Horizontal"
+                                Margin="0,5,0,0">
+
+                        <Button Width="180"
+                                Content="{Binding PrimaryButtonText}"
+                                Command="{Binding CommandPrimaryAction}"
+                                Style="{DynamicResource RoundedButtonStyle}"/>
+
+                        <Button Width="140"
+                                Margin="10,0,0,0"
+                                Content="{Binding SecondaryButtonText}"
+                                Command="{Binding CommandSecondaryAction}"
+                                Style="{DynamicResource RoundedButtonStyle}"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <!-- ========================================================= -->
+            <!-- ÖSSZESÍTÉS -->
+            <!-- ========================================================= -->
+            <Border Grid.Row="2"
+                    Padding="20"
+                    Margin="0,0,0,20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    Effect="{StaticResource DropShadowEffect}">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="260"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="💰 Összesítés"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <StackPanel Grid.Column="1">
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="Nettó összesen:" Width="140" TextAlignment="Right"/>
+                            <TextBox Width="100"
+                                     IsReadOnly="True"
+                                     Text="{Binding TotalNet, Mode=OneWay}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="ÁFA összesen:" Width="140" TextAlignment="Right"/>
+                            <TextBox Width="100"
+                                     IsReadOnly="True"
+                                     Text="{Binding TotalVat, Mode=OneWay}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="Bruttó összesen:" Width="140"
+                                       FontWeight="Bold"
+                                       TextAlignment="Right"/>
+                            <TextBox Width="100"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     Text="{Binding TotalGross, Mode=OneWay}"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ========================================================= -->
+            <!-- ALSÓ GOMBOK -->
+            <!-- ========================================================= -->
+            <Border Grid.Row="3"
+                    Padding="15"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    Effect="{StaticResource DropShadowEffect}">
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+
+                    <Button Content="💾 Mentés"
+                            Width="130"
+                            Margin="10"
+                            Command="{Binding CommandSaveInvoice}"
+                            Style="{DynamicResource RoundedButtonStyle}"/>
+
+                    <Button Content="👁 Előnézet"
+                            Width="130"
+                            Margin="10"
+                            Command="{Binding CommandPreviewInvoice}"
+                            Style="{DynamicResource RoundedButtonStyle}"/>
+
+                    <Button Content="❌ Mégse"
+                            Width="130"
+                            Margin="10"
+                            Command="{Binding CommandCancelInvoice}"
+                            Style="{DynamicResource RoundedButtonStyle}"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,40 @@
+﻿<Window x:Class="Ecoinv.StartFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ecoinv"
+        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+        mc:Ignorable="d"
+        Title="Főmenü" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <dataContext:StartFrmDataContext/>
+    </Window.DataContext>
+
+    <Grid>
+        <StackPanel>
+            <Menu>
+                <MenuItem Header="Számlázás" FontSize="14">
+                    <MenuItem Header="Számla készítés" Command="{Binding CommandMenuCREATEINVOICEClick}" />
+                    <MenuItem Header="Számla keresése" Command="{Binding CommandMenuSEARCHINVOICEClick}" />
+                </MenuItem>
+                <MenuItem Header="Törzsadatok" FontSize="14">
+                    <MenuItem Header="Alkalmazottak" Command="{Binding CommandMenuEUSERSClick}" />
+                    <MenuItem Header="Áfa kulcsok"  Command="{Binding CommandMenuVATRATESClick}"/>
+                    <MenuItem Header="Ügyfelek" Command="{Binding CommandMenuCLIENTSClick}" />
+                    <MenuItem Header="Szolgáltatások" Command="{Binding CommandMenuSERVICESClick}" />
+                </MenuItem>
+                <MenuItem Header="Kilépés" FontSize="14" Command="{Binding Path=CommandMenuQuit}" />
+            </Menu>
+            <Image Source="c:\Users\prozs\source\repos\Ecoinv\Images\econtologo.jpg" Height="410" Width="793"/>
+
+
+
+            <Label Content="{Binding Path=VersionStr, Mode=TwoWay}" Margin="10,350,0,0" />
+
+        </StackPanel>
+
+    </Grid>
+</Window>

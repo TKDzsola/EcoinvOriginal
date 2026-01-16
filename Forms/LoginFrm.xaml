@@ -1,0 +1,65 @@
+﻿<Window x:Class="Ecoinv.Forms.LoginFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ecoinv.Forms"
+        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+        xmlns:components="clr-namespace:Ecoinv.Components"
+        mc:Ignorable="d" Height="160" Width="320" 
+        ResizeMode="NoResize" 
+        WindowStartupLocation="CenterScreen"
+        x:Name="DataFormName"
+        MouseDown="Window_MouseDown" 
+        WindowStyle="None">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Components/RoundedButton.xaml" />
+        <ResourceDictionary Source="../Components/ShadowLabel.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Window.DataContext>
+    <dataContext:LoginFrmDataContext />
+  </Window.DataContext>
+
+<Border BorderThickness="2" BorderBrush="Black" CornerRadius="2">
+  <Grid Height="164" VerticalAlignment="Top" Background="Azure" Margin="0,0,0,0">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="150"/>
+      <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    <StackPanel Grid.ColumnSpan="2">
+      <Label Content="Bejelentkezés" HorizontalAlignment="Left" Margin="97,4,0,0" VerticalAlignment="Top" FontSize="18" Style="{DynamicResource ShadowLabel}" Width="130" />
+    </StackPanel>
+    <Label Content="Név" HorizontalAlignment="Right" Margin="0,46,24,0" VerticalAlignment="Top" Height="26" Width="31"/>
+    <Label Content="Jelszó" HorizontalAlignment="Right" Margin="0,69,24,0" VerticalAlignment="Top" Height="26" Width="41"/>
+    <TextBox HorizontalAlignment="Left" 
+             Height="19" 
+             Margin="3,53,0,0" 
+             TextWrapping="Wrap" 
+             Text="{Binding Path=LoginUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+             MaxLength="10"
+             VerticalAlignment="Top" 
+             Width="102" 
+             Grid.Column="1"/>
+    <components:PasswordBox2 HorizontalAlignment="Left" 
+                 Margin="3,77,0,0" 
+                 VerticalAlignment="Top" 
+                 Width="102" 
+                 Password="{Binding Path=LogPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Grid.Column="1"
+                 Height="18" />
+    <Button Content="Tovább" HorizontalAlignment="Left" Margin="52,115,0,0" VerticalAlignment="Top" Width="75"
+            FontFamily="Arial" FontSize="12"
+            Command="{Binding Path=LoginCmd}" Height="20" Style="{DynamicResource RoundedButtonStyle}" />
+
+    <Button Content="Kilép" HorizontalAlignment="Left" Margin="39,115,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"
+            FontFamily="Arial" FontSize="12"
+            Command="{Binding Path=KilepCmd}" Height="20" Style="{DynamicResource RoundedButtonStyle}" />
+  </Grid>
+</Border>
+</Window>

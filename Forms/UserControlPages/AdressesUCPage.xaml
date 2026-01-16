@@ -1,0 +1,150 @@
+﻿<UserControl x:Class="Ecoinv.Forms.UserControlPages.AdressesUCPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=dataContext:CLIENTSDataContext}"
+             d:DesignHeight="250"
+             d:DesignWidth="800">
+
+  <UserControl.Resources>
+    <ResourceDictionary Source="/Components/Converters.xaml" />
+  </UserControl.Resources>
+
+  <Border BorderBrush="#FF64CCF1"
+          BorderThickness="1"
+          CornerRadius="3"
+          Padding="10"
+          Background="AntiqueWhite">
+
+    <StackPanel>
+      <!-- 🔹 Fejléc -->
+      <Label Content="Számlázási cím adatok"
+             FontWeight="Bold"
+             FontSize="16"
+             Foreground="#2A4B7C"
+             HorizontalAlignment="Center"
+             Margin="0,0,0,8"/>
+
+      <!-- 🔹 Grid a címmezőknek -->
+      <Grid IsEnabled="{Binding Path=IsEditing}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="180"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <!-- Aktív cím -->
+          <RowDefinition Height="Auto"/>
+          <!-- Cím ID -->
+          <RowDefinition Height="Auto"/>
+          <!-- Irsz -->
+          <RowDefinition Height="Auto"/>
+          <!-- Város -->
+          <RowDefinition Height="Auto"/>
+          <!-- Cím -->
+          <RowDefinition Height="Auto"/>
+          <!-- Cím típusa -->
+          <RowDefinition Height="Auto"/>
+          <!-- Számlázási cím megegyezik -->
+        </Grid.RowDefinitions>
+
+        <!-- ✅ Aktív cím felül -->
+        <Label Grid.Row="0" Grid.Column="0"
+               Content="Aktív cím:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="0" Grid.Column="1"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="5,2,0,5"
+                  IsChecked="{Binding Path=CliAdr.AACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource in2bool}}"
+                  IsEnabled="{Binding Path=IsEditing}" />
+
+        <!-- 🆔 Cím azonosító -->
+        <Label Grid.Row="1" Grid.Column="0"
+               Content="Cím azonosító:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Width="50"
+                 HorizontalAlignment="Left"
+                 Margin="5,2,0,5"
+                 IsEnabled="False"
+                 TextAlignment="Center"
+                 FontFamily="Consolas"
+                 Text="{Binding Path=CliAdr.ID}" />
+
+        <!-- 📮 Irányítószám -->
+        <Label Grid.Row="2" Grid.Column="0"
+               Content="Irányítószám:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Width="60"
+                 HorizontalAlignment="Left"
+                 Margin="5,2,0,5"
+                 FontFamily="Consolas"
+                 TextAlignment="Center"
+                 MaxLength="4"
+                 Text="{Binding Path=CliAdr.POSTALCODE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding Path=IsEditing}" />
+
+        <!-- 🏙 Város -->
+        <Label Grid.Row="3" Grid.Column="0"
+               Content="Város:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Width="150"
+                 HorizontalAlignment="Left"
+                 Margin="5,2,0,5"
+                 MaxLength="50"
+                 Text="{Binding Path=CliAdr.CITY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding Path=IsEditing}" />
+
+        <!-- 🏠 Cím -->
+        <Label Grid.Row="4" Grid.Column="0"
+               Content="Cím:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="1"
+                 Width="300"
+                 HorizontalAlignment="Left"
+                 Margin="5,2,0,5"
+                 MaxLength="100"
+                 Text="{Binding Path=CliAdr.ADDRESS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding Path=IsEditing}" />
+
+        <!-- 🗂 Cím típusa -->
+        <Label Grid.Row="5" Grid.Column="0"
+               Content="Cím típusa:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="5" Grid.Column="1"
+                  Width="150"
+                  HorizontalAlignment="Left"
+                  Margin="5,2,0,5"
+                  IsEditable="True"
+                  IsEnabled="{Binding Path=IsEditing}"
+                  SelectedValue="{Binding Path=CliAdr.ATYPE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!-- 📨 Számlázási cím megegyezik -->
+        <Label Grid.Row="6" Grid.Column="0"
+               Content="Megegyezik a levelezési címmel:"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Margin="0,5,0,0"/>
+        <CheckBox Grid.Row="6" Grid.Column="1"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="5,5,0,0"
+                  IsChecked="{Binding Path=CliAdr.AACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  IsEnabled="{Binding Path=IsEditing}" />
+      </Grid>
+    </StackPanel>
+  </Border>
+</UserControl>

@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:components="clr-namespace:Ecoinv.Components">
+  
+  <components:InvertBooleanConverter x:Key="inv2b" />
+  <components:IN2Bool x:Key="in2bool"/>
+  <components:NUllaEgy2Bool x:Key="nullaegy2bool"/>
+  <components:EnumToCollectionConverter x:Key="enumconv"/>
+  <components:CollectionConverterToEnum x:Key="convenum"/>
+
+
+</ResourceDictionary>
