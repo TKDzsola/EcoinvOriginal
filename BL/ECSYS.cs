@@ -274,3 +274,4 @@ namespace Ecoinv.BL
         }
     }
 }
+//Teszt.
