@@ -40,55 +40,40 @@ namespace Ecoinv.Pdf.Documents
                     // =========================================================
                     col.Item().Row(row =>
                     {
-                        // --- BAL OLDAL: LOGÓ + CÉGADATOK ---
+                        // --- BAL OLDAL: LOGÓ + ELADÓ ADATAI ---
                         row.RelativeItem().Column(c =>
                         {
                             // A) LOGÓ
-                            // Ellenőrizd, hogy ez az útvonal létezik-e a gépeden!
                             string logoPath = @"c:\Users\prozs\source\repos\Ecoinv\Images\econtologo.jpg";
-
                             if (File.Exists(logoPath))
                             {
                                 c.Item().Height(50).Image(logoPath);
                             }
 
                             // B) ELADÓ ADATAI (Osztrák formátum)
-
-                            // Név (Kiemelve)
                             c.Item().Text(_model.SellerName).FontSize(14).Bold();
 
-                            // Opcionális: Foglalkozás (ha kell, vedd ki a kommentet)
-                            // c.Item().Text("Selbstständige Bilanzbuchalterin").FontSize(9); 
-
-                            // Cím formázása: "Irsz Város, Utca Házszám" -> Szétvágjuk a vesszőnél
+                            // Cím formázása: "Irsz Város, Utca Házszám" -> Vesszőnél vágva
                             if (!string.IsNullOrEmpty(_model.SellerAddress))
                             {
                                 var parts = _model.SellerAddress.Split(',');
-
                                 if (parts.Length > 1)
                                 {
-                                    // Ha van vessző, cseréljük a sorrendet (Utca felül, Város alul)
-
-                                    // 1. sor: Utca (a vessző utáni rész) -> Pl: "Europastraße 1"
+                                    // 1. sor: Utca (vessző után)
                                     c.Item().Text(parts[1].Trim());
-
-                                    // 2. sor: Irsz + Város (a vessző előtti rész) -> Pl: "A-7540 Güssing"
+                                    // 2. sor: Irsz + Város (vessző előtt)
                                     c.Item().Text(parts[0].Trim());
                                 }
                                 else
                                 {
-                                    // Ha nincs vessző, kiírjuk egyben
                                     c.Item().Text(_model.SellerAddress);
                                 }
                             }
 
-                            // Ország
                             c.Item().Text("Österreich");
-
-                            // Kis térköz
                             c.Item().PaddingTop(5);
 
-                            // Adószámok (Szürke, kisebb betű)
+                            // Adószámok
                             if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber))
                             {
                                 c.Item().Text($"UID-Nummer: {_model.SellerEuTaxNumber}")
@@ -109,7 +94,6 @@ namespace Ecoinv.Pdf.Documents
                         });
                     });
 
-                    // Vonal a fejléc alatt
                     col.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                     // Dátumok (jobbra igazítva)
@@ -122,13 +106,30 @@ namespace Ecoinv.Pdf.Documents
                     col.Spacing(20);
 
                     // =========================================================
-                    // 2. VEVŐ ADATAI (Keretben)
+                    // 2. VEVŐ ADATAI (Empfänger) - MÓDOSÍTVA!
                     // =========================================================
                     col.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Column(c =>
                     {
                         c.Item().Text("Empfänger:").FontSize(8).FontColor(Colors.Grey.Darken2);
                         c.Item().Text(_model.ClientName).Bold();
-                        c.Item().Text(_model.ClientAddress);
+
+                        // CÍM FORMÁZÁSA (Ugyanaz a logika, mint a feladónál)
+                        if (!string.IsNullOrEmpty(_model.ClientAddress))
+                        {
+                            var parts = _model.ClientAddress.Split(',');
+                            if (parts.Length > 1)
+                            {
+                                // 1. sor: Utca
+                                c.Item().Text(parts[1].Trim());
+                                // 2. sor: Irsz + Város
+                                c.Item().Text(parts[0].Trim());
+                            }
+                            else
+                            {
+                                // Ha nincs vessző, marad egyben
+                                c.Item().Text(_model.ClientAddress);
+                            }
+                        }
 
                         if (!string.IsNullOrEmpty(_model.ClientTaxNumber))
                         {
@@ -143,7 +144,6 @@ namespace Ecoinv.Pdf.Documents
                     // =========================================================
                     col.Item().Table(table =>
                     {
-                        // Oszlopok definíciója
                         table.ColumnsDefinition(columns =>
                         {
                             columns.RelativeColumn(4); // Megnevezés
@@ -152,7 +152,6 @@ namespace Ecoinv.Pdf.Documents
                             columns.RelativeColumn();  // Nettó
                         });
 
-                        // Fejléc
                         table.Header(header =>
                         {
                             header.Cell().Element(HeaderStyle).Text("Beschreibung");
@@ -161,7 +160,6 @@ namespace Ecoinv.Pdf.Documents
                             header.Cell().Element(HeaderStyle).AlignRight().Text("Netto");
                         });
 
-                        // Sorok
                         foreach (var item in _model.Items)
                         {
                             table.Cell().Element(CellStyle).Text(item.Description);
@@ -172,12 +170,12 @@ namespace Ecoinv.Pdf.Documents
                     });
 
                     // =========================================================
-                    // 4. LÁBLÉC (Összesítés + Bank)
+                    // 4. LÁBLÉC
                     // =========================================================
                     col.Spacing(10);
                     col.Item().Row(row =>
                     {
-                        // Bal oldal: Banki adatok
+                        // Bal oldal: Bank
                         row.RelativeItem().Column(c =>
                         {
                             c.Item().Text("Zahlungsinformationen:").Bold();
@@ -188,16 +186,14 @@ namespace Ecoinv.Pdf.Documents
                                 c.Item().Text($"Steuernummer: {_model.SellerTaxNumber}");
                         });
 
-                        // Jobb oldal: Végösszesen
+                        // Jobb oldal: Összesítés
                         row.RelativeItem().AlignRight().Column(c =>
                         {
-                            // Nettó
                             c.Item().Row(r => {
                                 r.RelativeItem().Text("Netto:").AlignRight();
                                 r.RelativeItem().Text($"{_model.TotalNet.ToString("N2", _culture)} €").AlignRight();
                             });
 
-                            // ÁFA
                             c.Item().Row(r => {
                                 r.RelativeItem().Text("USt. (MwSt.):").AlignRight();
                                 r.RelativeItem().Text($"{_model.TotalVat.ToString("N2", _culture)} €").AlignRight();
@@ -205,7 +201,6 @@ namespace Ecoinv.Pdf.Documents
 
                             c.Item().PaddingVertical(5).LineHorizontal(1);
 
-                            // Bruttó
                             c.Item().Row(r => {
                                 r.RelativeItem().Text("Gesamtbetrag:").Bold().FontSize(12).AlignRight();
                                 r.RelativeItem().Text($"{_model.TotalGross.ToString("N2", _culture)} €").Bold().FontSize(12).AlignRight();
@@ -224,8 +219,6 @@ namespace Ecoinv.Pdf.Documents
                 });
             });
         }
-
-        // --- STÍLUS FÜGGVÉNYEK ---
 
         static IContainer HeaderStyle(IContainer container)
         {

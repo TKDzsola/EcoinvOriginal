@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -15,7 +15,7 @@
       "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\models\\invoicepdfmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
@@ -85,8 +85,7 @@
               "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\CLIENTSFrm.xaml",
               "RelativeToolTip": "Forms\\CLIENTSFrm.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-01-17T10:34:23.963Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-17T10:34:23.963Z"
             },
             {
               "$type": "Document",
@@ -241,8 +240,7 @@
               "RelativeToolTip": "Pdf\\Services\\InvoicePdfService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T14:26:25.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-13T14:26:25.53Z"
             },
             {
               "$type": "Document",
@@ -252,7 +250,7 @@
               "RelativeDocumentMoniker": "Pdf\\Documents\\InvoicePdfDocument.cs",
               "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
               "RelativeToolTip": "Pdf\\Documents\\InvoicePdfDocument.cs",
-              "ViewState": "AgIAAOEAAAAAAAAAAAAywPgAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAANsAAAAAAAAAAAAzwOgAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T14:25:42.857Z",
               "EditorCaption": ""
@@ -267,8 +265,7 @@
               "RelativeToolTip": "Pdf\\Models\\InvoicePdfModel.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAA2wC4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T14:23:52.262Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-13T14:23:52.262Z"
             }
           ]
         }
