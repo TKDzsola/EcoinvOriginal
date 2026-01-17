@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics; // Fontos a DebuggerBrowsable miatt
 using System.Linq;
 
 namespace Ecoinv.BL
 {
     // ========================================================================
-    // ENUMOK – KOMPATIBILITÁS MIATT
+    // ENUMOK (A hibaüzenet hiányolta)
     // ========================================================================
     public enum InvoiceStatus
     {
@@ -16,17 +17,13 @@ namespace Ecoinv.BL
         Storno = 2
     }
 
-    public enum PaymentStatus
-    {
-        Unpaid = 0,
-        Paid = 1
-    }
-
     // ========================================================================
-    // MODEL
+    // MODEL OSZTÁLY
     // ========================================================================
     public partial class INVOICE_HEADERS : TableBaseClass
     {
+        // --- ID ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int __id;
         public int ID
         {
@@ -34,6 +31,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(ID), ref __id, value);
         }
 
+        // --- CLIENT_ID ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int __client_id;
         public int CLIENT_ID
         {
@@ -41,6 +40,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(CLIENT_ID), ref __client_id, value);
         }
 
+        // --- INVOICE_NUMBER ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __invoice_number;
         public string INVOICE_NUMBER
         {
@@ -48,6 +49,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(INVOICE_NUMBER), ref __invoice_number, value);
         }
 
+        // --- ISSUE_DATE (Kelt) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private DateTime? __issue_date;
         public DateTime? ISSUE_DATE
         {
@@ -55,6 +58,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(ISSUE_DATE), ref __issue_date, value);
         }
 
+        // --- DUE_DATE (Fizetési határidő) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private DateTime? __due_date;
         public DateTime? DUE_DATE
         {
@@ -62,13 +67,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(DUE_DATE), ref __due_date, value);
         }
 
-        private string __payment_method;
-        public string PAYMENT_METHOD
-        {
-            get => __payment_method;
-            set => SetPropertyValue(nameof(PAYMENT_METHOD), ref __payment_method, value);
-        }
-
+        // --- CREATED (Létrehozva - HIÁNYZOTT!) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private DateTime? __created;
         public DateTime? CREATED
         {
@@ -76,6 +76,17 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(CREATED), ref __created, value);
         }
 
+        // --- PAYMENT_METHOD (Fiz. mód - HIÁNYZOTT!) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __payment_method;
+        public string PAYMENT_METHOD
+        {
+            get => __payment_method;
+            set => SetPropertyValue(nameof(PAYMENT_METHOD), ref __payment_method, value);
+        }
+
+        // --- SZLASTAT (Számla státusz) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __szlastat;
         public string SZLASTAT
         {
@@ -83,6 +94,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(SZLASTAT), ref __szlastat, value);
         }
 
+        // --- FIZSTAT (Fizetve státusz - HIÁNYZOTT!) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __fizstat;
         public string FIZSTAT
         {
@@ -90,6 +103,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(FIZSTAT), ref __fizstat, value);
         }
 
+        // --- STORNO_ID ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __storno_id;
         public string STORNO_ID
         {
@@ -97,6 +112,8 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(STORNO_ID), ref __storno_id, value);
         }
 
+        // --- CLIENT_NAME (Csak kereséshez/JOIN-hoz) ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __client_name;
         public string CLIENT_NAME
         {
@@ -108,75 +125,71 @@ namespace Ecoinv.BL
     }
 
     // ========================================================================
-    // TABLE ACCESS
+    // TÁBLA KEZELŐ OSZTÁLY
     // ========================================================================
     public partial class INVOICE_HEADERSTable
     {
+        // LEFT JOIN a CLIENTS táblával a névkereséshez
         private readonly string selectSQL =
-            "SELECT h.ID, h.CLIENT_ID, h.INVOICE_NUMBER, h.ISSUE_DATE, h.DUE_DATE, " +
-            "h.PAYMENT_METHOD, h.CREATED, h.SZLASTAT, h.FIZSTAT, h.STORNO_ID, " +
-            "c.NAME AS CLIENT_NAME " +
+            "SELECT h.*, c.NAME as CLIENT_NAME " +
             "FROM INVOICE_HEADERS h " +
-            "LEFT JOIN CLIENTS c ON c.ID = h.CLIENT_ID";
+            "LEFT JOIN CLIENTS c ON h.CLIENT_ID = c.ID";
 
-        private readonly string genSQL =
-            "SELECT GEN_ID(GEN_INVOICE_HEADERS_ID, 1) FROM RDB$DATABASE";
+        // Paraméterek: ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID
+        private readonly string insSQL =
+            "INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) " +
+            "VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')";
+
+        private readonly string updStornoSQL =
+            "UPDATE INVOICE_HEADERS SET SZLASTAT = '2', STORNO_ID = '{0}' WHERE ID = {0}";
+
+        private readonly string selGenSQL = "SELECT GEN_ID(GEN_INVOICE_HEADERS_ID, 1) FROM RDB$DATABASE";
 
         private ObservableCollection<INVOICE_HEADERS> __innerList;
 
-        // --------------------------------------------------------------------
         public ObservableCollection<INVOICE_HEADERS> GetList(FBConnectX conn)
         {
-            if (__innerList == null)
-                __innerList = TableBaseClass.GetListBase<INVOICE_HEADERS>(selectSQL, conn);
-
+            if (__innerList != null) return __innerList;
+            __innerList = TableBaseClass.GetListBase<INVOICE_HEADERS>(selectSQL, conn);
             return __innerList;
         }
 
-        // --------------------------------------------------------------------
+        private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
+
         public void Insert(INVOICE_HEADERS src, FBConnectX conn)
         {
-            if (src == null)
-                throw new ArgumentNullException(nameof(src));
+            var id = GetGenerator(conn);
 
-            int newId = DBFunc.Get_Generator(genSQL, conn);
+            // Dátum formátumok (Firebird)
+            string issue = src.ISSUE_DATE.HasValue ? src.ISSUE_DATE.Value.ToString("yyyy-MM-dd") : "NULL";
+            string due = src.DUE_DATE.HasValue ? src.DUE_DATE.Value.ToString("yyyy-MM-dd") : "NULL";
+            string created = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            string sql =
-                "INSERT INTO INVOICE_HEADERS (" +
-                "ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, PAYMENT_METHOD, CREATED, " +
-                "SZLASTAT, FIZSTAT, STORNO_ID) VALUES (" +
-                $"{newId}, " +
-                $"{src.CLIENT_ID}, " +
-                $"'{src.INVOICE_NUMBER}', " +
-                $"{(src.ISSUE_DATE.HasValue ? $"'{src.ISSUE_DATE:yyyy-MM-dd}'" : "NULL")}, " +
-                $"{(src.DUE_DATE.HasValue ? $"'{src.DUE_DATE:yyyy-MM-dd}'" : "NULL")}, " +
-                $"'{src.PAYMENT_METHOD}', " +
-                $"'{src.CREATED:yyyy-MM-dd HH:mm:ss}', " +
-                $"'{src.SZLASTAT}', " +
-                $"'{src.FIZSTAT}', " +
-                $"'{src.STORNO_ID}')";
+            // Ha esetleg null lenne a fizetési mód
+            string payMethod = string.IsNullOrEmpty(src.PAYMENT_METHOD) ? "Transfer" : src.PAYMENT_METHOD;
 
-            conn.InsertSQL(sql);
+            var sql = string.Format(insSQL,
+                id,
+                src.CLIENT_ID,
+                src.INVOICE_NUMBER,
+                issue,
+                due,
+                created,
+                payMethod,
+                src.SZLASTAT ?? "0",
+                src.FIZSTAT ?? "0",
+                src.STORNO_ID ?? "0");
 
-            src.ID = newId;
-            __innerList?.Add(src);
+            conn?.InsertSQL(sql);
+            src.ID = id;
         }
 
-        // --------------------------------------------------------------------
         public void SetStorno(int id, FBConnectX conn)
         {
-            conn.UpdateSQL(
-                $"UPDATE INVOICE_HEADERS SET SZLASTAT = '2', STORNO_ID = '{id}' WHERE ID = {id}");
-
-            var rec = __innerList?.FirstOrDefault(x => x.ID == id);
-            if (rec != null)
-            {
-                rec.SZLASTAT = "2";
-                rec.STORNO_ID = id.ToString();
-            }
+            conn.UpdateSQL(string.Format(updStornoSQL, id));
         }
 
-        // --------------------------------------------------------------------
+        // KERESÉS
         public List<INVOICE_HEADERS> SearchInvoices(
             FBConnectX conn,
             string clientName,
@@ -197,14 +210,15 @@ namespace Ecoinv.BL
                 sql += $" AND h.ISSUE_DATE >= '{fromDate:yyyy-MM-dd}'";
 
             if (toDate.HasValue)
-                sql += $" AND h.ISSUE_DATE <= '{toDate:yyyy-MM-dd}'";
+                sql += $" AND h.ISSUE_DATE <= '{toDate:yyyy-MM-dd 23:59:59}'";
 
             if (!string.IsNullOrWhiteSpace(statusCode))
                 sql += $" AND h.SZLASTAT = '{statusCode}'";
 
-            sql += " ORDER BY h.ISSUE_DATE DESC";
+            sql += " ORDER BY h.ID DESC";
 
-            return TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn).ToList();
+            var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn);
+            return rawList.ToList();
         }
     }
 }

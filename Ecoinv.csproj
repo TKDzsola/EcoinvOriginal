@@ -243,6 +243,7 @@
   <ItemGroup>
     <Compile Include="Pdf\Documents\InvoicePdfDocument.cs" />
     <Compile Include="Pdf\Models\InvoicePdfModel.cs" />
+    <Compile Include="Pdf\Services\InvoiceExportManager.cs" />
     <Compile Include="Pdf\Services\InvoicePdfService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

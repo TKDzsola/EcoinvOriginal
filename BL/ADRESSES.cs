@@ -1,267 +1,213 @@
 ﻿using Ecoinv.Common;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ecoinv.BL.Enums
+namespace Ecoinv.BL
 {
-  public partial class ADRESSES : TableBaseClass
-  {
-    public ADRESSES() 
+    // ========================================================================
+    // MODEL - ADATBÁZIS KOMPATIBILIS
+    // ========================================================================
+    public partial class ADRESSES : TableBaseClass
     {
-    }
-    #region ... ID property ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private int __id;
+        public int ID
+        {
+            get => __id;
+            set => SetPropertyValue(nameof(ID), ref __id, value);
+        }
 
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private int __id;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private int __client_id;
+        public int CLIENT_ID
+        {
+            get => __client_id;
+            set => SetPropertyValue(nameof(CLIENT_ID), ref __client_id, value);
+        }
 
-    public int ID
-    {
-      get => __id;
-      set
-      {
-        OnIDChanging(value);
-        SetPropertyValue(nameof(ID), ref __id, value);
-        OnIDChanged();
-      }
-    }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __city;
+        public string CITY
+        {
+            get => __city;
+            set => SetPropertyValue(nameof(CITY), ref __city, value);
+        }
 
-    /*partial*/
-    private void OnIDChanging(int value)
-    {
-    }
+        // ADDRESS mező az adatbázisban (Utca + Házszám)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __address;
+        public string ADDRESS
+        {
+            get => __address;
+            set
+            {
+                SetPropertyValue(nameof(ADDRESS), ref __address, value);
+                OnPropertyChanged(nameof(STREET)); // PDF miatt
+            }
+        }
 
-    /*partial*/
-    private void OnIDChanged()
-    {
-    }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __atype = "1";
+        public string ATYPE
+        {
+            get => __atype;
+            set => SetPropertyValue(nameof(ATYPE), ref __atype, value);
+        }
 
-    #endregion ... end of ID property ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __aactive = "1";
+        public string AACTIVE
+        {
+            get => __aactive;
+            set => SetPropertyValue(nameof(AACTIVE), ref __aactive, value);
+        }
 
-    #region ... CLIENT_ID property ...
+        // POSTALCODE mező az adatbázisban (INTEGER!)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private int __postalcode;
+        public int POSTALCODE
+        {
+            get => __postalcode;
+            set
+            {
+                SetPropertyValue(nameof(POSTALCODE), ref __postalcode, value);
+                OnPropertyChanged(nameof(ZIP)); // PDF miatt
+            }
+        }
 
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private int __client_id;
-    public int CLIENT_ID
-    {
-      get => __client_id;
-      set
-      {
-        OnCLIENT_IDChanging(value);
-        SetPropertyValue(nameof(CLIENT_ID), ref __client_id, value);
-        OnCLIENT_IDChanged();
-      }
-    }
-    private void OnCLIENT_IDChanging(int value) { }
-    private void OnCLIENT_IDChanged() { }
+        // --- PDF / ÚJ KÓD KOMPATIBILITÁS ---
 
-    #endregion ... end of CLIENT_ID property ...
+        public string ZIP
+        {
+            get => POSTALCODE.ToString();
+            set
+            {
+                if (int.TryParse(value, out int result)) POSTALCODE = result;
+            }
+        }
 
-    #region ... CITY property ...
+        public string STREET
+        {
+            get => ADDRESS;
+            set => ADDRESS = value;
+        }
 
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __city;
-    public string CITY
-    {
-      get => __city;
-      set
-      {
-        OnCITYChanging(value);
-        SetPropertyValue(nameof(CITY), ref __city, value);
-        OnCITYChanged();
-      }
-    }
-    private void OnCITYChanging(string value) { }
-    private void OnCITYChanged() { }
+        // Dummy mezők, hogy a PDF generáló ne szálljon el
+        public string COUNTRY { get => ""; set { } }
+        public string HOUSE_NUMBER { get => ""; set { } }
 
-    #endregion ... end of CITY property ...
-
-    #region ... ADDRESSES property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __address;
-    public string ADDRESS
-    {
-      get => __address;
-      set
-      {
-        OnADDRESSESChanging(value);
-        SetPropertyValue(nameof(ADDRESS), ref __address, value);
-        OnADDRESSESChanged();
-      }
-    }
-    private void OnADDRESSESChanging(string value) { }
-    private void OnADDRESSESChanged() { }
-
-    #endregion ... end of ADDRESSES property ...
-
-    #region ... ATYPE property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __atype;
-    public string ATYPE
-    {
-      get => __atype;
-      set
-      {
-        OnATYPEChanging(value);
-        SetPropertyValue(nameof(ATYPE), ref __atype, value);
-        OnATYPEChanged();
-      }
-    }
-    private void OnATYPEChanging(string value) { }
-    private void OnATYPEChanged() { }
-
-    #endregion ... end of ATYPE property ...
-
-    #region ... AACTIVE property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __aactive;
-    public string AACTIVE
-    {
-      get => __aactive;
-      set
-      {
-        OnAACTIVEChanging(value);
-        SetPropertyValue(nameof(AACTIVE), ref __aactive, value);
-        OnAACTIVEChanged();
-      }
-    }
-    private void OnAACTIVEChanging(string value) { }
-    private void OnAACTIVEChanged() { }
-
-    #endregion ... end of AACTIVE property ...
-
-    #region ... POSTALCODE property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private int __postalcode;
-    public int POSTALCODE
-    {
-      get => __postalcode;
-      set
-      {
-        OnPOSTALCODEChanging(value);
-        SetPropertyValue(nameof(POSTALCODE), ref __postalcode, value);
-        OnPOSTALCODEChanged();
-      }
-    }
-    private void OnPOSTALCODEChanging(int value) { }
-    private void OnPOSTALCODEChanged() { }
-
-    #endregion ... end of POSTALCODE property ...
-
-    public object PrimaryKeyValue => ID;
-  }
-  public partial class ADRESSESTable
-  {
-    private readonly string selectSQL = "select id, client_id, city, address, atype, aactive, postalcode from adresses";
-    private readonly string selectClntAdrSQL = "select id, client_id, city, address, atype, aactive, postalcode from adresses where client_id={0} and atype='L'";
-    private readonly string insSQL = "insert into adresses (city, address, atype, aactive, postalcode) values ({0},'{1}','{2}','{3}','{4}')";
-    private readonly string delSQL = "delete from adresses where id = {0}";
-    private readonly string updSQL = "update adresses set city='{0}', address='{1}', atype='{2}', aactive={3}  where id = {3}";
-    private readonly string selGenSQL = "select gen_id(GEN_adresses_ID,1) from rdb$database";
-
-    private ObservableCollection<ADRESSES> __innerList;
-
-    public ObservableCollection<ADRESSES> GetList(FBConnectX conn)
-    {
-      if (__innerList != null)
-        return __innerList;
-
-      __innerList = TableBaseClass.GetListBase<ADRESSES>(selectSQL, conn);
-
-      return __innerList;
+        public object PrimaryKeyValue => ID;
     }
 
-    public ObservableCollection<ADRESSES> GetList(FBConnectX conn, int ClntId)
+    // ========================================================================
+    // TABLE - METÓDUSOK
+    // ========================================================================
+    public partial class ADRESSESTable
     {
-      //if (__innerList != null)
-        //return __innerList;
+        private readonly string selectAllSQL =
+            "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES";
 
-      __innerList = TableBaseClass.GetListBase<ADRESSES>(string.Format(selectClntAdrSQL, ClntId), conn);
+        private readonly string selectByIdSQL =
+            "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES WHERE CLIENT_ID = {0}";
 
-      return __innerList;
+        private readonly string insSQL =
+            "INSERT INTO ADRESSES (ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE) " +
+            "VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', {6})";
+
+        private readonly string updSQL =
+            "UPDATE ADRESSES SET CITY='{2}', ADDRESS='{3}', ATYPE='{4}', AACTIVE='{5}', POSTALCODE={6} " +
+            "WHERE ID={0}";
+
+        private readonly string delSQL = "DELETE FROM ADRESSES WHERE ID = {0}";
+
+        private readonly string selGenSQL = "SELECT GEN_ID(GEN_ADRESSES_ID, 1) FROM RDB$DATABASE";
+
+        private ObservableCollection<ADRESSES> __innerList;
+
+        // --- LEKÉRDEZÉSEK ---
+
+        public ObservableCollection<ADRESSES> GetList(FBConnectX conn, int clientId)
+        {
+            string sql = string.Format(selectByIdSQL, clientId);
+            return TableBaseClass.GetListBase<ADRESSES>(sql, conn);
+        }
+
+        public ObservableCollection<ADRESSES> GetList(FBConnectX conn)
+        {
+            if (__innerList != null) return __innerList;
+            __innerList = TableBaseClass.GetListBase<ADRESSES>(selectAllSQL, conn);
+            return __innerList;
+        }
+
+        private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
+
+        // --- MENTÉS LOGIKA ---
+
+        public void Save(ADRESSES item, FBConnectX conn)
+        {
+            if (item.ID <= 0) Insert(item, conn);
+            else Update(item, conn);
+        }
+
+        public void Insert(ADRESSES item, FBConnectX conn)
+        {
+            item.ID = GetGenerator(conn);
+            // Null értékek kezelése
+            string atype = string.IsNullOrEmpty(item.ATYPE) ? "1" : item.ATYPE;
+            string aactive = string.IsNullOrEmpty(item.AACTIVE) ? "1" : item.AACTIVE;
+            string city = item.CITY ?? "";
+            string address = item.ADDRESS ?? "";
+
+            string sql = string.Format(insSQL,
+                item.ID, item.CLIENT_ID, city, address, atype, aactive, item.POSTALCODE);
+
+            conn.InsertSQL(sql);
+        }
+
+        public void Update(ADRESSES item, FBConnectX conn)
+        {
+            string atype = string.IsNullOrEmpty(item.ATYPE) ? "1" : item.ATYPE;
+            string aactive = string.IsNullOrEmpty(item.AACTIVE) ? "1" : item.AACTIVE;
+            string city = item.CITY ?? "";
+            string address = item.ADDRESS ?? "";
+
+            string sql = string.Format(updSQL,
+                item.ID, item.CLIENT_ID, city, address, atype, aactive, item.POSTALCODE);
+
+            conn.UpdateSQL(sql);
+        }
+
+        public void Delete(ADRESSES item, FBConnectX conn)
+        {
+            conn.DeleteSQL(string.Format(delSQL, item.ID));
+            if (__innerList != null) __innerList.Remove(item);
+        }
+
+        public void Delete(int id, FBConnectX conn)
+        {
+            conn.DeleteSQL(string.Format(delSQL, id));
+        }
+
+        // ====================================================================
+        // FONTOS: RÉGI KÓD TÁMOGATÁSA (LEGACY METHODS)
+        // EZ A RÉSZ HIÁNYZOTT VAGY NEM LÁTSZÓDOTT!
+        // ====================================================================
+
+        public void NewADRESSES_M(ADRESSES item, FBConnectX conn)
+        {
+            Insert(item, conn);
+        }
+
+        public void ReUpdateADRESSES_M(ADRESSES item, FBConnectX conn)
+        {
+            Update(item, conn);
+        }
+
+        public void DelNewADRESSES_M(ADRESSES item, FBConnectX conn)
+        {
+            Delete(item, conn);
+        }
     }
-
-
-
-    private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
-
-    public ADRESSES NewADRESSES_M()
-    {
-      var rec = new ADRESSES
-      {
-        ID = -1,
-        CLIENT_ID = -1,
-        CITY = "",
-        ADDRESS = "",
-        ATYPE = "",
-        AACTIVE = "",
-        POSTALCODE = -1,
-      };
-      __innerList.Add(rec);
-      return rec;
-    }
-
-    public void DelNewADRESSES_M()
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == -1); // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (__innerList.IndexOf(_actrec) != -1)
-        __innerList.Remove(_actrec);
-    }
-
-    public void ReUpdateADRESSES_M(ADRESSES oldadresses)
-    {
-      // Visszaírás CANCEL gomb megnyomása után
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == oldadresses.ID); // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (_actrec == null)
-        return;
-
-      _actrec.ID = oldadresses.ID;
-      _actrec.CLIENT_ID = oldadresses.CLIENT_ID;
-      _actrec.CITY = oldadresses.CITY;
-      _actrec.ADDRESS = oldadresses.ADDRESS;
-      _actrec.ATYPE = oldadresses.ATYPE;
-      _actrec.AACTIVE = oldadresses.AACTIVE;
-      _actrec.POSTALCODE = oldadresses.POSTALCODE;
-    }
-
-    public void Insert(ADRESSES src, FBConnectX conn)
-    {
-      var _id = GetGenerator(conn);
-      var _inssql = string.Format(insSQL, _id, src.ID, src.CLIENT_ID, src.CITY, src.ADDRESS, src.ATYPE, src.AACTIVE, src.POSTALCODE);
-      conn?.InsertSQL(_inssql);
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == -1);  // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (__innerList.IndexOf(_actrec) != -1)
-        src.ID = _id;
-    }
-
-    public void Update(ADRESSES src, FBConnectX conn)
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == src.ID);
-      if (__innerList.IndexOf(_actrec) != -1)
-      {
-        var _updsql = string.Format(updSQL, src.ID, src.CLIENT_ID, src.CITY, src.ADDRESS, src.ATYPE, src.AACTIVE, src.POSTALCODE);
-        conn?.UpdateSQL(_updsql);
-      }
-    }
-
-    public void Delete(int num, FBConnectX conn)
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == num);
-      if (__innerList.IndexOf(_actrec) != -1)
-      {
-        __innerList.Remove(_actrec);
-        var _delsql = string.Format(delSQL, num);
-        conn?.DeleteSQL(_delsql);
-      }
-    }
-
-  }
 }

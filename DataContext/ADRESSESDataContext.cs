@@ -4,224 +4,241 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Ecoinv.BL;
-using Ecoinv.BL.Enums;
 using Ecoinv.Common;
 using Ecoinv.Components;
 using Ecoinv.Forms;
 
 namespace Ecoinv.DataContext
 {
-  public class ADRESSESDataContext : DataContextBase
-  {
-    public ADRESSESDataContext()
+    public class ADRESSESDataContext : DataContextBase
     {
-      alkTable = new ADRESSESTable();
-      ADRESSESList = alkTable.GetList(FBConnX);
-    }
+        private readonly ADRESSESTable alkTable;
 
-    private readonly ADRESSESTable alkTable;
-
-    #region ... ADRESSESList ObservableCollection<ADRESSES> property ...
-
-    private ObservableCollection<ADRESSES> __ADRESSESList = new ObservableCollection<ADRESSES>();
-
-    public ObservableCollection<ADRESSES> ADRESSESList
-    {
-      get => __ADRESSESList;
-      set => SetPropertyValue(nameof(ADRESSESList), ref __ADRESSESList, value);
-    }
-
-    #endregion ... end of ADRESSESList ObservableCollection<ADRESSES> property ...
-
-    #region ... SelectedADRESSES property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ADRESSES __selectedADRESSES;
-
-    public ADRESSES SelectedADRESSES
-    {
-      get => __selectedADRESSES;
-      set
-      {
-        OnSelectedADRESSESChanging(value);
-        SetPropertyValue(nameof(SelectedADRESSES), ref __selectedADRESSES, value);
-        OnSelectedADRESSESChanged();
-      }
-    }
-
-    /*partial*/
-    private void OnSelectedADRESSESChanging(ADRESSES value)
-    {
-    }
-
-    /*partial*/
-    private void OnSelectedADRESSESChanged()
-    {
-      OLDADRESSES ??= new ADRESSES();
-
-      if (SelectedADRESSES != null)
-      {
-        OLDADRESSES.ID = SelectedADRESSES.ID;
-        OLDADRESSES.CLIENT_ID = SelectedADRESSES.CLIENT_ID;
-        OLDADRESSES.POSTALCODE = SelectedADRESSES.POSTALCODE;
-        OLDADRESSES.CITY = SelectedADRESSES.CITY;
-        OLDADRESSES.ADDRESS = SelectedADRESSES.ADDRESS;
-        OLDADRESSES.ATYPE = SelectedADRESSES.ATYPE;
-        OLDADRESSES.AACTIVE = SelectedADRESSES.AACTIVE;
-      }
-    }
-
-    #endregion ... end of SelectedADRESSES property ...
-
-    #region ... OLDADRESSES property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ADRESSES __oldADRESSES;
-
-    public ADRESSES OLDADRESSES
-    {
-      get => __oldADRESSES;
-      set => SetPropertyValue(nameof(OLDADRESSES), ref __oldADRESSES, value);
-    }
-
-    #endregion ... end of OLDADRESSES property ...
-
-    #region ... CommandModifyCancel property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ICommand __commandModifyCancel;
-
-    public ICommand CommandModifyCancel => __commandModifyCancel ??= new DelegateCommand(ac => ModifyCancelExecute(), fc => ModifyCancelCanExecute());
-
-    private bool ModifyCancelCanExecute() => ((SelectedADRESSES != null) && (IsAdmin));
-
-    private void ModifyCancelExecute()
-    {
-      if (IsEditing)
-      {
-        if (IsNewRecord)
+        public ADRESSESDataContext()
         {
-          // C A N C E L - gombot nyomott az új rekod felvitele után
-          alkTable.DelNewADRESSES_M();
-          var _actrec = ADRESSESList.FirstOrDefault(r => r.ID == -1); // ezért -1, mert GetNewCIKKEK-be ezzel kerül bele
-          if (ADRESSESList.IndexOf(_actrec) != -1)
-            ADRESSESList.Remove(_actrec);
-
-          IsNewRecord = false;
-        }
-        else
-        {
-          // C A N C E L - gombot nyomott a módosítás után
-          if (SelectedADRESSES != null)
-            alkTable.ReUpdateADRESSES_M(OLDADRESSES);
-        }
-      }
-      else
-      {
-        // M O D I F Y - gombot megnyomta. Nincs teendő!
-        if (SelectedADRESSES != null)
-        {
-        }
-      }
-
-      IsEditing = !IsEditing;
-      ShowDetailPanel();
-    }
-
-    #endregion ... end of CommandModifyCancel property ...
-
-    #region ... CommandNewSave property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ICommand __commandNewSave;
-
-    public ICommand CommandNewSave => __commandNewSave ??= new DelegateCommand(ac => NewSaveExecute(), fc => NewSaveCanExecute());
-
-    private bool NewSaveCanExecute()
-    {
-      if (IsEditing)
-      {
-        if (IsNewRecord)
-        {
-          // I N S E R T
-          return !string.IsNullOrEmpty(SelectedADRESSES.POSTALCODE.ToString()) &&
-                 !string.IsNullOrEmpty(SelectedADRESSES.CITY) &&
-                 !string.IsNullOrEmpty(SelectedADRESSES.ADDRESS) &&
-                 !string.IsNullOrEmpty(SelectedADRESSES.ATYPE) &&
-                 !string.IsNullOrEmpty(SelectedADRESSES.AACTIVE);
-
-        }
-        else
-        {
-          // U P D A T E
-          return (SelectedADRESSES != null) &&
-                 !string.IsNullOrEmpty(SelectedADRESSES.CLIENT_ID.ToString());
-        }
-      }
-      else
-      {
-        return IsAdmin;
-      }
-    }
-
-    private void NewSaveExecute()
-    {
-      IsEditing = !IsEditing;
-      if (IsEditing)
-      {
-        // N E W
-        IsNewRecord = true;
-
-        SelectedADRESSES = alkTable.NewADRESSES_M();
-      }
-      else
-      {
-        // S A V E
-        var md5f = new MD5Func();
-        if (IsNewRecord)
-        {
-          // Mentés a new gomb megnyomása után
-          if (SelectedADRESSES != null)
-            alkTable.Insert(SelectedADRESSES, FBConnX);
-
-          IsNewRecord = false;
-        }
-        else
-        {
-          // Mentés a modify gomb megnyomása után
-          if (SelectedADRESSES != null)
-            alkTable.Update(SelectedADRESSES, FBConnX);
+            alkTable = new ADRESSESTable();
+            // Itt az összes címet betöltjük (vagy szűrhetnénk is, ha kellene)
+            ADRESSESList = alkTable.GetList(FBConnX);
         }
 
-      }
+        #region ... ADRESSESList ObservableCollection<ADRESSES> property ...
 
-      ShowDetailPanel();
+        private ObservableCollection<ADRESSES> __ADRESSESList = new ObservableCollection<ADRESSES>();
+
+        public ObservableCollection<ADRESSES> ADRESSESList
+        {
+            get => __ADRESSESList;
+            set => SetPropertyValue(nameof(ADRESSESList), ref __ADRESSESList, value);
+        }
+
+        #endregion
+
+        #region ... SelectedADRESSES property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ADRESSES __selectedADRESSES;
+
+        public ADRESSES SelectedADRESSES
+        {
+            get => __selectedADRESSES;
+            set
+            {
+                OnSelectedADRESSESChanging(value);
+                SetPropertyValue(nameof(SelectedADRESSES), ref __selectedADRESSES, value);
+                OnSelectedADRESSESChanged();
+            }
+        }
+
+        private void OnSelectedADRESSESChanging(ADRESSES value) { }
+
+        private void OnSelectedADRESSESChanged()
+        {
+            OLDADRESSES ??= new ADRESSES();
+
+            if (SelectedADRESSES != null)
+            {
+                // Biztonsági másolat készítése (Mégse gombhoz)
+                OLDADRESSES.ID = SelectedADRESSES.ID;
+                OLDADRESSES.CLIENT_ID = SelectedADRESSES.CLIENT_ID;
+                OLDADRESSES.POSTALCODE = SelectedADRESSES.POSTALCODE;
+                OLDADRESSES.CITY = SelectedADRESSES.CITY;
+                OLDADRESSES.ADDRESS = SelectedADRESSES.ADDRESS;
+                OLDADRESSES.ATYPE = SelectedADRESSES.ATYPE;
+                OLDADRESSES.AACTIVE = SelectedADRESSES.AACTIVE;
+            }
+        }
+
+        #endregion
+
+        #region ... OLDADRESSES property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ADRESSES __oldADRESSES;
+
+        public ADRESSES OLDADRESSES
+        {
+            get => __oldADRESSES;
+            set => SetPropertyValue(nameof(OLDADRESSES), ref __oldADRESSES, value);
+        }
+
+        #endregion
+
+        #region ... CommandModifyCancel property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ICommand __commandModifyCancel;
+
+        public ICommand CommandModifyCancel => __commandModifyCancel ??= new DelegateCommand(ac => ModifyCancelExecute(), fc => ModifyCancelCanExecute());
+
+        private bool ModifyCancelCanExecute() => ((SelectedADRESSES != null) && (IsAdmin));
+
+        private void ModifyCancelExecute()
+        {
+            if (IsEditing)
+            {
+                if (IsNewRecord)
+                {
+                    // --- CANCEL (ÚJ REKORDNÁL) ---
+                    // Nem kell adatbázis hívás (DelNewADRESSES_M), 
+                    // csak kivesszük a listából a még el nem mentett elemet.
+
+                    var _actrec = ADRESSESList.FirstOrDefault(r => r.ID <= 0);
+                    if (_actrec != null)
+                        ADRESSESList.Remove(_actrec);
+
+                    IsNewRecord = false;
+                }
+                else
+                {
+                    // --- CANCEL (MÓDOSÍTÁSNÁL) ---
+                    // Visszaállítjuk az eredeti értékeket a memóriában
+                    if (SelectedADRESSES != null)
+                    {
+                        SelectedADRESSES.POSTALCODE = OLDADRESSES.POSTALCODE;
+                        SelectedADRESSES.CITY = OLDADRESSES.CITY;
+                        SelectedADRESSES.ADDRESS = OLDADRESSES.ADDRESS;
+                        SelectedADRESSES.ATYPE = OLDADRESSES.ATYPE;
+                        SelectedADRESSES.AACTIVE = OLDADRESSES.AACTIVE;
+                    }
+                }
+            }
+            else
+            {
+                // MODIFY megnyomása - Nincs teendő, csak UI váltás
+            }
+
+            IsEditing = !IsEditing;
+            ShowDetailPanel();
+        }
+
+        #endregion
+
+        #region ... CommandNewSave property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ICommand __commandNewSave;
+
+        public ICommand CommandNewSave => __commandNewSave ??= new DelegateCommand(ac => NewSaveExecute(), fc => NewSaveCanExecute());
+
+        private bool NewSaveCanExecute()
+        {
+            if (IsEditing)
+            {
+                if (IsNewRecord)
+                {
+                    // I N S E R T - Validáció
+                    return (SelectedADRESSES != null) &&
+                           !string.IsNullOrEmpty(SelectedADRESSES.CITY) &&
+                           !string.IsNullOrEmpty(SelectedADRESSES.ADDRESS);
+                    // POSTALCODE int, ezért nem null, hanem 0 lehet, de azt itt nem ellenőrizzük szigorúan
+                }
+                else
+                {
+                    // U P D A T E - Validáció
+                    return (SelectedADRESSES != null);
+                }
+            }
+            else
+            {
+                return IsAdmin;
+            }
+        }
+
+        private void NewSaveExecute()
+        {
+            IsEditing = !IsEditing;
+            if (IsEditing)
+            {
+                // --- NEW GOMB MEGNYOMÁSA ---
+                IsNewRecord = true;
+
+                // Nem hívunk adatbázist (NewADRESSES_M), csak létrehozunk egy üreset
+                var newItem = new ADRESSES
+                {
+                    ID = -1, // Jelöljük, hogy új
+                    ATYPE = "1",
+                    AACTIVE = "1"
+                };
+
+                // Hozzáadjuk a listához és kijelöljük
+                ADRESSESList.Add(newItem);
+                SelectedADRESSES = newItem;
+            }
+            else
+            {
+                // --- SAVE GOMB MEGNYOMÁSA ---
+                if (IsNewRecord)
+                {
+                    if (SelectedADRESSES != null)
+                    {
+                        // INSERT hívása a szabványos módon
+                        alkTable.Insert(SelectedADRESSES, FBConnX);
+
+                        // ID frissül az Insertben, de ha nem, itt újraolvashatnánk
+                    }
+                    IsNewRecord = false;
+                }
+                else
+                {
+                    if (SelectedADRESSES != null)
+                    {
+                        // UPDATE hívása a szabványos módon
+                        alkTable.Update(SelectedADRESSES, FBConnX);
+                    }
+                }
+            }
+
+            ShowDetailPanel();
+        }
+
+        #endregion
+
+        #region ... CommandDelete property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ICommand __commandDelete;
+
+        public ICommand CommandDelete => __commandDelete ??= new DelegateCommand(ac => DeleteExecute(), fc => DeleteCanExecute());
+
+        private bool DeleteCanExecute() => (IsAdmin) && (SelectedADRESSES != null) && (!IsEditing);
+
+        private void DeleteExecute()
+        {
+            MessageBoxResult dres = MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (MessageBoxResult.Yes == dres)
+            {
+                if (SelectedADRESSES != null)
+                {
+                    // DELETE hívása
+                    alkTable.Delete(SelectedADRESSES, FBConnX);
+
+                    // Kivesszük a listából
+                    ADRESSESList.Remove(SelectedADRESSES);
+                }
+                ShowDetailPanel();
+            }
+        }
+
+        #endregion
     }
-
-    #endregion ... end of CommandNewSave property ...
-
-    #region ... CommandDelete property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ICommand __commandDelete;
-
-
-    public ICommand CommandDelete => __commandDelete ??= new DelegateCommand(ac => DeleteExecute(), fc => DeleteCanExecute());
-
-    private bool DeleteCanExecute() => (IsAdmin) && (SelectedADRESSES != null) && (!IsEditing);
-
-    private void DeleteExecute()
-    {
-      MessageBoxResult dres = MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo);
-      if (MessageBoxResult.Yes == dres)
-      {
-        if (SelectedADRESSES != null)
-          alkTable.Delete(SelectedADRESSES.ID, FBConnX);
-
-        ShowDetailPanel();
-      }
-    }
-
-    #endregion ... end of CommandDelete property ...
-  }
 }

@@ -12,7 +12,6 @@ namespace Ecoinv.BL
         }
 
         #region ... ID property ...
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int __id;
 
@@ -26,16 +25,11 @@ namespace Ecoinv.BL
                 OnIDChanged();
             }
         }
-
-        /*partial*/
         private void OnIDChanging(int value) { }
-        /*partial*/
         private void OnIDChanged() { }
-
-        #endregion ... end of ID property ...
+        #endregion
 
         #region ... SZKNEV property ...
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __szknev;
 
@@ -49,16 +43,11 @@ namespace Ecoinv.BL
                 OnSZKNEVChanged();
             }
         }
-
-        /*partial*/
         private void OnSZKNEVChanging(string value) { }
-        /*partial*/
         private void OnSZKNEVChanged() { }
-
         #endregion
 
         #region ... SZKCIM property ...
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __szkcim;
 
@@ -72,16 +61,11 @@ namespace Ecoinv.BL
                 OnSZKCIMChanged();
             }
         }
-
-        /*partial*/
         private void OnSZKCIMChanging(string value) { }
-        /*partial*/
         private void OnSZKCIMChanged() { }
-
         #endregion
 
         #region ... SZKACTIVE property ...
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __szkactive;
 
@@ -95,62 +79,11 @@ namespace Ecoinv.BL
                 OnSZKACTIVEChanged();
             }
         }
-
-        /*partial*/
         private void OnSZKACTIVEChanging(string value) { }
-        /*partial*/
         private void OnSZKACTIVEChanged() { }
-
         #endregion
 
-        #region ... SZKBANKACCOUNT property ...
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string __szkbankaccount;
-
-        public string SZKBANKACCOUNT
-        {
-            get => __szkbankaccount;
-            set
-            {
-                OnSZKBANKACCOUNTChanging(value);
-                SetPropertyValue(nameof(SZKBANKACCOUNT), ref __szkbankaccount, value);
-                OnSZKBANKACCOUNTChanged();
-            }
-        }
-
-        /*partial*/
-        private void OnSZKBANKACCOUNTChanging(string value) { }
-        /*partial*/
-        private void OnSZKBANKACCOUNTChanged() { }
-
-        #endregion
-
-        #region ... SZKCOMTAX property ...
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string __szkcomtax;
-
-        public string SZKCOMTAX
-        {
-            get => __szkcomtax;
-            set
-            {
-                OnSZKCOMTAXChanging(value);
-                SetPropertyValue(nameof(SZKCOMTAX), ref __szkcomtax, value);
-                OnSZKCOMTAXChanged();
-            }
-        }
-
-        /*partial*/
-        private void OnSZKCOMTAXChanging(string value) { }
-        /*partial*/
-        private void OnSZKCOMTAXChanged() { }
-
-        #endregion
-
-        #region ... SZKTAX property ...
-
+        #region ... SZKTAX property (Adószám) ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __szktax;
 
@@ -164,29 +97,63 @@ namespace Ecoinv.BL
                 OnSZKTAXChanged();
             }
         }
-
-        /*partial*/
         private void OnSZKTAXChanging(string value) { }
-        /*partial*/
         private void OnSZKTAXChanged() { }
+        #endregion
 
+        #region ... SZKCOMTAX property (Közösségi adószám) ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __szkcomtax;
+
+        public string SZKCOMTAX
+        {
+            get => __szkcomtax;
+            set
+            {
+                OnSZKCOMTAXChanging(value);
+                SetPropertyValue(nameof(SZKCOMTAX), ref __szkcomtax, value);
+                OnSZKCOMTAXChanged();
+            }
+        }
+        private void OnSZKCOMTAXChanging(string value) { }
+        private void OnSZKCOMTAXChanged() { }
+        #endregion
+
+        #region ... SZKBANKACCOUNT property (Bankszámlaszám) ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __szkbankaccount;
+
+        public string SZKBANKACCOUNT
+        {
+            get => __szkbankaccount;
+            set
+            {
+                OnSZKBANKACCOUNTChanging(value);
+                SetPropertyValue(nameof(SZKBANKACCOUNT), ref __szkbankaccount, value);
+                OnSZKBANKACCOUNTChanged();
+            }
+        }
+        private void OnSZKBANKACCOUNTChanging(string value) { }
+        private void OnSZKBANKACCOUNTChanged() { }
         #endregion
 
         public object PrimaryKeyValue => ID;
 
-    } // ECSYS
+    } // ECSYS class vége
 
 
     public partial class ECSYSTable
     {
-        // SQL lekérdezések a képek alapján
-        private readonly string selectSQL = "SELECT ID, SZKNEV, SZKCIM, SZKACTIVE, SZKBANKACCOUNT, SZKCOMTAX, SZKTAX FROM ECSYS";
-        private readonly string insSQL = "INSERT INTO ECSYS (ID, SZKNEV, SZKCIM, SZKACTIVE, SZKBANKACCOUNT, SZKCOMTAX, SZKTAX) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
-        private readonly string delSQL = "DELETE FROM ECSYS WHERE ID = {0}";
-        // Figyelem: az update sorrendje fontos a string.Format paraméterek miatt!
-        private readonly string updSQL = "UPDATE ECSYS SET SZKNEV = '{0}', SZKCIM = '{1}', SZKACTIVE = '{2}', SZKBANKACCOUNT = '{3}', SZKCOMTAX = '{4}', SZKTAX = '{5}' WHERE ID = {6}";
+        // SQL lekérdezések frissítve a 3 új oszloppal
+        private readonly string selectSQL = "SELECT ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT FROM ECSYS";
 
-        // Feltételezzük, hogy létezik egy GEN_ECSYS_ID generátor. Ha más a neve, itt át kell írni!
+        private readonly string insSQL = "INSERT INTO ECSYS (ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
+
+        private readonly string delSQL = "DELETE FROM ECSYS WHERE ID = {0}";
+
+        // Paraméterek sorrendje: 0:NEV, 1:CIM, 2:ACTIVE, 3:TAX, 4:COMTAX, 5:BANK, 6:ID
+        private readonly string updSQL = "UPDATE ECSYS SET SZKNEV = '{0}', SZKCIM = '{1}', SZKACTIVE = '{2}', SZKTAX = '{3}', SZKCOMTAX = '{4}', SZKBANKACCOUNT = '{5}' WHERE ID = {6}";
+
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_ECSYS_ID, 1) FROM RDB$DATABASE";
 
         private ObservableCollection<ECSYS> __innerList;
@@ -209,10 +176,10 @@ namespace Ecoinv.BL
                 ID = -1,
                 SZKNEV = "",
                 SZKCIM = "",
-                SZKACTIVE = "I", // Alapértelmezett érték (I = Igen?)
-                SZKBANKACCOUNT = "",
+                SZKACTIVE = "I",
+                SZKTAX = "",
                 SZKCOMTAX = "",
-                SZKTAX = ""
+                SZKBANKACCOUNT = ""
             };
             __innerList.Add(rec);
             return rec;
@@ -234,16 +201,16 @@ namespace Ecoinv.BL
             _actrec.SZKNEV = oldecsys.SZKNEV;
             _actrec.SZKCIM = oldecsys.SZKCIM;
             _actrec.SZKACTIVE = oldecsys.SZKACTIVE;
-            _actrec.SZKBANKACCOUNT = oldecsys.SZKBANKACCOUNT;
-            _actrec.SZKCOMTAX = oldecsys.SZKCOMTAX;
             _actrec.SZKTAX = oldecsys.SZKTAX;
+            _actrec.SZKCOMTAX = oldecsys.SZKCOMTAX;
+            _actrec.SZKBANKACCOUNT = oldecsys.SZKBANKACCOUNT;
         }
 
         public void Insert(ECSYS src, FBConnectX conn)
         {
             var _id = GetGenerator(conn);
-            // Paraméterek sorrendje: ID, SZKNEV, SZKCIM, SZKACTIVE, SZKBANKACCOUNT, SZKCOMTAX, SZKTAX
-            var _inssql = string.Format(insSQL, _id, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKBANKACCOUNT, src.SZKCOMTAX, src.SZKTAX);
+            // Paraméterek: ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT
+            var _inssql = string.Format(insSQL, _id, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT);
             conn?.InsertSQL(_inssql);
 
             var _actrec = __innerList.FirstOrDefault(r => r.ID == -1);
@@ -256,8 +223,8 @@ namespace Ecoinv.BL
             var _actrec = __innerList.FirstOrDefault(r => r.ID == src.ID);
             if (_actrec != null)
             {
-                // Paraméterek sorrendje: SZKNEV, SZKCIM, SZKACTIVE, SZKBANKACCOUNT, SZKCOMTAX, SZKTAX, ID
-                var _updsql = string.Format(updSQL, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKBANKACCOUNT, src.SZKCOMTAX, src.SZKTAX, src.ID);
+                // Paraméterek: SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT, ID
+                var _updsql = string.Format(updSQL, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT, src.ID);
                 conn?.UpdateSQL(_updsql);
             }
         }
@@ -274,4 +241,3 @@ namespace Ecoinv.BL
         }
     }
 }
-//Teszt.

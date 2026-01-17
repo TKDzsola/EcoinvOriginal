@@ -1,272 +1,113 @@
 ﻿using Ecoinv.Common;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ecoinv.BL
 {
-  public partial class CLIENTS : TableBaseClass
-  {
-    #region ... ID property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private int __id;
-
-    public int ID
+    public partial class CLIENTS : TableBaseClass
     {
-      get => __id;
-      set
-      {
-        OnIDChanging(value);
-        SetPropertyValue(nameof(ID), ref __id, value);
-        OnIDChanged();
-      }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private int __id;
+        public int ID
+        {
+            get => __id;
+            set => SetPropertyValue(nameof(ID), ref __id, value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __name;
+        public string NAME
+        {
+            get => __name;
+            set => SetPropertyValue(nameof(NAME), ref __name, value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __tax_number;
+        public string TAX_NUMBER
+        {
+            get => __tax_number;
+            set => SetPropertyValue(nameof(TAX_NUMBER), ref __tax_number, value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __email;
+        public string EMAIL
+        {
+            get => __email;
+            set => SetPropertyValue(nameof(EMAIL), ref __email, value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __phone;
+        public string PHONE
+        {
+            get => __phone;
+            set => SetPropertyValue(nameof(PHONE), ref __phone, value);
+        }
+
+        // --- EZ HIÁNYZOTT AZ AKTÍV STÁTUSZHOZ ---
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __cactive = "1";
+        public string CACTIVE
+        {
+            get => __cactive;
+            set => SetPropertyValue(nameof(CACTIVE), ref __cactive, value);
+        }
+
+        public object PrimaryKeyValue => ID;
     }
 
-    /*partial*/
-    private void OnIDChanging(int value)
+    public partial class CLIENTSTable
     {
+        // SQL BŐVÍTÉSE A CACTIVE MEZŐVEL
+        private readonly string selectSQL = "SELECT ID, NAME, TAX_NUMBER, EMAIL, PHONE, CACTIVE FROM CLIENTS ORDER BY NAME";
+
+        private readonly string insSQL =
+            "INSERT INTO CLIENTS (ID, NAME, TAX_NUMBER, EMAIL, PHONE, CACTIVE) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}')";
+
+        private readonly string updSQL =
+            "UPDATE CLIENTS SET NAME = '{1}', TAX_NUMBER = '{2}', EMAIL = '{3}', PHONE = '{4}', CACTIVE = '{5}' WHERE ID = {0}";
+
+        private readonly string delSQL = "DELETE FROM CLIENTS WHERE ID = {0}";
+
+        private readonly string selGenSQL = "SELECT GEN_ID(GEN_CLIENTS_ID, 1) FROM RDB$DATABASE";
+
+        private ObservableCollection<CLIENTS> __innerList;
+
+        public ObservableCollection<CLIENTS> GetList(FBConnectX conn)
+        {
+            if (__innerList != null) return __innerList;
+            __innerList = TableBaseClass.GetListBase<CLIENTS>(selectSQL, conn);
+            return __innerList;
+        }
+
+        private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
+
+        public void Save(CLIENTS item, FBConnectX conn)
+        {
+            // Null értékek kezelése az aktív mezőnél
+            string active = string.IsNullOrEmpty(item.CACTIVE) ? "1" : item.CACTIVE;
+
+            if (item.ID <= 0) // INSERT
+            {
+                item.ID = GetGenerator(conn);
+                conn.InsertSQL(string.Format(insSQL, item.ID, item.NAME, item.TAX_NUMBER, item.EMAIL, item.PHONE, active));
+
+                if (__innerList != null && !__innerList.Contains(item))
+                    __innerList.Add(item);
+            }
+            else // UPDATE
+            {
+                conn.UpdateSQL(string.Format(updSQL, item.ID, item.NAME, item.TAX_NUMBER, item.EMAIL, item.PHONE, active));
+            }
+        }
+
+        public void Delete(CLIENTS item, FBConnectX conn)
+        {
+            conn.DeleteSQL(string.Format(delSQL, item.ID));
+            if (__innerList != null) __innerList.Remove(item);
+        }
     }
-
-    /*partial*/
-    private void OnIDChanged()
-    {
-    }
-
-    #endregion ... end of ID property ...
-
-    #region ... NAME property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __name;
-    public string NAME
-    {
-      get => __name;
-      set
-      {
-        OnNAMEChanging(value);
-        SetPropertyValue(nameof(NAME), ref __name, value);
-        OnNAMEChanged();
-      }
-    }
-    private void OnNAMEChanging(string value) { }
-    private void OnNAMEChanged() { }
-
-    #endregion ... end of NAME property ...
-
-    #region ... TAX_NUMBER property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __tax_number;
-    public string TAX_NUMBER
-    {
-      get => __tax_number;
-      set
-      {
-        OnTAX_NUMBERChanging(value);
-        SetPropertyValue(nameof(TAX_NUMBER), ref __tax_number, value);
-        OnTAX_NUMBERChanged();
-      }
-    }
-    private void OnTAX_NUMBERChanging(string value) { }
-    private void OnTAX_NUMBERChanged() { }
-
-    #endregion ... end of TAX_NUMBER property ...
-
-
-    #region ... PHONE property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __phone;
-    public string PHONE
-    {
-      get => __phone;
-      set
-      {
-        OnPHONEChanging(value);
-        SetPropertyValue(nameof(PHONE), ref __phone, value);
-        OnPHONEChanged();
-      }
-    }
-    private void OnPHONEChanging(string value) { }
-    private void OnPHONEChanged() { }
-
-    #endregion ... end of PHONE property ...
-
-    #region ... EMAIL property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __email;
-    public string EMAIL
-    {
-      get => __email;
-      set
-      {
-        OnEMAILChanging(value);
-        SetPropertyValue(nameof(EMAIL), ref __email, value);
-        OnEMAILChanged();
-      }
-    }
-    private void OnEMAILChanging(string value) { }
-    private void OnEMAILChanged() { }
-
-    #endregion ... end of EMAIL property ...
-
-    #region ... BANKACCOUNT property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __bankaccount;
-    public string BANKACCOUNT
-    {
-      get => __bankaccount;
-      set
-      {
-        OnBANKACCOUNTChanging(value);
-        SetPropertyValue(nameof(BANKACCOUNT), ref __bankaccount, value);
-        OnBANKACCOUNTChanged();
-      }
-    }
-    private void OnBANKACCOUNTChanging(string value) { }
-    private void OnBANKACCOUNTChanged() { }
-
-    #endregion ... end of BANKACCOUNT property ...
-
-    #region ... CACTIVE property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __cactive;
-    public string CACTIVE
-    {
-      get => __cactive;
-      set
-      {
-        OnCACTIVEChanging(value);
-        SetPropertyValue(nameof(CACTIVE), ref __cactive, value);
-        OnCACTIVEChanged();
-      }
-    }
-    private void OnCACTIVEChanging(string value) { }
-    private void OnCACTIVEChanged() { }
-
-    #endregion ... end of CACTIVE property ...
-
-    #region ... COMTAX_NUMBER property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private string __comtax_number;
-    public string COMTAX_NUMBER
-    {
-      get => __comtax_number;
-      set
-      {
-        OnCOMTAX_NUMBERChanging(value);
-        SetPropertyValue(nameof(COMTAX_NUMBER), ref __comtax_number, value);
-        OnCOMTAX_NUMBERChanged();
-      }
-    }
-    private void OnCOMTAX_NUMBERChanging(string value) { }
-    private void OnCOMTAX_NUMBERChanged() { }
-
-    #endregion ... end of COMTAX_NUMBER property ...
-  }
-
-  public partial class CLIENTSTable
-  {
-    private readonly string selectSQL = "select id, name, tax_number, comtax_number, phone, email, bankaccount, cactive from clients";
-
-    private readonly string insSQL = "insert into clients (name, tax_number, comtax_number, phone, email, bankaccount, cactive) values ({0},'{1}','{2}','{3}','{4}', '{5}','{6}', '{7}')";
-    private readonly string delSQL = "delete from clients where id = {0}";
-    private readonly string updSQL = "update clients set fulnev='{0}', logpsw='{1}', aktive='{2}' where id = {3}";
-    private readonly string selGenSQL = "select gen_id(GEN_CLIENTS_ID,1) from rdb$database";
-
-    private ObservableCollection<CLIENTS> __innerList;
-
-    public ObservableCollection<CLIENTS> GetList(FBConnectX conn)
-    {
-      if (__innerList != null)
-        return __innerList;
-
-      __innerList = TableBaseClass.GetListBase<CLIENTS>(selectSQL, conn);
-
-      return __innerList;
-    }
-
-    private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
-
-    public CLIENTS NewCLIENTS_M()
-    {
-      var rec = new CLIENTS
-      {
-        ID = -1,
-        NAME = "",
-        TAX_NUMBER = "",
-        PHONE = "",
-        EMAIL = "",
-        BANKACCOUNT = "",
-        CACTIVE = "I",
-        COMTAX_NUMBER = ""
-      };
-      __innerList.Add(rec);
-      return rec;
-    }
-
-    public void DelNewCLIENTS_M()
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == -1); // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (__innerList.IndexOf(_actrec) != -1)
-        __innerList.Remove(_actrec);
-    }
-
-    public void ReUpdateCLIENTS_M(CLIENTS oldclients)
-    {
-      // Visszaírás CANCEL gomb megnyomása után
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == oldclients.ID); // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (_actrec == null)
-        return;
-
-      _actrec.NAME = oldclients.NAME;
-      _actrec.TAX_NUMBER = oldclients.TAX_NUMBER;
-      _actrec.PHONE = oldclients.PHONE;
-      _actrec.EMAIL = oldclients.EMAIL;
-      _actrec.BANKACCOUNT = oldclients.BANKACCOUNT;
-      _actrec.CACTIVE = oldclients.CACTIVE;
-      _actrec.COMTAX_NUMBER = oldclients.COMTAX_NUMBER;
-    }
-
-    public void Insert(CLIENTS src, FBConnectX conn)
-    {
-      var _id = GetGenerator(conn);
-      var _inssql = string.Format(insSQL, _id, src.NAME, src.TAX_NUMBER, src.PHONE, src.EMAIL, src.BANKACCOUNT, src.CACTIVE, src.COMTAX_NUMBER);
-      conn?.InsertSQL(_inssql);
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == -1);  // ezért -1, mert GetNewHOTALK-ba ezzel kerül bele
-      if (__innerList.IndexOf(_actrec) != -1)
-        src.ID = _id;
-    }
-
-    public void Update(CLIENTS src, FBConnectX conn)
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == src.ID);
-      if (__innerList.IndexOf(_actrec) != -1)
-      {
-        var _updsql = string.Format(updSQL, src.NAME, src.TAX_NUMBER, src.PHONE, src.EMAIL, src.BANKACCOUNT, src.CACTIVE, src.COMTAX_NUMBER);
-        conn?.UpdateSQL(_updsql);
-      }
-    }
-
-    public void Delete(int num, FBConnectX conn)
-    {
-      var _actrec = __innerList.FirstOrDefault(r => r.ID == num);
-      if (__innerList.IndexOf(_actrec) != -1)
-      {
-        __innerList.Remove(_actrec);
-        var _delsql = string.Format(delSQL, num);
-        conn?.DeleteSQL(_delsql);
-      }
-    }
-
-  }
 }

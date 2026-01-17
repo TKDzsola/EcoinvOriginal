@@ -3,23 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Ecoinv.Forms.UserControlPages"
-        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
+        xmlns:local="clr-namespace:Ecoinv.Forms"
+        xmlns:vm="clr-namespace:Ecoinv.DataContext"
         xmlns:components="clr-namespace:Ecoinv.Components"
         mc:Ignorable="d"
-        Title="Ügyféltörzs"
-        x:Name="DataFormName"
-        Height="750"
-        Width="900"
-        HorizontalContentAlignment="Stretch"
-        VerticalContentAlignment="Stretch">
+        Title="Ügyféltörzs" Height="750" Width="1000" WindowStartupLocation="CenterScreen"
+        Background="WhiteSmoke">
 
-    <!-- 🧩 DataContext -->
     <Window.DataContext>
-        <dataContext:CLIENTSDataContext />
+        <vm:CLIENTSDataContext />
     </Window.DataContext>
 
-    <!-- 🎨 Erőforrások -->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,137 +21,162 @@
                 <ResourceDictionary Source="../Components/ShadowLabel.xaml" />
                 <ResourceDictionary Source="../Components/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="CardBorderStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="#FF64CCf1"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="2" Opacity="0.2"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- 🧱 Layout -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="380"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="39"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <!-- 🔍 KERESÉS PANEL -->
-        <Border IsEnabled="{Binding Path=IsGridBrowsing}"
-            Grid.Row="0" Grid.ColumnSpan="2"
-            Margin="5"
-            BorderBrush="#FF64CCf1"
-            BorderThickness="1"
-            CornerRadius="2">
-            <StackPanel Orientation="Horizontal" Background="AntiqueWhite">
-                <Label Content="Keresés:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" />
-                <TextBox HorizontalAlignment="Left"
-                 Margin="5,3,0,3"
-                 Width="160"
-                 Text="{Binding KERESENDO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding IsGridBrowsing}" />
-                <CheckBox Content="Csak aktívak"
-                  VerticalAlignment="Center"
-                  Margin="10,4,0,3"
-                  IsChecked="{Binding CACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource CardBorderStyle}" Background="AntiqueWhite">
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <Label Content="Keresés (Név):" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBox Width="200" Margin="10,0" Padding="5" 
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+                <CheckBox Content="Csak aktívak" IsChecked="{Binding IsActiveOnly}" VerticalAlignment="Center" Margin="10,0"/>
+                <Button Content="Keresés" Command="{Binding CommandSearch}" 
+                        Style="{DynamicResource RoundedButtonStyle}"
+                        Width="100" Height="30" Margin="20,0,0,0"
+                        Background="#29B6F6" Foreground="White" FontWeight="Bold"/>
             </StackPanel>
         </Border>
 
-        <!-- 📋 LISTA (DataGrid) -->
-        <Border Grid.Row="1" Grid.Column="0"
-            Margin="5"
-            BorderBrush="#FF64CCf1"
-            BorderThickness="1"
-            CornerRadius="2">
-            <DataGrid HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Margin="5"
-                AutoGenerateColumns="False"
-                IsReadOnly="True"
-                SelectionMode="Single"
-                AlternatingRowBackground="BlanchedAlmond"
-                IsEnabled="{Binding Path=IsGridBrowsing}"
-                SelectedItem="{Binding Path=SelectedCLIENTS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ItemsSource="{Binding Path=CLIENTSList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Név" Binding="{Binding Path=NAME}" />
-                    <DataGridCheckBoxColumn Width="50" Header="Aktív"
-                                  Binding="{Binding Path=CACTIVE, Converter={StaticResource in2bool}}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- 🧾 RÉSZLETES PANEL (Ügyfél + Címek + Levelezési cím) -->
-        <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="5" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <!-- Ügyfél adatok -->
-                <local:ClientsDetailUCPage Margin="0,0,0,10"/>
+            <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <DataGrid ItemsSource="{Binding ClientsList}" 
+                          SelectedItem="{Binding SelectedClient}"
+                          AutoGenerateColumns="False" 
+                          CanUserAddRows="False"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          Background="White"
+                          AlternatingRowBackground="BlanchedAlmond"
+                          BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Név" Binding="{Binding NAME}" Width="*" FontWeight="SemiBold"/>
+                        <DataGridTextColumn Header="Város" Binding="{Binding CITY}" Width="100"/>
+                        <DataGridCheckBoxColumn Header="Aktív" Binding="{Binding CACTIVE, Converter={StaticResource in2bool}}" Width="50"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
 
-                <!-- Cím adatok -->
-                <local:AdressesUCPage Margin="0,0,0,10"/>
+            <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Background="AntiqueWhite" Margin="5,0,5,5">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                    <Button Content="Új" Command="{Binding CommandNew}" Style="{DynamicResource RoundedButtonStyle}" Width="80" Height="30" Margin="3"/>
+                    <Button Content="Módosít" Command="{Binding CommandModify}" Style="{DynamicResource RoundedButtonStyle}" Background="#FFF176" FontWeight="Bold" Foreground="Black" Width="80" Height="30" Margin="3"/>
+                    <Button Content="Mentés" Command="{Binding CommandSave}" Style="{DynamicResource RoundedButtonStyle}" Width="80" Height="30" Margin="3"/>
+                    <Button Content="Töröl" Command="{Binding CommandDelete}" Style="{DynamicResource RoundedButtonStyle}" Width="80" Height="30" Margin="3"/>
+                </StackPanel>
+            </Border>
+        </Grid>
 
-                <!-- Levelezési cím -->
-                <local:LevelezisicimUCPage Margin="0,0,0,10"/>
-            </StackPanel>
-        </ScrollViewer>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- 🔘 GOMBOK ALUL -->
-        <Border Grid.Row="2"
-            Grid.ColumnSpan="2"
-            Margin="5"
-            BorderBrush="#FF64CCf1"
-            BorderThickness="1"
-            CornerRadius="2">
-            <Grid Background="AntiqueWhite">
-                <Button Name="NewSaveBtn"
-                Content="{Binding Path=ContentBtnNewSave}"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="5,5,0,8"
-                Width="70"
-                ToolTip="{Binding Path=ToolTipBtnNewSave}"
-                Command="{Binding Path=CommandNewSave}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-                <Button Name="ModifyCancelBtn"
-                Content="{Binding ContentBtnModifyCancel}"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="80,5,0,8"
-                Width="70"
-                ToolTip="{Binding ToolTipBtnModifyCancel}"
-                Command="{Binding CommandModifyCancel}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-                <Button Name="DelBtn"
-                Content="Töröl"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="155,5,0,8"
-                Width="70"
-                ToolTip="Kijelölt rekord törlése"
-                Command="{Binding Path=CommandDelete}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-                <Button Name="QuitBtn"
-                Content="Kilép"
-                HorizontalAlignment="Right"
-                Height="25"
-                Margin="0,5,10,8"
-                Width="70"
-                Command="{Binding CommandQuitBase}"
-                CommandParameter="{Binding ElementName=DataFormName}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-                
-                
-                <Button x:Name="SelectClientToBilling"
-                        Content="Ügyfél kiválasztása a számla kiállításához"
-                    HorizontalAlignment="Left"
-            Height="25"
-            Margin="425,6,0,6"
-            Width="234"
-            Style="{DynamicResource RoundedButtonStyle}" Background="#FF04F508"
-                        Command="{Binding CommandSelectClientToInvoice}"/>
-            </Grid>
-        </Border>
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IsEditing}">
+                <StackPanel Margin="5">
+                    <Border Style="{StaticResource CardBorderStyle}" Background="AntiqueWhite">
+                        <StackPanel>
+                            <Label Content="Ügyfél adatai" FontWeight="Bold" Foreground="#FF64CCf1" Margin="5,0,0,0"/>
+                            <Separator Background="#FF64CCf1" Margin="5"/>
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
+                                <Label Content="Név:" Grid.Row="0"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentClient.NAME, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
+
+                                <Label Content="Adószám:" Grid.Row="1"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentClient.TAX_NUMBER}" Margin="2" Width="150" HorizontalAlignment="Left"/>
+
+                                <Label Content="Telefonszám:" Grid.Row="2"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentClient.PHONE}" Margin="2" Width="150" HorizontalAlignment="Left"/>
+
+                                <Label Content="E-mail:" Grid.Row="3"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CurrentClient.EMAIL}" Margin="2"/>
+
+                                <Label Content="Aktív kliens:" Grid.Row="4"/>
+                                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding CurrentClient.CACTIVE, Converter={StaticResource in2bool}}" VerticalAlignment="Center" Margin="2"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardBorderStyle}" Background="#E0F7FA">
+                        <StackPanel>
+                            <Label Content="Számlázási cím adatok" FontWeight="Bold" Foreground="#00ACC1" Margin="5,0,0,0"/>
+                            <Separator Background="#00ACC1" Margin="5"/>
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Content="Irányítószám:" Grid.Row="0"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentAddress.POSTALCODE}" Margin="2" Width="80" HorizontalAlignment="Left"/>
+
+                                <Label Content="Város:" Grid.Row="1"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentAddress.CITY}" Margin="2"/>
+
+                                <Label Content="Cím:" Grid.Row="2"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentAddress.ADDRESS}" Margin="2"/>
+
+                                <Label Content="Aktív cím:" Grid.Row="3"/>
+                                <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding CurrentAddress.AACTIVE, Converter={StaticResource in2bool}}" VerticalAlignment="Center" Margin="2"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Background="Transparent" BorderThickness="0">
+                <Button Content="Ügyfél kiválasztása számlához" Command="{Binding CommandSelect}" 
+                    Style="{DynamicResource RoundedButtonStyle}"
+                    Background="#4CAF50" Foreground="Black" FontWeight="Bold"
+                    Height="40" Margin="10,10,10,10"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
