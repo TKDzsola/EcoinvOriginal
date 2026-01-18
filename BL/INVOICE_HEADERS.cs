@@ -55,12 +55,8 @@ namespace Ecoinv.BL
     public partial class INVOICE_HEADERSTable
     {
         private readonly string selectSQL = "SELECT h.*, c.NAME as CLIENT_NAME FROM INVOICE_HEADERS h LEFT JOIN CLIENTS c ON h.CLIENT_ID = c.ID";
-
         private readonly string insSQL = "INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')";
-
-        // Ez már csak arra kell, hogy az EREDETI számlát megjelöljük, hogy "sztornózva lett"
         private readonly string updStornoSQL = "UPDATE INVOICE_HEADERS SET SZLASTAT = '2' WHERE ID = {0}";
-
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_INVOICE_HEADERS_ID, 1) FROM RDB$DATABASE";
 
         private ObservableCollection<INVOICE_HEADERS> __innerList;
@@ -87,36 +83,38 @@ namespace Ecoinv.BL
             src.ID = id;
         }
 
-        public void SetStornoStatus(int id, FBConnectX conn)
+        // =================================================================
+        // HIÁNYZÓ METÓDUSOK PÓTLÁSA
+        // =================================================================
+
+        // 1. SetStorno (Ez hiányzott a hibaüzenet szerint)
+        public void SetStorno(int id, FBConnectX conn)
         {
             conn.UpdateSQL(string.Format(updStornoSQL, id));
         }
 
-        // --- ÚJ: SZTORNÓ SZÁMLA LÉTREHOZÁSA (A régi alapján) ---
+        // 2. InsertStorno (Ez hozza létre az új ST- számlát)
         public int InsertStorno(INVOICE_HEADERS original, FBConnectX conn)
         {
             var newId = GetGenerator(conn);
 
-            // Új számlaszám: ST-EREDETISZÁM
             string newInvoiceNumber = "ST-" + original.INVOICE_NUMBER;
-            if (newInvoiceNumber.Length > 20) newInvoiceNumber = newInvoiceNumber.Substring(0, 20); // Ha túl hosszú lenne
+            if (newInvoiceNumber.Length > 20) newInvoiceNumber = newInvoiceNumber.Substring(0, 20);
 
-            // Sztornó számla dátumai: MAI NAP
             string today = DateTime.Now.ToString("yyyy-MM-dd");
             string created = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            // Státusz: 2 (Sztornó), STORNO_ID: Az eredeti ID-ja
             var sql = string.Format(insSQL,
                 newId,
                 original.CLIENT_ID,
                 newInvoiceNumber,
-                today, // Kelt: Ma
-                today, // Fiz.hat: Ma
+                today,
+                today,
                 created,
                 original.PAYMENT_METHOD,
-                "2", // SZLASTAT: Sztornó
-                "1", // FIZSTAT: Fizetettnek tekintjük (technikai)
-                original.ID // STORNO_ID: Hivatkozás az eredetire
+                "2", // Státusz: Sztornó
+                "1",
+                original.ID // Hivatkozás az eredetire
             );
 
             conn?.InsertSQL(sql);
@@ -132,7 +130,9 @@ namespace Ecoinv.BL
             if (toDate.HasValue) sql += $" AND h.ISSUE_DATE <= '{toDate:yyyy-MM-dd 23:59:59}'";
             if (!string.IsNullOrWhiteSpace(statusCode)) sql += $" AND h.SZLASTAT = '{statusCode}'";
             sql += " ORDER BY h.ID DESC";
-            return TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn).ToList();
+
+            var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn);
+            return rawList.ToList();
         }
     }
 }

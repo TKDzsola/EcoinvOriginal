@@ -2,56 +2,46 @@
 using System.Data;
 using FirebirdSql.Data.FirebirdClient;
 
-
 namespace Ecoinv.Common
 {
-  public class DBFunc
-  {
-    public DBFunc()
+    public class DBFunc
     {
-    }
+        public DBFunc() { }
 
-
-    public static int Get_Generator(string SERVICES, FBConnectX conn)
-    {
-      var genvalue = -1;
-      
-      if (conn == null) {
-        conn = new FBConnectX();
-        conn.GetConnectionX();
-      }
-      conn.FBConnOpenX();
-
-      var fbtr = conn.FBConnBeginTransactionX(); //IsolationLevel.RepeatableRead
-      try
-      {
-        var cmd = new FbCommand(SERVICES, conn?.FBCConnectionX, fbtr);
-        var fbdr = cmd.ExecuteReader();
-
-        if (fbdr != null)
+        public static int Get_Generator(string sql, FBConnectX conn)
         {
-          fbdr.Read();
-          genvalue = Convert.ToInt32(fbdr[0].ToString());
+            // Ha kaptunk kapcsolatot, azt használjuk, ha nem, csinálunk egyet a művelet idejére
+            if (conn != null)
+            {
+                return ExecuteGenerator(sql, conn);
+            }
+            else
+            {
+                using (FBConnectX localConn = new FBConnectX())
+                {
+                    localConn.GetConnectionX();
+                    localConn.FBConnOpenX();
+                    return ExecuteGenerator(sql, localConn);
+                }
+            }
         }
 
-        fbtr?.Commit();
-        cmd.Connection.Close();
-        fbdr?.Close();
-        fbtr?.Dispose();
-        
-        conn.FBConnCloseX();
-      }
-      catch (Exception Ex)
-      {
-        fbtr?.Rollback();
-        fbtr?.Dispose();
-        conn.FBConnCloseX();
+        private static int ExecuteGenerator(string sql, FBConnectX conn)
+        {
+            if (conn.GetConStateX() != ConnectionState.Open) conn.FBConnOpenX();
 
-        throw new Exception(Ex.Message);
-      }
-
-      return genvalue;
+            using (var fbtr = conn.FBConnBeginTransactionX())
+            using (var cmd = new FbCommand(sql, conn.FBCConnectionX, fbtr))
+            using (var fbdr = cmd.ExecuteReader())
+            {
+                int genvalue = -1;
+                if (fbdr.Read())
+                {
+                    genvalue = Convert.ToInt32(fbdr[0]);
+                }
+                fbtr.Commit();
+                return genvalue;
+            }
+        }
     }
-
-  }
 }

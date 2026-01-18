@@ -3,273 +3,201 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using FirebirdSql.Data.FirebirdClient;
+using System.Windows; // MessageBox miatt
 
 namespace Ecoinv.Common
 {
-  public class FBConnectX
-  {
-    public FBConnectX()
+    // A ": IDisposable" jelzi, hogy az osztály támogatja a 'using' blokkot és a takarítást
+    public class FBConnectX : IDisposable
     {
-
-    }
-
-    //#region ... FBConnStateX property ...
-
-    //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    //private ConnectionState __fbconnstatex;
-
-    //public ConnectionState FBConnStateX
-    //{
-    //  get => __fbconnstatex;
-    //  set => __fbconnstatex = value;
-    //}
-
-    //#endregion ... end of FBConnStateX property ...
-
-    #region ... FBCConnectionX property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private FbConnection __fbcconnectionx;
-
-    public FbConnection FBCConnectionX
-    {
-      get => __fbcconnectionx;
-      set => __fbcconnectionx = value;
-    }
-
-    #endregion ... end of FBCConnectionX property ...
-
-    public void FBConnOpenX()
-    {
-      if (GetConStateX() != ConnectionState.Open)
-        FBCConnectionX?.Open();
-    }
-
-    public FbTransaction FBConnBeginTransactionX() => FBCConnectionX?.BeginTransaction();
-
-    public FbTransaction FBConnBeginTransactionROX() => FBCConnectionX?.BeginTransaction(IsolationLevel.ReadCommitted);
-
-    //public FbCommand FBConnFbCommand(string cmdText, FbConnection connection, FbTransaction transaction) => new FbCommand(cmdText, connection, transaction);
-
-
-    public void GetConnectionX()
-    {
-      var appset = new AppSettingsReader();
-      var csb = new FbConnectionStringBuilder
-      {
-        // App.config -ban deffiniálva
-        //UserID = "HOSTWARE",
-        //Password = "none",
-        UserID = appset.GetValue("UserID", typeof(string)).ToString(),
-        Password = appset.GetValue("Password", typeof(string)).ToString(),
-        Database = appset.GetValue("Database", typeof(string)).ToString(),
-        DataSource = appset.GetValue("Host", typeof(string)).ToString(),
-        Port = Convert.ToInt32(appset.GetValue("Port", typeof(string)).ToString()),
-        Charset = appset.GetValue("Charset", typeof(string)).ToString(),
-        Pooling = Convert.ToBoolean(appset.GetValue("Pooling", typeof(string)).ToString()),
-        ConnectionLifeTime = Convert.ToInt32(appset.GetValue("ConnectionLifeTime", typeof(string)).ToString()),
-        Dialect = Convert.ToByte(appset.GetValue("Dialect", typeof(string)).ToString()),
-        ServerType = FbServerType.Default
-      };
-
-      FBCConnectionX ??= new FbConnection(csb.ToString());
-    }
-
-    public ConnectionState GetConStateX() => FBCConnectionX.State;
-
-    public void FBConnCloseX()
-    {
-      if (FBCConnectionX != null)
-        if (GetConStateX() != ConnectionState.Closed)
-          FBCConnectionX.Close();
-    }
-
-    public string SelectSQL_FirstCol(string sqlstr)
-    {
-      var retstr = string.Empty;
-      FbTransaction fbtr = null;
-      try
-      {
-        GetConnectionX();
-        FBConnOpenX();
-        fbtr = FBCConnectionX?.BeginTransaction(); //IsolationLevel.RepeatableRead
-        var cmd = new FbCommand(sqlstr, FBCConnectionX, fbtr);
-        var fbdr = cmd.ExecuteReader();
-        if (fbdr.Read())
-          if (!fbdr.IsDBNull(0))
-            retstr = fbdr.GetString(0);
-
-        fbtr?.Commit();
-        cmd.Connection.Close();
-        fbdr.Close();
-        fbtr?.Dispose();
-        
-        FBConnCloseX();
-      }
-      catch (Exception Ex)
-      {
-        fbtr?.Rollback();
-        fbtr?.Dispose();
-        FBConnCloseX();
-
-        throw new Exception(Ex.Message);
-      }
-
-      return retstr;
-    }
-
-
-
-    public object[] SelectSQL_FirstRow(string sqlstr, params FbParameter[] parameters)
-    {
-      FbTransaction fbtr = null;
-      try
-      {
-        GetConnectionX();
-        FBConnOpenX();
-
-        fbtr = FBCConnectionX?.BeginTransaction(IsolationLevel.ReadCommitted);
-
-        using (var cmd = new FbCommand(sqlstr, FBCConnectionX, fbtr))
+        public FBConnectX()
         {
-          if (parameters != null)
-            cmd.Parameters.AddRange(parameters);
+        }
 
-          using (var reader = cmd.ExecuteReader())
-          {
-            if (reader.Read())
+        #region ... FBCConnectionX property ...
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private FbConnection __fbcconnectionx;
+
+        public FbConnection FBCConnectionX
+        {
+            get => __fbcconnectionx;
+            set => __fbcconnectionx = value;
+        }
+
+        #endregion
+
+        // -------------------------------------------------------------------
+        // KAPCSOLAT LÉTREHOZÁSA (A te App.Config logikáddal)
+        // -------------------------------------------------------------------
+        public void GetConnectionX()
+        {
+            // Ha már létezik a kapcsolat objektum, nem hozzuk létre újra
+            if (FBCConnectionX != null) return;
+
+            try
             {
-              var values = new object[reader.FieldCount];
-              reader.GetValues(values); // kitölti az array-t
-              fbtr?.Commit();
-              return values; // object[] (Array-ként visszaadva)
+                var appset = new AppSettingsReader();
+                var csb = new FbConnectionStringBuilder
+                {
+                    UserID = appset.GetValue("UserID", typeof(string)).ToString(),
+                    Password = appset.GetValue("Password", typeof(string)).ToString(),
+                    Database = appset.GetValue("Database", typeof(string)).ToString(),
+                    DataSource = appset.GetValue("Host", typeof(string)).ToString(),
+                    Port = Convert.ToInt32(appset.GetValue("Port", typeof(string)).ToString()),
+                    Charset = appset.GetValue("Charset", typeof(string)).ToString(),
+                    Pooling = Convert.ToBoolean(appset.GetValue("Pooling", typeof(string)).ToString()),
+                    ConnectionLifeTime = Convert.ToInt32(appset.GetValue("ConnectionLifeTime", typeof(string)).ToString()),
+                    Dialect = Convert.ToByte(appset.GetValue("Dialect", typeof(string)).ToString()),
+                    ServerType = FbServerType.Default
+                };
+
+                FBCConnectionX = new FbConnection(csb.ToString());
             }
-          }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hiba a Connection String összeállításakor:\n" + ex.Message);
+            }
         }
 
-        fbtr?.Commit();
-        return null;
-      }
-      catch
-      {
-        // Hiba esetén rollback, majd továbbdobjuk a kivételt
-        try
+        // -------------------------------------------------------------------
+        // KAPCSOLAT NYITÁSA / ZÁRÁSA
+        // -------------------------------------------------------------------
+        public void FBConnOpenX()
         {
-          fbtr?.Rollback();
-        }
-        catch
-        {
-          /* ignoráljuk rollback hibákat */
+            try
+            {
+                if (FBCConnectionX == null) GetConnectionX();
+
+                if (GetConStateX() != ConnectionState.Open)
+                    FBCConnectionX?.Open();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Adatbázis kapcsolódási hiba:\n" + ex.Message);
+            }
         }
 
-        throw;
-      }
-      finally
-      {
-        // Kapcsolat és tranzakció takarítása
-        try
+        public void FBConnCloseX()
         {
-          FBCConnectionX?.Close();
-        }
-        catch
-        {
+            if (FBCConnectionX != null && GetConStateX() != ConnectionState.Closed)
+            {
+                FBCConnectionX.Close();
+            }
         }
 
-        try
+        public ConnectionState GetConStateX()
         {
-          fbtr?.Dispose();
+            return FBCConnectionX?.State ?? ConnectionState.Closed;
         }
-        catch
+
+        public FbTransaction FBConnBeginTransactionX() => FBCConnectionX?.BeginTransaction();
+
+        // -------------------------------------------------------------------
+        // SQL VÉGREHAJTÓK (Egyszerűsítve az IDisposable mintához)
+        // Mostantól a hívó fél (a using blokk) felel a kapcsolat nyitvatartásáért!
+        // -------------------------------------------------------------------
+        public string InsertSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
+        public string UpdateSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
+        public string DeleteSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
+
+        private string ExecuteSimpleSQL(string sqlstr)
         {
+            if (FBCConnectionX == null || GetConStateX() != ConnectionState.Open) return "Connection Error";
+
+            try
+            {
+                // Itt nem nyitunk/zárunk tranzakciót, hanem a nyitott kapcsolaton futtatjuk.
+                // A 'using' itt a Command objektumot takarítja el futás után.
+                using (var cmd = new FbCommand(sqlstr, FBCConnectionX))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ha hiba van, eldobjuk, hogy a hívó (pl. a Manager) tudja kezelni
+                throw new Exception(ex.Message);
+            }
+
+            return string.Empty;
         }
-      }
+
+        // -------------------------------------------------------------------
+        // LEKÉRDEZŐK (Refaktorálva a biztonságos működéshez)
+        // -------------------------------------------------------------------
+        public string SelectSQL_FirstCol(string sqlstr)
+        {
+            var retstr = string.Empty;
+
+            // Biztosítjuk, hogy nyitva legyen (ha a using blokkon belül hívják)
+            if (FBCConnectionX == null) GetConnectionX();
+            if (GetConStateX() != ConnectionState.Open) FBConnOpenX();
+
+            try
+            {
+                using (var cmd = new FbCommand(sqlstr, FBCConnectionX))
+                using (var fbdr = cmd.ExecuteReader())
+                {
+                    if (fbdr.Read() && !fbdr.IsDBNull(0))
+                        retstr = fbdr.GetString(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            // Nem zárjuk be a kapcsolatot, mert a using blokk fogja a végén!
+            return retstr;
+        }
+
+        public object[] SelectSQL_FirstRow(string sqlstr, params FbParameter[] parameters)
+        {
+            if (FBCConnectionX == null) GetConnectionX();
+            if (GetConStateX() != ConnectionState.Open) FBConnOpenX();
+
+            try
+            {
+                using (var cmd = new FbCommand(sqlstr, FBCConnectionX))
+                {
+                    if (parameters != null)
+                        cmd.Parameters.AddRange(parameters);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            var values = new object[reader.FieldCount];
+                            reader.GetValues(values);
+                            return values;
+                        }
+                    }
+                }
+                return null;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        // =================================================================
+        // IDISPOSABLE IMPLEMENTÁCIÓ (A Lényeg!)
+        // =================================================================
+        public void Dispose()
+        {
+            // 1. Bezárjuk a kapcsolatot
+            FBConnCloseX();
+
+            // 2. Megszüntetjük az objektumot a memóriában
+            if (FBCConnectionX != null)
+            {
+                FBCConnectionX.Dispose();
+                FBCConnectionX = null;
+            }
+
+            // 3. Jelezzük a Garbage Collectornek, hogy végeztünk
+            GC.SuppressFinalize(this);
+        }
     }
-
-
-
-    public string InsertSQL(string sqlstr)
-    {
-      var retstr = string.Empty;
-      FbTransaction fbtr = null;
-      GetConnectionX();
-      FBConnOpenX();
-      
-      try
-      {
-        fbtr = FBCConnectionX?.BeginTransaction(); //IsolationLevel.RepeatableRead
-        var cmd = new FbCommand(sqlstr, FBCConnectionX, fbtr);
-        cmd.ExecuteNonQuery();
-        fbtr?.Commit();
-        cmd.Connection.Close();
-        fbtr?.Dispose();
-      }
-      catch (Exception Ex)
-      {
-        fbtr?.Rollback();
-        fbtr?.Dispose();
-        FBConnCloseX();
-
-        throw new Exception(Ex.Message);
-      }
-
-      return retstr;
-    }
-
-    public string DeleteSQL(string sqlstr)
-    {
-      var retstr = string.Empty;
-      FbTransaction fbtr = null;
-      GetConnectionX();
-      FBConnOpenX();
-
-      try
-      {
-        fbtr = FBCConnectionX?.BeginTransaction(); //IsolationLevel.RepeatableRead
-        var cmd = new FbCommand(sqlstr, FBCConnectionX, fbtr);
-        cmd.ExecuteNonQuery();
-        fbtr?.Commit();
-        cmd.Connection.Close();
-        fbtr?.Dispose();
-      }
-      catch (Exception Ex)
-      {
-        fbtr?.Rollback();
-        fbtr?.Dispose();
-        FBConnCloseX();
-
-        throw new Exception(Ex.Message);
-      }
-
-      return retstr;
-    }
-
-    public string UpdateSQL(string sqlstr)
-    {
-      var retstr = string.Empty;
-      FbTransaction fbtr = null;
-      GetConnectionX();
-      FBConnOpenX();
-      try
-      {
-        fbtr = FBCConnectionX?.BeginTransaction(); //IsolationLevel.RepeatableRead
-        var cmd = new FbCommand(sqlstr, FBCConnectionX, fbtr);
-        cmd.ExecuteNonQuery();
-        fbtr?.Commit();
-        cmd.Connection.Close();
-        fbtr?.Dispose();
-      }
-      catch (Exception Ex)
-      {
-        fbtr?.Rollback();
-        fbtr?.Dispose();
-        FBConnCloseX();
-
-        throw new Exception(Ex.Message);
-      }
-
-      return retstr;
-    }
-
-
-  }
 }

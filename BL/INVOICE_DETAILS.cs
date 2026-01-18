@@ -54,9 +54,7 @@ namespace Ecoinv.BL
     public partial class INVOICE_DETAILSTable
     {
         private readonly string selectSQL = "SELECT ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS FROM INVOICE_DETAILS";
-
         private readonly string insSQL = "INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})";
-
         private readonly string delSQL = "DELETE FROM INVOICE_DETAILS WHERE ID = {0}";
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_INVOICE_DETAILS_ID, 1) FROM RDB$DATABASE";
 
@@ -86,20 +84,19 @@ namespace Ecoinv.BL
             conn?.DeleteSQL(string.Format(delSQL, id));
         }
 
-        // --- ÚJ: TÉTELEK MÁSOLÁSA ---
+        // =================================================================
+        // HIÁNYZÓ METÓDUS PÓTLÁSA: COPYITEMS
+        // =================================================================
         public void CopyItems(int originalInvoiceId, int newInvoiceId, FBConnectX conn)
         {
-            // 1. Lekérjük az összes tételt
             var allItems = GetList(conn);
-            // 2. Kiszűrjük az eredeti számlához tartozókat
             var itemsToCopy = allItems.Where(x => x.INVOICEHEADERS_ID == originalInvoiceId).ToList();
 
             foreach (var item in itemsToCopy)
             {
-                // Létrehozunk egy új tételt
                 var newItem = new INVOICE_DETAILS
                 {
-                    INVOICEHEADERS_ID = newInvoiceId, // Az új számlához rendeljük
+                    INVOICEHEADERS_ID = newInvoiceId,
                     SERVICES_ID = item.SERVICES_ID,
                     VATRATE_ID = item.VATRATE_ID,
                     QTY = item.QTY,
@@ -109,8 +106,6 @@ namespace Ecoinv.BL
                     VAT_AMOUNT = item.VAT_AMOUNT,
                     LINE_TOTAL_GROSS = item.LINE_TOTAL_GROSS
                 };
-
-                // Beszúrjuk az adatbázisba
                 Insert(newItem, conn);
             }
         }

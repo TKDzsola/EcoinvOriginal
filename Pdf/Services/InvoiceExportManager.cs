@@ -18,137 +18,131 @@ namespace Ecoinv.Pdf.Services
 
         public InvoiceExportManager()
         {
+            // Licenc beállítása
             QuestPDF.Settings.License = LicenseType.Community;
             _pdfService = new InvoicePdfService();
         }
 
         public void ExportInvoiceById(int invoiceId)
         {
-            FBConnectX conn = new FBConnectX();
-
-            try
+            // =============================================================
+            // ÚJ: 'using' blokk használata -> Automatikus lezárás!
+            // =============================================================
+            using (FBConnectX conn = new FBConnectX())
             {
-                conn.GetConnectionX();
-                conn.FBConnOpenX();
-
-                if (conn.GetConStateX() != System.Data.ConnectionState.Open)
+                try
                 {
-                    MessageBox.Show("Nem sikerült kapcsolódni az adatbázishoz!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
 
-                // --- 1. ADATOK BETÖLTÉSE ---
-                var headerTable = new INVOICE_HEADERSTable();
-                var detailTable = new INVOICE_DETAILSTable();
-                var clientTable = new CLIENTSTable();
-                var ecsysTable = new ECSYSTable();
-                var addressTable = new ADRESSESTable();
-                var serviceTable = new SERVICESTable();
-
-                var allHeaders = headerTable.GetList(conn);
-                var header = allHeaders.FirstOrDefault(x => x.ID == invoiceId);
-
-                if (header == null) return;
-
-                // --- DEBUG ABLAK ---
-                // Ha ez az ablak NEM ugrik fel, akkor nem az új kódot futtatod!
-                // Építsd újra a projektet (Rebuild)!
-                /*
-                MessageBox.Show($"ELLENŐRZÉS:\nSzámla: {header.INVOICE_NUMBER}\nStátusz: '{header.SZLASTAT}'", 
-                                "Debug", MessageBoxButton.OK, MessageBoxImage.Information);
-                */
-
-                var allDetails = detailTable.GetList(conn);
-                var details = allDetails.Where(x => x.INVOICEHEADERS_ID == invoiceId).ToList();
-
-                var allServices = serviceTable.GetList(conn);
-                foreach (var item in details)
-                {
-                    var serv = allServices.FirstOrDefault(s => s.ID == item.SERVICES_ID);
-                    if (serv != null) item.SERVICE_NAME = serv.NAME;
-                }
-
-                var allClients = clientTable.GetList(conn);
-                CLIENTS client = null;
-                ADRESSES address = null;
-
-                if (header.CLIENT_ID > 0)
-                {
-                    client = allClients.FirstOrDefault(x => x.ID == header.CLIENT_ID);
-                    if (client != null)
+                    if (conn.GetConStateX() != System.Data.ConnectionState.Open)
                     {
-                        var addresses = addressTable.GetList(conn, client.ID);
-                        address = addresses.FirstOrDefault();
+                        return; // A hibaüzenet már lement a FBConnectX-ben
                     }
-                }
 
-                var allEcsys = ecsysTable.GetList(conn);
-                var sellerData = allEcsys.FirstOrDefault();
+                    // --- ADATOK LEKÉRÉSE ---
+                    var headerTable = new INVOICE_HEADERSTable();
+                    var detailTable = new INVOICE_DETAILSTable();
+                    var clientTable = new CLIENTSTable();
+                    var ecsysTable = new ECSYSTable();
+                    var addressTable = new ADRESSESTable();
+                    var serviceTable = new SERVICESTable();
 
-                // --- 2. MODELL ÉPÍTÉSE ---
-                InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData);
+                    var allHeaders = headerTable.GetList(conn);
+                    var header = allHeaders.FirstOrDefault(x => x.ID == invoiceId);
 
-                // =============================================================
-                // 🛑 SZTORNÓ KEZELÉS (CHAR(4) kompatibilis)
-                // =============================================================
-                // Trim() használata kötelező a CHAR mezők miatt!
-                bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
-                bool isStornoNumber = (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-"));
-
-                if (isStornoStatus || isStornoNumber)
-                {
-                    pdfModel.IsStorno = true;
-
-                    // Eredeti számlaszám keresése (Trim() itt is fontos lehet a STORNO_ID-nál!)
-                    if (!string.IsNullOrEmpty(header.STORNO_ID) && int.TryParse(header.STORNO_ID.Trim(), out int originalId))
+                    if (header == null)
                     {
-                        var originalHeader = allHeaders.FirstOrDefault(h => h.ID == originalId);
-                        if (originalHeader != null)
+                        MessageBox.Show("A számla nem található!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    var allDetails = detailTable.GetList(conn);
+                    var details = allDetails.Where(x => x.INVOICEHEADERS_ID == invoiceId).ToList();
+
+                    var allServices = serviceTable.GetList(conn);
+                    foreach (var item in details)
+                    {
+                        var serv = allServices.FirstOrDefault(s => s.ID == item.SERVICES_ID);
+                        if (serv != null) item.SERVICE_NAME = serv.NAME;
+                    }
+
+                    var allClients = clientTable.GetList(conn);
+                    CLIENTS client = null;
+                    ADRESSES address = null;
+
+                    if (header.CLIENT_ID > 0)
+                    {
+                        client = allClients.FirstOrDefault(x => x.ID == header.CLIENT_ID);
+                        if (client != null)
                         {
-                            pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
+                            var addresses = addressTable.GetList(conn, client.ID);
+                            address = addresses.FirstOrDefault();
                         }
                     }
 
-                    // SZORZÁS -1-GYEL
-                    pdfModel.TotalNet = Math.Abs(pdfModel.TotalNet) * -1;
-                    pdfModel.TotalVat = Math.Abs(pdfModel.TotalVat) * -1;
-                    pdfModel.TotalGross = Math.Abs(pdfModel.TotalGross) * -1;
+                    var allEcsys = ecsysTable.GetList(conn);
+                    var sellerData = allEcsys.FirstOrDefault();
 
-                    foreach (var item in pdfModel.Items)
+                    // --- MODELL ÉPÍTÉSE ---
+                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData);
+
+                    // =============================================================
+                    // SZTORNÓ KEZELÉS (Javított)
+                    // =============================================================
+                    bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
+                    bool isStornoNumber = (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-"));
+
+                    if (isStornoStatus || isStornoNumber)
                     {
-                        item.NetUnitPrice = Math.Abs(item.NetUnitPrice) * -1;
-                        item.NetTotal = Math.Abs(item.NetTotal) * -1;
-                        item.VatAmount = Math.Abs(item.VatAmount) * -1;
-                        item.GrossTotal = Math.Abs(item.GrossTotal) * -1;
+                        pdfModel.IsStorno = true;
+
+                        if (!string.IsNullOrEmpty(header.STORNO_ID) && int.TryParse(header.STORNO_ID.Trim(), out int originalId))
+                        {
+                            var originalHeader = allHeaders.FirstOrDefault(h => h.ID == originalId);
+                            if (originalHeader != null)
+                            {
+                                pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
+                            }
+                        }
+
+                        // Mínuszolás
+                        pdfModel.TotalNet = Math.Abs(pdfModel.TotalNet) * -1;
+                        pdfModel.TotalVat = Math.Abs(pdfModel.TotalVat) * -1;
+                        pdfModel.TotalGross = Math.Abs(pdfModel.TotalGross) * -1;
+
+                        foreach (var item in pdfModel.Items)
+                        {
+                            item.NetUnitPrice = Math.Abs(item.NetUnitPrice) * -1;
+                            item.NetTotal = Math.Abs(item.NetTotal) * -1;
+                            item.VatAmount = Math.Abs(item.VatAmount) * -1;
+                            item.GrossTotal = Math.Abs(item.GrossTotal) * -1;
+                        }
+                    }
+
+                    // --- MENTÉS ---
+                    var saveDialog = new SaveFileDialog
+                    {
+                        Filter = "PDF dokumentum (*.pdf)|*.pdf",
+                        FileName = $"Rechnung_{header.INVOICE_NUMBER.Replace("/", "-")}.pdf"
+                    };
+
+                    if (saveDialog.ShowDialog() == true)
+                    {
+                        var document = new InvoicePdfDocument(pdfModel);
+                        document.GeneratePdf(saveDialog.FileName);
+
+                        if (MessageBox.Show("A PDF elkészült!\nSzeretnéd megnyitni?", "Kész", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(saveDialog.FileName) { UseShellExecute = true });
+                        }
                     }
                 }
-                // =============================================================
-
-                // --- 3. MENTÉS ---
-                var saveDialog = new SaveFileDialog
+                catch (Exception ex)
                 {
-                    Filter = "PDF dokumentum (*.pdf)|*.pdf",
-                    FileName = $"Rechnung_{header.INVOICE_NUMBER.Replace("/", "-")}.pdf"
-                };
-
-                if (saveDialog.ShowDialog() == true)
-                {
-                    var document = new InvoicePdfDocument(pdfModel);
-                    document.GeneratePdf(saveDialog.FileName);
-
-                    if (MessageBox.Show("A PDF elkészült!\nSzeretnéd megnyitni?", "Kész", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    {
-                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(saveDialog.FileName) { UseShellExecute = true });
-                    }
+                    MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                conn?.FBConnCloseX();
+                // NINCS FINALLY BLOKK! A using automatikusan lezárja a kapcsolatot.
             }
         }
     }

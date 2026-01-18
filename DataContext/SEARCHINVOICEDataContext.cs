@@ -19,12 +19,12 @@ namespace Ecoinv.DataContext
     public class SEARCHINVOICEDataContext : DataContextBase
     {
         private readonly INVOICE_HEADERSTable _invoiceTable;
-        private readonly INVOICE_DETAILSTable _detailsTable; // ÚJ
+        private readonly INVOICE_DETAILSTable _detailsTable;
 
         public SEARCHINVOICEDataContext()
         {
             _invoiceTable = new INVOICE_HEADERSTable();
-            _detailsTable = new INVOICE_DETAILSTable(); // ÚJ
+            _detailsTable = new INVOICE_DETAILSTable();
 
             INVOICE_HEADERSList = new ObservableCollection<INVOICE_HEADERS>();
             StatusList = new ObservableCollection<StatusItem>();
@@ -37,14 +37,20 @@ namespace Ecoinv.DataContext
             CommandStorno = new DelegateCommand(
                 _ => DoStorno(),
                 _ => SelectedINVOICE_HEADERS != null &&
-                     SelectedINVOICE_HEADERS.SZLASTAT != "2" && // Már sztornózottat nem lehet
+                     SelectedINVOICE_HEADERS.SZLASTAT != "2" &&
                      DataContextBase.IsAdmin
             );
         }
 
         public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
         public ObservableCollection<StatusItem> StatusList { get; }
-        public INVOICE_HEADERS SelectedINVOICE_HEADERS { get; set; }
+
+        private INVOICE_HEADERS _selectedInvoice;
+        public INVOICE_HEADERS SelectedINVOICE_HEADERS
+        {
+            get => _selectedInvoice;
+            set => SetPropertyValue(nameof(SelectedINVOICE_HEADERS), ref _selectedInvoice, value);
+        }
 
         public string SearchClientName { get; set; }
         public string SearchInvoiceNumber { get; set; }
@@ -69,28 +75,30 @@ namespace Ecoinv.DataContext
 
         private void DoSearch()
         {
-            FBConnectX localConn = new FBConnectX();
-            try
+            // ÚJ: AUTOMATIKUS LEZÁRÁS 'USING'-GAL
+            using (FBConnectX localConn = new FBConnectX())
             {
-                localConn.GetConnectionX();
-                localConn.FBConnOpenX();
+                try
+                {
+                    localConn.GetConnectionX();
+                    localConn.FBConnOpenX();
 
-                DateTime? from = FromDate.HasValue ? FromDate.Value.Date : (DateTime?)null;
-                DateTime? to = ToDate.HasValue ? ToDate.Value.Date.AddDays(1).AddSeconds(-1) : (DateTime?)null;
+                    DateTime? from = FromDate.HasValue ? FromDate.Value.Date : (DateTime?)null;
+                    DateTime? to = ToDate.HasValue ? ToDate.Value.Date.AddDays(1).AddSeconds(-1) : (DateTime?)null;
 
-                var result = _invoiceTable.SearchInvoices(localConn, SearchClientName?.Trim(), SearchInvoiceNumber?.Trim(), from, to, SelectedStatus);
+                    var result = _invoiceTable.SearchInvoices(localConn, SearchClientName?.Trim(), SearchInvoiceNumber?.Trim(), from, to, SelectedStatus);
 
-                INVOICE_HEADERSList.Clear();
-                foreach (var item in result) INVOICE_HEADERSList.Add(item);
+                    INVOICE_HEADERSList.Clear();
+                    foreach (var item in result) INVOICE_HEADERSList.Add(item);
 
-                if (INVOICE_HEADERSList.Count == 0)
-                    MessageBox.Show("Nincs találat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (INVOICE_HEADERSList.Count == 0)
+                        MessageBox.Show("Nincs találat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            finally { localConn.FBConnCloseX(); }
         }
 
         private void DoOpen() => DoPrint();
@@ -101,18 +109,16 @@ namespace Ecoinv.DataContext
             try
             {
                 var exportManager = new InvoiceExportManager();
+                // Itt a manager belső 'using' blokkja intézi a kapcsolatot
                 exportManager.ExportInvoiceById(SelectedINVOICE_HEADERS.ID);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
-        // --- AUTOMATIZÁLT SZTORNÓ FOLYAMAT ---
         private void DoStorno()
         {
-            // 1. Biztonsági ellenőrzés
             if (SelectedINVOICE_HEADERS == null) return;
 
-            // Biztonsági kérdés maradjon, mert a sztornó nem visszavonható!
             if (MessageBox.Show("Biztosan sztornózod a számlát?\nEz véglegesen érvényteleníti és létrehoz egy korrekciós bizonylatot.",
                                 "Sztornó megerősítése",
                                 MessageBoxButton.YesNo,
@@ -121,44 +127,38 @@ namespace Ecoinv.DataContext
                 return;
             }
 
-            FBConnectX localConn = new FBConnectX();
-            try
+            // ÚJ: AUTOMATIKUS LEZÁRÁS 'USING'-GAL
+            using (FBConnectX localConn = new FBConnectX())
             {
-                localConn.GetConnectionX();
-                localConn.FBConnOpenX();
+                try
+                {
+                    localConn.GetConnectionX();
+                    localConn.FBConnOpenX();
 
-                // 2. Eredeti számla státuszának átállítása "2"-re (Sztornózott)
-                _invoiceTable.SetStornoStatus(SelectedINVOICE_HEADERS.ID, localConn);
-                SelectedINVOICE_HEADERS.SZLASTAT = "2";
+                    // 1. Eredeti státusz frissítése
+                    _invoiceTable.SetStorno(SelectedINVOICE_HEADERS.ID, localConn);
+                    SelectedINVOICE_HEADERS.SZLASTAT = "2";
 
-                // 3. Új sztornó számla létrehozása (Fejléc) -> Visszakapjuk az ÚJ ID-t!
-                int newStornoInvoiceId = _invoiceTable.InsertStorno(SelectedINVOICE_HEADERS, localConn);
+                    // 2. Új sztornó számla létrehozása
+                    int newStornoInvoiceId = _invoiceTable.InsertStorno(SelectedINVOICE_HEADERS, localConn);
 
-                // 4. Tételek átmásolása az új számlához
-                _detailsTable.CopyItems(SelectedINVOICE_HEADERS.ID, newStornoInvoiceId, localConn);
+                    // 3. Tételek másolása
+                    _detailsTable.CopyItems(SelectedINVOICE_HEADERS.ID, newStornoInvoiceId, localConn);
 
-                // 5. Lista frissítése (hogy látszódjon az új sor)
-                DoSearch();
+                    // 4. Lista frissítése
+                    DoSearch();
 
-                // 6. SIKERES ÜZENET
-                MessageBox.Show("A számla sztornózása sikeres!\nMost elkészítjük a sztornó bizonylatot.",
-                                "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("A számla sztornózása sikeres!\nMost elkészítjük a sztornó bizonylatot.",
+                                    "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // =========================================================
-                // 🚀 AUTOMATIKUS PDF GENERÁLÁS INDÍTÁSA
-                // =========================================================
-                // Nem kérdezünk, hanem csináljuk:
-                var exportManager = new InvoiceExportManager();
-                // Fontos: Az ÚJ ID-t (newStornoInvoiceId) adjuk át neki!
-                exportManager.ExportInvoiceById(newStornoInvoiceId);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Hiba a sztornózás közben:\n{ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                localConn.FBConnCloseX();
+                    // 5. Automatikus PDF generálás
+                    var exportManager = new InvoiceExportManager();
+                    exportManager.ExportInvoiceById(newStornoInvoiceId);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Hiba a sztornózás közben:\n{ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }

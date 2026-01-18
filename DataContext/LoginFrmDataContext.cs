@@ -17,113 +17,82 @@ namespace Ecoinv.DataContext
         );
 
         public DelegateCommand KilepCmd { get; } = new(
-            execute: param =>
-            {
-                CloseFBConn();
-                CloseAppDB();
-            },
+            execute: param => CloseAppDB(),
             canExecute: param => true
         );
 
         #region ... LogPassword property ...
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static string __logpassword = "*";
-
         public static string LogPassword
         {
             get => __logpassword;
             set => __logpassword = value;
         }
-
-        #endregion ... end of LogPassword property ...
-
+        #endregion
 
         private static void DoLogin()
         {
-            FBConnX = new FBConnectX();
-            FBConnX?.GetConnectionX();
-
-            if (FBConnX?.FBCConnectionX != null)
+            // ÚJ: IDisposable használata a bejelentkezésnél
+            using (FBConnectX conn = new FBConnectX())
             {
-                if (GetLogin())
+                conn.GetConnectionX();
+                conn.FBConnOpenX();
+
+                if (conn.FBCConnectionX != null)
                 {
-                    var lgfloginform = Application.Current.Windows[0];
-                    lgfloginform?.Hide();
+                    if (GetLogin(conn)) // Átadjuk a kapcsolatot
+                    {
+                        var lgfloginform = Application.Current.Windows[0];
+                        lgfloginform?.Hide();
 
-                    FBConnX?.FBConnCloseX();
-
-                    var startfrm = new StartFrm();
-                    startfrm.ShowDialog();
+                        var startfrm = new StartFrm();
+                        startfrm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hibás bejelentkezés!" + Environment.NewLine + "Inaktív felhasználó, vagy hibás név/jelszó páros!");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Hibás bejelentkezés!" + Environment.NewLine + "Inaktív felhasználó, vagy hibás név/jelszó páros!");
+                    MessageBox.Show("Adatbázis kapcsolódási hiba!");
                 }
-            }
-            else
-            {
-                MessageBox.Show("Adatbázis kapcsolódási hiba!");
-            }
+            } // Itt a Dispose() automatikusan lezár mindent
         }
 
-        private static bool GetLogin()
+        private static bool GetLogin(FBConnectX conn)
         {
-            var retvalue = false;
-            if (LogPassword == null)
-                return false;
+            if (LogPassword == null) return false;
 
             try
             {
                 var md5f = new MD5Func();
                 var logpsswMD5 = md5f.MD5Encode(LogPassword);
 
-                var dbpsswMD5 = string.Empty;
-                var dbIsAdmin = "N"; // Alapértelmezetten NEM admin
-
-                // SQL: Jelszó és Admin jog lekérése
-                var alkres = FBConnX.SelectSQL_FirstRow("select upssw, isadmin from eusers where uname = @uname and uactive='I'",
-                                                        new FbParameter("@uname", LoginUserName));
+                // SQL: upssw és isadmin lekérése az EUSERS táblából
+                var alkres = conn.SelectSQL_FirstRow(
+                    "select upssw, isadmin from eusers where uname = @uname and uactive='I'",
+                    new FbParameter("@uname", LoginUserName));
 
                 if (alkres != null && alkres.Length >= 2)
                 {
-                    dbpsswMD5 = alkres[0]?.ToString(); // Jelszó hash
-                    dbIsAdmin = alkres[1]?.ToString(); // "I" vagy "N"
-                }
+                    string dbpsswMD5 = alkres[0]?.ToString();
+                    string dbIsAdmin = alkres[1]?.ToString();
 
-                if (string.IsNullOrEmpty(dbpsswMD5))
-                    return false;
-
-                // Jelszó ellenőrzés
-                if (logpsswMD5 == dbpsswMD5)
-                {
-                    // --- JOGOSULTSÁG BEÁLLÍTÁSA ---
-                    // Itt kötjük össze a globális változóval, amit a számlázó figyel
-                    if (dbIsAdmin == "I")
+                    if (logpsswMD5 == dbpsswMD5)
                     {
-                        DataContextBase.IsAdmin = true;
+                        DataContextBase.IsAdmin = (dbIsAdmin == "I");
+                        return true;
                     }
-                    else
-                    {
-                        DataContextBase.IsAdmin = false;
-                    }
-                    // ------------------------------
-
-                    retvalue = true;
                 }
-
-                return retvalue;
+                return false;
             }
             catch (Exception Ex)
             {
                 MessageBox.Show(Ex.Message);
-                throw new Exception(Ex.Message);
+                return false;
             }
-        }
-
-        private static void CloseFBConn()
-        {
-            FBConnX?.FBConnCloseX();
         }
 
         private static void CloseAppDB()

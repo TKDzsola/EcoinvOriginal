@@ -74,3 +74,4 @@ C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.CoreCompileInputs.cac
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.Up2Date
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.exe
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.pdb
+C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.exe.config
