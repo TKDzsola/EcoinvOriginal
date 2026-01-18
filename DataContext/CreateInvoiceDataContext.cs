@@ -28,16 +28,38 @@ namespace Ecoinv.DataContext
             LoadServices();
             LoadVatRates();
 
-            CommandPrimaryAction = new DelegateCommand(_ => PrimaryAction());
+            // =========================================================
+            // JOGOSULTSÁG KEZELÉS (IsAdmin)
+            // =========================================================
 
-            // --- JAVÍTÁS 1: Itt adjuk meg a feltételt (CanSecondaryAction) ---
-            CommandSecondaryAction = new DelegateCommand(_ => SecondaryAction(), _ => CanSecondaryAction());
-            // -----------------------------------------------------------------
+            // 1. Primary Action (Hozzáadás) -> Csak ha IsAdmin
+            CommandPrimaryAction = new DelegateCommand(
+                _ => PrimaryAction(),
+                _ => DataContextBase.IsAdmin // <--- Csak Admin adhat hozzá
+            );
 
-            CommandSaveInvoice = new DelegateCommand(_ => SaveInvoice(), _ => CanSaveInvoice());
+            // 2. Secondary Action (Törlés/Mégse)
+            // A feltételt a CanSecondaryAction függvényben kezeljük
+            CommandSecondaryAction = new DelegateCommand(
+                _ => SecondaryAction(),
+                _ => CanSecondaryAction()
+            );
+
+            // 3. Mentés -> Csak ha IsAdmin
+            CommandSaveInvoice = new DelegateCommand(
+                _ => SaveInvoice(),
+                _ => CanSaveInvoice() && DataContextBase.IsAdmin // <--- Csak Admin menthet
+            );
+
+            // 4. Mégse (Bárki)
             CommandCancelInvoice = new DelegateCommand(_ => CancelInvoice());
+
+            // 5. Előnézet (Bárki)
             CommandPreviewInvoice = new DelegateCommand(_ => PreviewInvoice());
 
+            // 6. Szolgáltatás karbantartó (3 pötty)
+            // Megnyithatja bárki (nézelődni), de ha ott is tiltani akarsz, 
+            // írd át: _ => DataContextBase.IsAdmin
             CommandMenuSERVICESClick = new DelegateCommand(_ => MenuSERVICESExecute());
 
             UpdateActionButtonTexts();
@@ -45,10 +67,8 @@ namespace Ecoinv.DataContext
             RecalculateTotals();
         }
 
-        // ... (A kód eleje változatlan) ...
-
         // =====================================================
-        // TÉTELEK LISTA & KIJELÖLÉS KEZELÉSE
+        // LISTÁK ÉS KIJELÖLÉSEK
         // =====================================================
         public ObservableCollection<INVOICE_DETAILS> InvoiceDetails { get; }
 
@@ -60,15 +80,11 @@ namespace Ecoinv.DataContext
             {
                 if (SetPropertyValue(nameof(SelectedInvoiceDetail), ref _selectedInvoiceDetail, value))
                 {
-                    // --- JAVÍTÁS 2: Ha változik a kijelölés, szólunk a gombnak, hogy frissüljön! ---
                     (CommandSecondaryAction as DelegateCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
 
-        // ... (Törzsadatok, Services, VatRates részek változatlanok) ...
-
-        // Ez a rész kell a másoláshoz, hogy ne szakadjon meg a kód folyamatossága:
         public ObservableCollection<SERVICES> Services { get; }
         private SERVICES _selectedService;
         public SERVICES SelectedService
@@ -89,6 +105,10 @@ namespace Ecoinv.DataContext
             get => _selectedVatRate;
             set => SetPropertyValue(nameof(SelectedVatRate), ref _selectedVatRate, value);
         }
+
+        // =====================================================
+        // SZERKESZTŐ MEZŐK
+        // =====================================================
         private decimal _editQty = 1;
         public decimal EditQty
         {
@@ -102,8 +122,9 @@ namespace Ecoinv.DataContext
             set => SetPropertyValue(nameof(EditNetUnitPrice), ref _editNetUnitPrice, value);
         }
 
-        // ... (Összesítők és Totals változatlanok) ...
-
+        // =====================================================
+        // ÖSSZESÍTŐK
+        // =====================================================
         private decimal _totalNet;
         public decimal TotalNet { get => _totalNet; private set => SetPropertyValue(nameof(TotalNet), ref _totalNet, value); }
         private decimal _totalVat;
@@ -118,7 +139,7 @@ namespace Ecoinv.DataContext
         }
 
         // =====================================================
-        // UI ÁLLAPOT FRISSÍTÉS
+        // PANEL LÁTHATÓSÁG
         // =====================================================
         private bool _isAddItemPanelVisible;
         public bool IsAddItemPanelVisible
@@ -129,13 +150,11 @@ namespace Ecoinv.DataContext
                 if (SetPropertyValue(nameof(IsAddItemPanelVisible), ref _isAddItemPanelVisible, value))
                 {
                     UpdateActionButtonTexts();
-                    // Ha a panel állapota változik (nyitva/zárva), a gomb állapota is változhat!
                     (CommandSecondaryAction as DelegateCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
 
-        // ... (Gombszövegek property-k változatlanok) ...
         private string _primaryButtonText;
         public string PrimaryButtonText { get => _primaryButtonText; private set => SetPropertyValue(nameof(PrimaryButtonText), ref _primaryButtonText, value); }
         private string _secondaryButtonText;
@@ -146,17 +165,18 @@ namespace Ecoinv.DataContext
             SecondaryButtonText = IsAddItemPanelVisible ? "✖ Mégse" : "Tétel törlése";
         }
 
-        // COMMANDOK
+        // =====================================================
+        // COMMAND DEFINÍCIÓK
+        // =====================================================
         public ICommand CommandPrimaryAction { get; }
         public ICommand CommandSecondaryAction { get; }
         public ICommand CommandSaveInvoice { get; }
         public ICommand CommandCancelInvoice { get; }
         public ICommand CommandPreviewInvoice { get; }
+
         public ICommand CommandMenuCLIENTSClick { get => __commandMenuCLIENTSClick ??= new DelegateCommand(ac => MenuCLIENTSExecute(), fc => GetMenuCLIENTSCanExecute()); }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private ICommand __commandMenuCLIENTSClick;
         private bool GetMenuCLIENTSCanExecute() => true;
-
-        // ... (Kliens kiválasztás és Szolgáltatás karbantartó gomb részek változatlanok) ...
 
         private void MenuCLIENTSExecute()
         {
@@ -169,6 +189,7 @@ namespace Ecoinv.DataContext
             frm.ShowDialog();
             LoadSelectedClientFromStatic();
         }
+
         public ICommand CommandMenuSERVICESClick { get; }
         private void MenuSERVICESExecute()
         {
@@ -177,7 +198,9 @@ namespace Ecoinv.DataContext
             LoadServices();
         }
 
-        // ... (SelectedClient részek) ...
+        // =====================================================
+        // KLIENS ADATOK
+        // =====================================================
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private int _selectedClientId;
         public int SelectedClientId { get => _selectedClientId; set => SetPropertyValue(nameof(SelectedClientId), ref _selectedClientId, value); }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string _selectedClientName;
@@ -199,17 +222,16 @@ namespace Ecoinv.DataContext
         private string _invoiceNumber;
         public string InvoiceNumber { get => _invoiceNumber; set => SetPropertyValue(nameof(InvoiceNumber), ref _invoiceNumber, value); }
 
-
         // =====================================================
-        // --- JAVÍTÁS 3: A logika, ami eldönti, aktív-e a gomb ---
+        // LOGIKA: TÖRLÉS / MÉGSE
         // =====================================================
         private bool CanSecondaryAction()
         {
-            // Ha nyitva van a panel, akkor a gomb funkciója "Mégse" -> MINDIG aktív legyen
+            // Ha nyitva van a panel (Mégse funkció), azt bárki megnyomhatja
             if (IsAddItemPanelVisible) return true;
 
-            // Ha nincs nyitva, akkor a funkciója "Törlés" -> CSAK akkor aktív, ha van kijelölt sor
-            return SelectedInvoiceDetail != null;
+            // Ha Törlés funkció: Kell kijelölés ÉS Admin jog
+            return SelectedInvoiceDetail != null && DataContextBase.IsAdmin;
         }
 
         private void SecondaryAction()
@@ -253,22 +275,31 @@ namespace Ecoinv.DataContext
             IsAddItemPanelVisible = false;
         }
 
-        // ... (Mentés és egyéb metódusok változatlanok) ...
-
+        // =====================================================
+        // LOGIKA: MENTÉS
+        // =====================================================
         private bool CanSaveInvoice() => !string.IsNullOrWhiteSpace(InvoiceNumber) && InvoiceDetails.Any() && SelectedClientId > 0;
+
         private void SaveInvoice()
         {
             try
             {
                 if (SelectedClientId <= 0) { MessageBox.Show("Kérlek válassz ügyfelet!", "Hiányzó adat", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+
+                // Mentés adatbázisba
                 var headerTable = new INVOICE_HEADERSTable();
                 var header = new INVOICE_HEADERS { CLIENT_ID = SelectedClientId, INVOICE_NUMBER = InvoiceNumber, ISSUE_DATE = DateTime.Today, DUE_DATE = DateTime.Today.AddDays(14), CREATED = DateTime.Now, PAYMENT_METHOD = "Készpénz", SZLASTAT = "0", FIZSTAT = "0", STORNO_ID = "0" };
                 headerTable.Insert(header, _conn);
+
                 var detailTable = new INVOICE_DETAILSTable();
                 foreach (var item in InvoiceDetails) { item.INVOICEHEADERS_ID = header.ID; detailTable.Insert(item, _conn); }
+
                 MessageBox.Show("Számla mentve.", "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // PDF Generálás
                 try { var exportManager = new InvoiceExportManager(); exportManager.ExportInvoiceById(header.ID); CancelInvoice(); }
                 catch (Exception pdfEx) { MessageBox.Show($"PDF Hiba: {pdfEx.Message}", "PDF Hiba", MessageBoxButton.OK, MessageBoxImage.Warning); }
+
             }
             catch (Exception ex) { MessageBox.Show($"Mentési hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error); }
         }

@@ -20,18 +20,42 @@ namespace Ecoinv.DataContext
 
             ClientsList = new ObservableCollection<CLIENTS>();
 
-            // Parancsok
-            CommandNew = new DelegateCommand(_ => DoNew());
-            CommandModify = new DelegateCommand(_ => DoModify(), _ => SelectedClient != null);
-            CommandSave = new DelegateCommand(_ => DoSave(), _ => IsEditing);
-            CommandDelete = new DelegateCommand(_ => DoDelete(), _ => SelectedClient != null);
+            // --- ITT VOLT A HIÁNYOSSÁG, JAVÍTVA: ---
+
+            // 1. Új ügyfél: CSAK ADMIN
+            CommandNew = new DelegateCommand(
+                _ => DoNew(),
+                _ => DataContextBase.IsAdmin
+            );
+
+            // 2. Módosítás: Van kijelölés ÉS Admin
+            CommandModify = new DelegateCommand(
+                _ => DoModify(),
+                _ => SelectedClient != null && DataContextBase.IsAdmin
+            );
+
+            // 3. Mentés: Szerkesztés módban van ÉS Admin
+            CommandSave = new DelegateCommand(
+                _ => DoSave(),
+                _ => IsEditing && DataContextBase.IsAdmin
+            );
+
+            // 4. Törlés: Van kijelölés ÉS Admin
+            CommandDelete = new DelegateCommand(
+                _ => DoDelete(),
+                _ => SelectedClient != null && DataContextBase.IsAdmin
+            );
+
+            // 5. Kiválasztás (Számlához) és Keresés: BÁRKI (Ezek maradnak)
             CommandSelect = new DelegateCommand(_ => DoSelect(), _ => SelectedClient != null);
             CommandSearch = new DelegateCommand(_ => DoSearch());
+
+            // ----------------------------------------
 
             // Alaphelyzet
             IsEditing = false;
 
-            // JAVÍTÁS 1: Alapértelmezetten legyen HAMIS a szűrés, hogy a régi (null) adatok is látszódjanan!
+            // Alapértelmezetten legyen HAMIS a szűrés
             IsActiveOnly = false;
             SearchText = "";
 
@@ -122,13 +146,10 @@ namespace Ecoinv.DataContext
 
             var fullList = _clientsTable.GetList(FBConnX);
 
-            // JAVÍTÁS 2: Biztonságosabb szűrés (Null Check)
+            // Biztonságosabb szűrés (Null Check)
             var filtered = fullList.Where(x =>
-                // Név keresés (Ha SearchText üres, mindenkit átenged)
                 (string.IsNullOrEmpty(SearchText) || (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())))
                 &&
-                // Aktív szűrés: Ha nincs bepipálva, mindenkit átenged.
-                // Ha be van pipálva, akkor csak azt, akinek CACTIVE == "1"
                 (!IsActiveOnly || (x.CACTIVE != null && x.CACTIVE.Trim() == "1"))
             ).ToList();
 
@@ -138,10 +159,8 @@ namespace Ecoinv.DataContext
                 ClientsList.Add(item);
             }
 
-            // Ha a lista üres, és nem kerestünk semmit, az gyanús -> diagnosztika
             if (ClientsList.Count == 0 && string.IsNullOrEmpty(SearchText) && !IsActiveOnly && fullList.Count > 0)
             {
-                // Ez csak akkor fut le, ha van adat, de a szűrő elnyelte (ami a fenti javítással már nem fordulhat elő)
                 MessageBox.Show("Hiba: Az adatok beolvasása sikeres, de a megjelenítés nem sikerült.");
             }
 
@@ -191,7 +210,7 @@ namespace Ecoinv.DataContext
 
             try
             {
-                // Null értékek kezelése (hogy biztosan "1" vagy "0" kerüljön be)
+                // Null értékek kezelése
                 if (string.IsNullOrEmpty(CurrentClient.CACTIVE)) CurrentClient.CACTIVE = "0";
 
                 _clientsTable.Save(CurrentClient, FBConnX);
@@ -201,7 +220,7 @@ namespace Ecoinv.DataContext
 
                 MessageBox.Show("Sikeres mentés!", "Infó", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                DoSearch(); // Lista frissítése
+                DoSearch();
 
                 var savedItem = ClientsList.FirstOrDefault(x => x.ID == CurrentClient.ID);
                 if (savedItem != null) SelectedClient = savedItem;

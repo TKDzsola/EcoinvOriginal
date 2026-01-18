@@ -17,27 +17,21 @@ namespace Ecoinv.DataContext
         public ADRESSESDataContext()
         {
             alkTable = new ADRESSESTable();
-            // Itt az összes címet betöltjük (vagy szűrhetnénk is, ha kellene)
             ADRESSESList = alkTable.GetList(FBConnX);
         }
 
-        #region ... ADRESSESList ObservableCollection<ADRESSES> property ...
-
+        #region ... ADRESSESList ...
         private ObservableCollection<ADRESSES> __ADRESSESList = new ObservableCollection<ADRESSES>();
-
         public ObservableCollection<ADRESSES> ADRESSESList
         {
             get => __ADRESSESList;
             set => SetPropertyValue(nameof(ADRESSESList), ref __ADRESSESList, value);
         }
-
         #endregion
 
-        #region ... SelectedADRESSES property ...
-
+        #region ... SelectedADRESSES ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ADRESSES __selectedADRESSES;
-
         public ADRESSES SelectedADRESSES
         {
             get => __selectedADRESSES;
@@ -48,16 +42,12 @@ namespace Ecoinv.DataContext
                 OnSelectedADRESSESChanged();
             }
         }
-
         private void OnSelectedADRESSESChanging(ADRESSES value) { }
-
         private void OnSelectedADRESSESChanged()
         {
             OLDADRESSES ??= new ADRESSES();
-
             if (SelectedADRESSES != null)
             {
-                // Biztonsági másolat készítése (Mégse gombhoz)
                 OLDADRESSES.ID = SelectedADRESSES.ID;
                 OLDADRESSES.CLIENT_ID = SelectedADRESSES.CLIENT_ID;
                 OLDADRESSES.POSTALCODE = SelectedADRESSES.POSTALCODE;
@@ -67,30 +57,30 @@ namespace Ecoinv.DataContext
                 OLDADRESSES.AACTIVE = SelectedADRESSES.AACTIVE;
             }
         }
-
         #endregion
 
-        #region ... OLDADRESSES property ...
-
+        #region ... OLDADRESSES ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ADRESSES __oldADRESSES;
-
         public ADRESSES OLDADRESSES
         {
             get => __oldADRESSES;
             set => SetPropertyValue(nameof(OLDADRESSES), ref __oldADRESSES, value);
         }
-
         #endregion
 
-        #region ... CommandModifyCancel property ...
-
+        // --- MÓDOSÍTÁS JOGOSULTSÁG ---
+        #region ... CommandModifyCancel ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ICommand __commandModifyCancel;
 
         public ICommand CommandModifyCancel => __commandModifyCancel ??= new DelegateCommand(ac => ModifyCancelExecute(), fc => ModifyCancelCanExecute());
 
-        private bool ModifyCancelCanExecute() => ((SelectedADRESSES != null) && (IsAdmin));
+        private bool ModifyCancelCanExecute()
+        {
+            if (IsEditing) return true; // Cancel mindig mehet
+            return (SelectedADRESSES != null) && DataContextBase.IsAdmin; // Modify csak Admin
+        }
 
         private void ModifyCancelExecute()
         {
@@ -98,20 +88,12 @@ namespace Ecoinv.DataContext
             {
                 if (IsNewRecord)
                 {
-                    // --- CANCEL (ÚJ REKORDNÁL) ---
-                    // Nem kell adatbázis hívás (DelNewADRESSES_M), 
-                    // csak kivesszük a listából a még el nem mentett elemet.
-
                     var _actrec = ADRESSESList.FirstOrDefault(r => r.ID <= 0);
-                    if (_actrec != null)
-                        ADRESSESList.Remove(_actrec);
-
+                    if (_actrec != null) ADRESSESList.Remove(_actrec);
                     IsNewRecord = false;
                 }
                 else
                 {
-                    // --- CANCEL (MÓDOSÍTÁSNÁL) ---
-                    // Visszaállítjuk az eredeti értékeket a memóriában
                     if (SelectedADRESSES != null)
                     {
                         SelectedADRESSES.POSTALCODE = OLDADRESSES.POSTALCODE;
@@ -122,19 +104,13 @@ namespace Ecoinv.DataContext
                     }
                 }
             }
-            else
-            {
-                // MODIFY megnyomása - Nincs teendő, csak UI váltás
-            }
-
             IsEditing = !IsEditing;
             ShowDetailPanel();
         }
-
         #endregion
 
-        #region ... CommandNewSave property ...
-
+        // --- ÚJ / MENTÉS JOGOSULTSÁG ---
+        #region ... CommandNewSave ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ICommand __commandNewSave;
 
@@ -144,23 +120,19 @@ namespace Ecoinv.DataContext
         {
             if (IsEditing)
             {
+                // Validáció + Admin jog
+                bool isValid = false;
                 if (IsNewRecord)
-                {
-                    // I N S E R T - Validáció
-                    return (SelectedADRESSES != null) &&
-                           !string.IsNullOrEmpty(SelectedADRESSES.CITY) &&
-                           !string.IsNullOrEmpty(SelectedADRESSES.ADDRESS);
-                    // POSTALCODE int, ezért nem null, hanem 0 lehet, de azt itt nem ellenőrizzük szigorúan
-                }
+                    isValid = (SelectedADRESSES != null) && !string.IsNullOrEmpty(SelectedADRESSES.CITY) && !string.IsNullOrEmpty(SelectedADRESSES.ADDRESS);
                 else
-                {
-                    // U P D A T E - Validáció
-                    return (SelectedADRESSES != null);
-                }
+                    isValid = (SelectedADRESSES != null);
+
+                return isValid && DataContextBase.IsAdmin;
             }
             else
             {
-                return IsAdmin;
+                // Új gomb: Csak Admin
+                return DataContextBase.IsAdmin;
             }
         }
 
@@ -169,76 +141,48 @@ namespace Ecoinv.DataContext
             IsEditing = !IsEditing;
             if (IsEditing)
             {
-                // --- NEW GOMB MEGNYOMÁSA ---
                 IsNewRecord = true;
-
-                // Nem hívunk adatbázist (NewADRESSES_M), csak létrehozunk egy üreset
-                var newItem = new ADRESSES
-                {
-                    ID = -1, // Jelöljük, hogy új
-                    ATYPE = "1",
-                    AACTIVE = "1"
-                };
-
-                // Hozzáadjuk a listához és kijelöljük
+                var newItem = new ADRESSES { ID = -1, ATYPE = "1", AACTIVE = "1" };
                 ADRESSESList.Add(newItem);
                 SelectedADRESSES = newItem;
             }
             else
             {
-                // --- SAVE GOMB MEGNYOMÁSA ---
                 if (IsNewRecord)
                 {
-                    if (SelectedADRESSES != null)
-                    {
-                        // INSERT hívása a szabványos módon
-                        alkTable.Insert(SelectedADRESSES, FBConnX);
-
-                        // ID frissül az Insertben, de ha nem, itt újraolvashatnánk
-                    }
+                    if (SelectedADRESSES != null) alkTable.Insert(SelectedADRESSES, FBConnX);
                     IsNewRecord = false;
                 }
                 else
                 {
-                    if (SelectedADRESSES != null)
-                    {
-                        // UPDATE hívása a szabványos módon
-                        alkTable.Update(SelectedADRESSES, FBConnX);
-                    }
+                    if (SelectedADRESSES != null) alkTable.Update(SelectedADRESSES, FBConnX);
                 }
             }
-
             ShowDetailPanel();
         }
-
         #endregion
 
-        #region ... CommandDelete property ...
-
+        // --- TÖRLÉS JOGOSULTSÁG ---
+        #region ... CommandDelete ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ICommand __commandDelete;
 
         public ICommand CommandDelete => __commandDelete ??= new DelegateCommand(ac => DeleteExecute(), fc => DeleteCanExecute());
 
-        private bool DeleteCanExecute() => (IsAdmin) && (SelectedADRESSES != null) && (!IsEditing);
+        private bool DeleteCanExecute() => DataContextBase.IsAdmin && (SelectedADRESSES != null) && (!IsEditing);
 
         private void DeleteExecute()
         {
-            MessageBoxResult dres = MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (MessageBoxResult.Yes == dres)
+            if (MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 if (SelectedADRESSES != null)
                 {
-                    // DELETE hívása
                     alkTable.Delete(SelectedADRESSES, FBConnX);
-
-                    // Kivesszük a listából
                     ADRESSESList.Remove(SelectedADRESSES);
                 }
                 ShowDetailPanel();
             }
         }
-
         #endregion
     }
 }

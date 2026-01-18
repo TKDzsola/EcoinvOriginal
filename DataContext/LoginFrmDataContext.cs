@@ -9,148 +9,127 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Ecoinv.DataContext
 {
-  public class LoginFrmDataContext : DataContextBase
-  {
-    public DelegateCommand LoginCmd { get; } = new(
-      execute: param => DoLogin(),
-      canExecute: param => LoginUserName.Length > 0
-    );
-
-    public DelegateCommand KilepCmd { get; } = new(
-      execute: param =>
-      {
-        CloseFBConn();
-        CloseAppDB();
-      },
-      canExecute: param => true
-    );
-
-    //#region ... FBConnX property ...
-
-    //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    //private static FBConnectX __fbconnx;
-
-    //public static FBConnectX FBConnX
-    //{
-    //  get => __fbconnx;
-    //  set => __fbconnx = value;
-    //}
-
-    //#endregion ... end of FBConn property ...
-
-
-    #region ... LogPassword property ...
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private static string __logpassword = "*";
-
-    public static string LogPassword
+    public class LoginFrmDataContext : DataContextBase
     {
-      get => __logpassword;
-      set => __logpassword = value;
-    }
+        public DelegateCommand LoginCmd { get; } = new(
+            execute: param => DoLogin(),
+            canExecute: param => LoginUserName.Length > 0
+        );
 
-    #endregion ... end of LogPassword property ...
+        public DelegateCommand KilepCmd { get; } = new(
+            execute: param =>
+            {
+                CloseFBConn();
+                CloseAppDB();
+            },
+            canExecute: param => true
+        );
 
-    //#region ... LoginCmd property ...
+        #region ... LogPassword property ...
 
-    //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    //private LoginCommand _loginCmd;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private static string __logpassword = "*";
 
-    //public LoginCommand LoginCmd => _loginCmd ??= new LoginCommand();
-
-    //#endregion ... end of LoginCmd property ...
-
-    //#region ... KilepCmd property ...
-
-    //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    //private KilepCommand _kilepCmd;
-
-    //public KilepCommand KilepCmd => _kilepCmd ??= new KilepCommand();
-
-    //#endregion ... end of KilepCmd property ...
-
-
-    private static void DoLogin()
-    {
-      FBConnX = new FBConnectX();
-      FBConnX?.GetConnectionX();
-
-      if (FBConnX?.FBCConnectionX != null)
-      {
-        if (GetLogin())
+        public static string LogPassword
         {
-          var lgfloginform = Application.Current.Windows[0];
-          lgfloginform?.Hide();
-
-          FBConnX?.FBConnCloseX();
-
-          var startfrm = new StartFrm();
-          startfrm.ShowDialog();
-        }
-        else
-        {
-          MessageBox.Show("Hibás bejelentkezés!"+Environment.NewLine+"Inaktív felhasználkó, vagy hibás név/jelszó páros!");
-        }
-      }
-      else
-      {
-        MessageBox.Show("Adatbázis kapcsolódási hiba!");
-      }
-
-    }
-
-    private static bool GetLogin()
-    {
-      var retvalue = false;
-      if (LogPassword == null)
-        return false;
-      
-      try
-      {
-        var md5f = new MD5Func();
-        var logpsswMD5 = md5f.MD5Encode(LogPassword); //3389DAE361AF79B04C9C8E7057F60CC6 = csillag
-                                                      //var dbpsswMD5 = FBConnX?.SelectSQL_FirstCol("select upssw from eusers where uname = '" + LoginUserName + "' and uactive='I'");
-                                                      //todo ehelyett kell egy másik SQL, ami az upssw-t és az isadmin-t visszaadja.       
-        var dbpsswMD5 = string.Empty;
-
-        var alkres = FBConnX.SelectSQL_FirstRow("select upssw,isadmin from eusers where uname  = @uname and uactive='I'",
-                                                new FbParameter("@uname", LoginUserName));
-        if (alkres != null)
-        {
-          dbpsswMD5 = alkres[0]?.ToString();
-          IsAdmin = alkres[1].ToString() == "I";
+            get => __logpassword;
+            set => __logpassword = value;
         }
 
-        if (dbpsswMD5 == "")
-          return false;
+        #endregion ... end of LogPassword property ...
 
-        if (logpsswMD5 == dbpsswMD5)
+
+        private static void DoLogin()
         {
-          //todo itt kell az IsAdmin-t beállítani
+            FBConnX = new FBConnectX();
+            FBConnX?.GetConnectionX();
 
-          retvalue = true;
+            if (FBConnX?.FBCConnectionX != null)
+            {
+                if (GetLogin())
+                {
+                    var lgfloginform = Application.Current.Windows[0];
+                    lgfloginform?.Hide();
+
+                    FBConnX?.FBConnCloseX();
+
+                    var startfrm = new StartFrm();
+                    startfrm.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("Hibás bejelentkezés!" + Environment.NewLine + "Inaktív felhasználó, vagy hibás név/jelszó páros!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Adatbázis kapcsolódási hiba!");
+            }
         }
 
-        return retvalue;
-      }
-      catch (Exception Ex)
-      {
-        MessageBox.Show(Ex.Message); //new Exception(Ex.Message);
-        throw new Exception(Ex.Message);
-      }
-    }
+        private static bool GetLogin()
+        {
+            var retvalue = false;
+            if (LogPassword == null)
+                return false;
 
-    private static void CloseFBConn()
-    {
-      FBConnX?.FBConnCloseX();
-    }
+            try
+            {
+                var md5f = new MD5Func();
+                var logpsswMD5 = md5f.MD5Encode(LogPassword);
 
-    private static void CloseAppDB()
-    {
-      if (System.Windows.Application.Current.MainWindow != null)
-        System.Windows.Application.Current.MainWindow.Close();
-    }
+                var dbpsswMD5 = string.Empty;
+                var dbIsAdmin = "N"; // Alapértelmezetten NEM admin
 
-  }
+                // SQL: Jelszó és Admin jog lekérése
+                var alkres = FBConnX.SelectSQL_FirstRow("select upssw, isadmin from eusers where uname = @uname and uactive='I'",
+                                                        new FbParameter("@uname", LoginUserName));
+
+                if (alkres != null && alkres.Length >= 2)
+                {
+                    dbpsswMD5 = alkres[0]?.ToString(); // Jelszó hash
+                    dbIsAdmin = alkres[1]?.ToString(); // "I" vagy "N"
+                }
+
+                if (string.IsNullOrEmpty(dbpsswMD5))
+                    return false;
+
+                // Jelszó ellenőrzés
+                if (logpsswMD5 == dbpsswMD5)
+                {
+                    // --- JOGOSULTSÁG BEÁLLÍTÁSA ---
+                    // Itt kötjük össze a globális változóval, amit a számlázó figyel
+                    if (dbIsAdmin == "I")
+                    {
+                        DataContextBase.IsAdmin = true;
+                    }
+                    else
+                    {
+                        DataContextBase.IsAdmin = false;
+                    }
+                    // ------------------------------
+
+                    retvalue = true;
+                }
+
+                return retvalue;
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
+                throw new Exception(Ex.Message);
+            }
+        }
+
+        private static void CloseFBConn()
+        {
+            FBConnX?.FBConnCloseX();
+        }
+
+        private static void CloseAppDB()
+        {
+            if (System.Windows.Application.Current.MainWindow != null)
+                System.Windows.Application.Current.MainWindow.Close();
+        }
+    }
 }

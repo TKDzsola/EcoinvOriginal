@@ -81,6 +81,8 @@
                                   SelectedItem="{Binding SelectedService}"
                                   DisplayMemberPath="NAME"
                                   Padding="5" Margin="0,0,5,0"/>
+                        
+                         <!-- Szolgáltatás törzskarbantartó megnyitásához szükséges gomb.-->
                         <Button Grid.Column="1" Content="..." 
                                 Command="{Binding CommandMenuSERVICESClick}"
                                 Width="35" Height="28"
