@@ -21,9 +21,7 @@
                 <ResourceDictionary Source="../Components/RoundedButton.xaml"/>
                 <ResourceDictionary Source="../Components/ShadowLabel.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
             <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-
             <DropShadowEffect x:Key="CardShadow" Color="#20000000" BlurRadius="10" ShadowDepth="2"/>
         </ResourceDictionary>
     </Window.Resources>
@@ -43,7 +41,6 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                     <Label Content="Vevő kiválasztása:" FontWeight="Bold" Foreground="#4B5563"/>
                     <DockPanel>
@@ -51,29 +48,22 @@
                                 Command="{Binding CommandMenuCLIENTSClick}"
                                 Width="80" DockPanel.Dock="Right" Margin="5,0,0,0"
                                 Style="{DynamicResource RoundedButtonStyle}"/>
-
-                        <TextBox Text="{Binding SelectedClientName}" 
-                                 IsReadOnly="True" 
-                                 Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
+                        <TextBox Text="{Binding SelectedClientName}" IsReadOnly="True" Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
                     </DockPanel>
                 </StackPanel>
-
                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
                     <Label Content="Számla sorszáma:" FontWeight="Bold" Foreground="#4B5563"/>
-                    <TextBox Text="{Binding InvoiceNumber, UpdateSourceTrigger=PropertyChanged}" 
-                             Padding="5" BorderBrush="#D1D5DB"/>
+                    <TextBox Text="{Binding InvoiceNumber, UpdateSourceTrigger=PropertyChanged}" Padding="5" BorderBrush="#D1D5DB"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <Border Grid.Row="1" 
-                Background="#EEF2FF" BorderBrush="#C7D2FE" BorderThickness="1"
+        <Border Grid.Row="1" Background="#EEF2FF" BorderBrush="#C7D2FE" BorderThickness="1"
                 CornerRadius="8" Padding="15" Margin="0,0,0,15"
                 Visibility="{Binding IsAddItemPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="2.5*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
@@ -81,10 +71,24 @@
 
                 <StackPanel Grid.Column="0" Margin="5">
                     <Label Content="Szolgáltatás:" FontWeight="SemiBold"/>
-                    <ComboBox ItemsSource="{Binding Services}" 
-                              SelectedItem="{Binding SelectedService}"
-                              DisplayMemberPath="NAME"
-                              Padding="5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="0"
+                                  ItemsSource="{Binding Services}" 
+                                  SelectedItem="{Binding SelectedService}"
+                                  DisplayMemberPath="NAME"
+                                  Padding="5" Margin="0,0,5,0"/>
+                        <Button Grid.Column="1" Content="..." 
+                                Command="{Binding CommandMenuSERVICESClick}"
+                                Width="35" Height="28"
+                                Style="{DynamicResource RoundedButtonStyle}"
+                                Background="#90CAF9" Foreground="#1565C0" FontWeight="Bold" FontSize="14"
+                                ToolTip="Szolgáltatás karbantartó"
+                                VerticalAlignment="Stretch"/>
+                    </Grid>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="5">
@@ -99,39 +103,26 @@
 
                 <StackPanel Grid.Column="3" Margin="5">
                     <Label Content="ÁFA kulcs:" FontWeight="SemiBold"/>
-                    <ComboBox ItemsSource="{Binding VatRates}" 
-                              SelectedItem="{Binding SelectedVatRate}"
-                              DisplayMemberPath="NAME"
-                              Padding="5"/>
+                    <ComboBox ItemsSource="{Binding VatRates}" SelectedItem="{Binding SelectedVatRate}" DisplayMemberPath="NAME" Padding="5"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
-
             <Button Content="{Binding PrimaryButtonText}" 
                     Command="{Binding CommandPrimaryAction}"
                     Width="140" Height="35" Margin="0,0,10,0"
-                    Style="{DynamicResource RoundedButtonStyle}"
-                    Background="#10B981" Foreground="White" FontWeight="Bold"/>
-
+                    Style="{DynamicResource RoundedButtonStyle}" Background="#10B981" Foreground="White" FontWeight="Bold"/>
             <Button Content="{Binding SecondaryButtonText}" 
                     Command="{Binding CommandSecondaryAction}"
                     Width="140" Height="35"
-                    Style="{DynamicResource RoundedButtonStyle}"
-                    Background="#EF4444" Foreground="White"/>
-
+                    Style="{DynamicResource RoundedButtonStyle}" Background="#EF4444" Foreground="White"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="3" 
-                  ItemsSource="{Binding InvoiceDetails}" 
-                  SelectedItem="{Binding SelectedInvoiceDetail}"
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False"
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Horizontal"
+        <DataGrid Grid.Row="3" ItemsSource="{Binding InvoiceDetails}" SelectedItem="{Binding SelectedInvoiceDetail}"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
                   Background="White" BorderBrush="#E5E7EB" RowHeight="30">
-
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Padding" Value="10,5"/>
@@ -139,14 +130,13 @@
                     <Setter Property="FontWeight" Value="SemiBold"/>
                 </Style>
             </DataGrid.Resources>
-
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Megnevezés" Binding="{Binding SERVICE_NAME}" Width="3*"/>
                 <DataGridTextColumn Header="Menny." Binding="{Binding QTY}" Width="0.8*"/>
-                <DataGridTextColumn Header="Nettó ár" Binding="{Binding NET_UNIT_PRICE, StringFormat={}{0:N2}}" Width="1*"/>
+                <DataGridTextColumn Header="Nettó ár" Binding="{Binding NET_UNIT_PRICE, StringFormat={}{0:N2} €}" Width="1*"/>
                 <DataGridTextColumn Header="ÁFA %" Binding="{Binding VAT_PERCENT}" Width="0.8*"/>
-                <DataGridTextColumn Header="Nettó érték" Binding="{Binding LINE_TOTAL_NET, StringFormat={}{0:N2}}" Width="1.2*"/>
-                <DataGridTextColumn Header="Bruttó érték" Binding="{Binding LINE_TOTAL_GROSS, StringFormat={}{0:N2}}" Width="1.2*"/>
+                <DataGridTextColumn Header="Nettó érték" Binding="{Binding LINE_TOTAL_NET, StringFormat={}{0:N2} €}" Width="1.2*"/>
+                <DataGridTextColumn Header="Bruttó érték" Binding="{Binding LINE_TOTAL_GROSS, StringFormat={}{0:N2} €}" Width="1.2*"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -156,21 +146,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-
                     <Button Content="💾 Számla mentése &amp; PDF" 
                             Command="{Binding CommandSaveInvoice}"
                             Width="200" Height="40" Margin="0,0,15,0"
-                            FontSize="14" FontWeight="Bold"
-                            Style="{DynamicResource RoundedButtonStyle}"/>
-
+                            FontSize="14" FontWeight="Bold" Style="{DynamicResource RoundedButtonStyle}"/>
                     <Button Content="Mégse" 
                             Command="{Binding CommandCancelInvoice}"
-                            Width="100" Height="40"
-                            Style="{DynamicResource RoundedButtonStyle}"/>
+                            Width="100" Height="40" Style="{DynamicResource RoundedButtonStyle}"/>
                 </StackPanel>
-
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <StackPanel Margin="15,0">
                         <TextBlock Text="Nettó összesen:" Foreground="Gray" FontSize="12"/>
@@ -189,6 +173,5 @@
                 </StackPanel>
             </Grid>
         </Border>
-
     </Grid>
 </Window>

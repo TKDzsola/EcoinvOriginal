@@ -2,7 +2,7 @@
 using Ecoinv.Common;
 using Ecoinv.Components;
 using Ecoinv.Forms;
-using Ecoinv.Pdf.Services; // <--- FONTOS: Ez kell a PDF generáláshoz!
+using Ecoinv.Pdf.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -14,151 +14,41 @@ namespace Ecoinv.DataContext
 {
     public class CreateInvoiceDataContext : DataContextBase
     {
-        // =====================================================
-        // DB KAPCSOLAT
-        // =====================================================
         private readonly FBConnectX _conn;
 
-        // =====================================================
-        // KONSTRUKTOR
-        // =====================================================
         public CreateInvoiceDataContext()
         {
-            // Kapcsolat inicializálása
             _conn = new FBConnectX();
             _conn.GetConnectionX();
 
-            // Listák inicializálása
             InvoiceDetails = new ObservableCollection<INVOICE_DETAILS>();
             Services = new ObservableCollection<SERVICES>();
             VatRates = new ObservableCollection<VATRATES>();
 
-            // Adatok betöltése
             LoadServices();
             LoadVatRates();
 
-            // Parancsok (Command) létrehozása
             CommandPrimaryAction = new DelegateCommand(_ => PrimaryAction());
-            CommandSecondaryAction = new DelegateCommand(_ => SecondaryAction());
+
+            // --- JAVÍTÁS 1: Itt adjuk meg a feltételt (CanSecondaryAction) ---
+            CommandSecondaryAction = new DelegateCommand(_ => SecondaryAction(), _ => CanSecondaryAction());
+            // -----------------------------------------------------------------
+
             CommandSaveInvoice = new DelegateCommand(_ => SaveInvoice(), _ => CanSaveInvoice());
             CommandCancelInvoice = new DelegateCommand(_ => CancelInvoice());
             CommandPreviewInvoice = new DelegateCommand(_ => PreviewInvoice());
 
-            // Gombszövegek alapállapota
+            CommandMenuSERVICESClick = new DelegateCommand(_ => MenuSERVICESExecute());
+
             UpdateActionButtonTexts();
-
-            // Ha volt kiválasztva ügyfél a kliens listából, azt betöltjük
             LoadSelectedClientFromStatic();
-
             RecalculateTotals();
         }
 
-        // =====================================================
-        // ÜGYFÉL FELÜLET MEGNYITÁSA (KERESÉS)
-        // =====================================================
-        #region ... CommandMenuCLIENTSClick property ...
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandMenuCLIENTSClick;
-
-        public ICommand CommandMenuCLIENTSClick =>
-            __commandMenuCLIENTSClick ??= new DelegateCommand(ac => MenuCLIENTSExecute(), fc => GetMenuCLIENTSCanExecute());
-
-        private bool GetMenuCLIENTSCanExecute() => true;
-
-        private void MenuCLIENTSExecute()
-        {
-            // Ha már nyitva van, ne nyissuk meg újra, inkább aktiváljuk
-            for (var i = Application.Current.Windows.Count - 1; i >= 0; i--)
-            {
-                var w = Application.Current.Windows[i];
-                if (w?.ToString() == "Ecoinv.Forms.CLIENTSFrm")
-                {
-                    w.Activate();
-                    return;
-                }
-            }
-
-            // MODAL megnyitás -> bezárás után vissza tudunk olvasni statikusból
-            var frm = new CLIENTSFrm();
-            frm.ShowDialog();
-
-            // Bezárás után: olvassuk vissza, mit választott a user
-            LoadSelectedClientFromStatic();
-        }
-
-        #endregion ... end of CommandMenuCLIENTSClick property ...
+        // ... (A kód eleje változatlan) ...
 
         // =====================================================
-        // KIVÁLASZTOTT ÜGYFÉL (SZÁMLÁZÁSHOZ)
-        // =====================================================
-        #region ... SelectedClient (Invoice) properties ...
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private int _selectedClientId;
-
-        public int SelectedClientId
-        {
-            get => _selectedClientId;
-            set => SetPropertyValue(nameof(SelectedClientId), ref _selectedClientId, value);
-        }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _selectedClientName;
-
-        public string SelectedClientName
-        {
-            get => _selectedClientName;
-            set => SetPropertyValue(nameof(SelectedClientName), ref _selectedClientName, value);
-        }
-
-        #endregion ... end of SelectedClient (Invoice) properties ...
-
-        // =====================================================
-        // KIVÁLASZTOTT ÜGYFÉL BETÖLTÉSE (STATIC -> LOCAL)
-        // =====================================================
-        private void LoadSelectedClientFromStatic()
-        {
-            try
-            {
-                // FONTOS: a statikus property a DataContextBase-ben van!
-                var id = DataContextBase.SelectedClientForInvoice;
-
-                if (id <= 0)
-                {
-                    SelectedClientId = 0;
-                    SelectedClientName = string.Empty;
-                    return;
-                }
-
-                SelectedClientId = id;
-
-                // Név lekérése DB-ből a megjelenítéshez
-                var ct = new CLIENTSTable();
-                var list = ct.GetList(_conn);
-
-                var cli = list?.FirstOrDefault(x => x.ID == id);
-                SelectedClientName = cli?.NAME ?? $"(ID: {id})";
-            }
-            catch
-            {
-                SelectedClientId = 0;
-                SelectedClientName = string.Empty;
-            }
-        }
-
-        // =====================================================
-        // SZÁMLASZÁM
-        // =====================================================
-        private string _invoiceNumber;
-        public string InvoiceNumber
-        {
-            get => _invoiceNumber;
-            set => SetPropertyValue(nameof(InvoiceNumber), ref _invoiceNumber, value);
-        }
-
-        // =====================================================
-        // TÉTELEK LISTA
+        // TÉTELEK LISTA & KIJELÖLÉS KEZELÉSE
         // =====================================================
         public ObservableCollection<INVOICE_DETAILS> InvoiceDetails { get; }
 
@@ -166,14 +56,20 @@ namespace Ecoinv.DataContext
         public INVOICE_DETAILS SelectedInvoiceDetail
         {
             get => _selectedInvoiceDetail;
-            set => SetPropertyValue(nameof(SelectedInvoiceDetail), ref _selectedInvoiceDetail, value);
+            set
+            {
+                if (SetPropertyValue(nameof(SelectedInvoiceDetail), ref _selectedInvoiceDetail, value))
+                {
+                    // --- JAVÍTÁS 2: Ha változik a kijelölés, szólunk a gombnak, hogy frissüljön! ---
+                    (CommandSecondaryAction as DelegateCommand)?.RaiseCanExecuteChanged();
+                }
+            }
         }
 
-        // =====================================================
-        // TÖRZSADATOK (Szolgáltatások, ÁFA)
-        // =====================================================
-        public ObservableCollection<SERVICES> Services { get; }
+        // ... (Törzsadatok, Services, VatRates részek változatlanok) ...
 
+        // Ez a rész kell a másoláshoz, hogy ne szakadjon meg a kód folyamatossága:
+        public ObservableCollection<SERVICES> Services { get; }
         private SERVICES _selectedService;
         public SERVICES SelectedService
         {
@@ -182,32 +78,23 @@ namespace Ecoinv.DataContext
             {
                 if (SetPropertyValue(nameof(SelectedService), ref _selectedService, value))
                 {
-                    // Ha kiválasztunk egy szolgáltatást, töltsük ki az árat automatikusan
-                    if (value != null)
-                        EditNetUnitPrice = value.NETPRICE;
+                    if (value != null) EditNetUnitPrice = value.NETPRICE;
                 }
             }
         }
-
         public ObservableCollection<VATRATES> VatRates { get; }
-
         private VATRATES _selectedVatRate;
         public VATRATES SelectedVatRate
         {
             get => _selectedVatRate;
             set => SetPropertyValue(nameof(SelectedVatRate), ref _selectedVatRate, value);
         }
-
-        // =====================================================
-        // SZERKESZTÉS MEZŐI (Panelen)
-        // =====================================================
         private decimal _editQty = 1;
         public decimal EditQty
         {
             get => _editQty;
             set => SetPropertyValue(nameof(EditQty), ref _editQty, value);
         }
-
         private decimal _editNetUnitPrice;
         public decimal EditNetUnitPrice
         {
@@ -215,30 +102,14 @@ namespace Ecoinv.DataContext
             set => SetPropertyValue(nameof(EditNetUnitPrice), ref _editNetUnitPrice, value);
         }
 
-        // =====================================================
-        // ÖSSZESÍTÉS MEZŐI
-        // =====================================================
+        // ... (Összesítők és Totals változatlanok) ...
+
         private decimal _totalNet;
-        public decimal TotalNet
-        {
-            get => _totalNet;
-            private set => SetPropertyValue(nameof(TotalNet), ref _totalNet, value);
-        }
-
+        public decimal TotalNet { get => _totalNet; private set => SetPropertyValue(nameof(TotalNet), ref _totalNet, value); }
         private decimal _totalVat;
-        public decimal TotalVat
-        {
-            get => _totalVat;
-            private set => SetPropertyValue(nameof(TotalVat), ref _totalVat, value);
-        }
-
+        public decimal TotalVat { get => _totalVat; private set => SetPropertyValue(nameof(TotalVat), ref _totalVat, value); }
         private decimal _totalGross;
-        public decimal TotalGross
-        {
-            get => _totalGross;
-            private set => SetPropertyValue(nameof(TotalGross), ref _totalGross, value);
-        }
-
+        public decimal TotalGross { get => _totalGross; private set => SetPropertyValue(nameof(TotalGross), ref _totalGross, value); }
         private void RecalculateTotals()
         {
             TotalNet = InvoiceDetails.Sum(i => i.LINE_TOTAL_NET);
@@ -247,7 +118,7 @@ namespace Ecoinv.DataContext
         }
 
         // =====================================================
-        // UI ÁLLAPOT ÉS GOMBSZÖVEGEK
+        // UI ÁLLAPOT FRISSÍTÉS
         // =====================================================
         private bool _isAddItemPanelVisible;
         public bool IsAddItemPanelVisible
@@ -257,66 +128,117 @@ namespace Ecoinv.DataContext
             {
                 if (SetPropertyValue(nameof(IsAddItemPanelVisible), ref _isAddItemPanelVisible, value))
                 {
-                    // Gombszövegek frissítése (biztosan, computed nélkül)
                     UpdateActionButtonTexts();
+                    // Ha a panel állapota változik (nyitva/zárva), a gomb állapota is változhat!
+                    (CommandSecondaryAction as DelegateCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
 
-        // A gombok szövegei (direkt property, hogy mindig frissüljön a UI)
+        // ... (Gombszövegek property-k változatlanok) ...
         private string _primaryButtonText;
-        public string PrimaryButtonText
-        {
-            get => _primaryButtonText;
-            private set => SetPropertyValue(nameof(PrimaryButtonText), ref _primaryButtonText, value);
-        }
-
+        public string PrimaryButtonText { get => _primaryButtonText; private set => SetPropertyValue(nameof(PrimaryButtonText), ref _primaryButtonText, value); }
         private string _secondaryButtonText;
-        public string SecondaryButtonText
-        {
-            get => _secondaryButtonText;
-            private set => SetPropertyValue(nameof(SecondaryButtonText), ref _secondaryButtonText, value);
-        }
-
+        public string SecondaryButtonText { get => _secondaryButtonText; private set => SetPropertyValue(nameof(SecondaryButtonText), ref _secondaryButtonText, value); }
         private void UpdateActionButtonTexts()
         {
-            // Itt történik a szöveg váltása a panel láthatósága alapján
             PrimaryButtonText = IsAddItemPanelVisible ? "✔ Hozzáadás" : "Új tétel";
             SecondaryButtonText = IsAddItemPanelVisible ? "✖ Mégse" : "Tétel törlése";
         }
 
-        // =====================================================
         // COMMANDOK
-        // =====================================================
         public ICommand CommandPrimaryAction { get; }
         public ICommand CommandSecondaryAction { get; }
         public ICommand CommandSaveInvoice { get; }
         public ICommand CommandCancelInvoice { get; }
         public ICommand CommandPreviewInvoice { get; }
+        public ICommand CommandMenuCLIENTSClick { get => __commandMenuCLIENTSClick ??= new DelegateCommand(ac => MenuCLIENTSExecute(), fc => GetMenuCLIENTSCanExecute()); }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private ICommand __commandMenuCLIENTSClick;
+        private bool GetMenuCLIENTSCanExecute() => true;
+
+        // ... (Kliens kiválasztás és Szolgáltatás karbantartó gomb részek változatlanok) ...
+
+        private void MenuCLIENTSExecute()
+        {
+            for (var i = Application.Current.Windows.Count - 1; i >= 0; i--)
+            {
+                var w = Application.Current.Windows[i];
+                if (w?.ToString() == "Ecoinv.Forms.CLIENTSFrm") { w.Activate(); return; }
+            }
+            var frm = new CLIENTSFrm();
+            frm.ShowDialog();
+            LoadSelectedClientFromStatic();
+        }
+        public ICommand CommandMenuSERVICESClick { get; }
+        private void MenuSERVICESExecute()
+        {
+            var frm = new SERVICESFrm();
+            frm.ShowDialog();
+            LoadServices();
+        }
+
+        // ... (SelectedClient részek) ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private int _selectedClientId;
+        public int SelectedClientId { get => _selectedClientId; set => SetPropertyValue(nameof(SelectedClientId), ref _selectedClientId, value); }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string _selectedClientName;
+        public string SelectedClientName { get => _selectedClientName; set => SetPropertyValue(nameof(SelectedClientName), ref _selectedClientName, value); }
+        private void LoadSelectedClientFromStatic()
+        {
+            try
+            {
+                var id = DataContextBase.SelectedClientForInvoice;
+                if (id <= 0) { SelectedClientId = 0; SelectedClientName = string.Empty; return; }
+                SelectedClientId = id;
+                var ct = new CLIENTSTable();
+                var list = ct.GetList(_conn);
+                var cli = list?.FirstOrDefault(x => x.ID == id);
+                SelectedClientName = cli?.NAME ?? $"(ID: {id})";
+            }
+            catch { SelectedClientId = 0; SelectedClientName = string.Empty; }
+        }
+        private string _invoiceNumber;
+        public string InvoiceNumber { get => _invoiceNumber; set => SetPropertyValue(nameof(InvoiceNumber), ref _invoiceNumber, value); }
+
 
         // =====================================================
-        // TÉTEL HOZZÁADÁS / TÖRLÉS LOGIKA
+        // --- JAVÍTÁS 3: A logika, ami eldönti, aktív-e a gomb ---
         // =====================================================
-        private void PrimaryAction()
+        private bool CanSecondaryAction()
         {
-            // Ha nincs nyitva a panel -> Megnyitjuk
-            if (!IsAddItemPanelVisible)
+            // Ha nyitva van a panel, akkor a gomb funkciója "Mégse" -> MINDIG aktív legyen
+            if (IsAddItemPanelVisible) return true;
+
+            // Ha nincs nyitva, akkor a funkciója "Törlés" -> CSAK akkor aktív, ha van kijelölt sor
+            return SelectedInvoiceDetail != null;
+        }
+
+        private void SecondaryAction()
+        {
+            if (IsAddItemPanelVisible)
             {
-                IsAddItemPanelVisible = true;
-                SelectedService = null;
-                SelectedVatRate = null;
-                EditQty = 1;
-                EditNetUnitPrice = 0;
+                IsAddItemPanelVisible = false;
                 return;
             }
 
-            // Ha nyitva van -> Hozzáadás a listához
+            if (SelectedInvoiceDetail != null)
+            {
+                InvoiceDetails.Remove(SelectedInvoiceDetail);
+                RecalculateTotals();
+            }
+        }
+
+        private void PrimaryAction()
+        {
+            if (!IsAddItemPanelVisible)
+            {
+                IsAddItemPanelVisible = true; SelectedService = null; SelectedVatRate = null; EditQty = 1; EditNetUnitPrice = 0;
+                return;
+            }
             if (SelectedService == null || SelectedVatRate == null)
             {
                 MessageBox.Show("Kérlek válassz szolgáltatást és áfa kulcsot!");
                 return;
             }
-
             var item = new INVOICE_DETAILS
             {
                 SERVICES_ID = SelectedService.ID,
@@ -326,138 +248,34 @@ namespace Ecoinv.DataContext
                 VAT_PERCENT = SelectedVatRate.RATES,
                 VATRATE_ID = SelectedVatRate.ID
             };
-
             InvoiceDetails.Add(item);
             RecalculateTotals();
-            IsAddItemPanelVisible = false; // Panel bezárása
+            IsAddItemPanelVisible = false;
         }
 
-        private void SecondaryAction()
-        {
-            // Ha nyitva van a panel -> Mégse (bezárás)
-            if (IsAddItemPanelVisible)
-            {
-                IsAddItemPanelVisible = false;
-                return;
-            }
+        // ... (Mentés és egyéb metódusok változatlanok) ...
 
-            // Ha zárva van -> Kijelölt sor törlése
-            if (SelectedInvoiceDetail != null)
-            {
-                InvoiceDetails.Remove(SelectedInvoiceDetail);
-                RecalculateTotals();
-            }
-        }
-
-        // =====================================================
-        // MENTÉS – ADATBÁZIS + PDF GENERÁLÁS
-        // =====================================================
-        private bool CanSaveInvoice() =>
-            !string.IsNullOrWhiteSpace(InvoiceNumber)
-            && InvoiceDetails.Any()
-            && SelectedClientId > 0;
-
+        private bool CanSaveInvoice() => !string.IsNullOrWhiteSpace(InvoiceNumber) && InvoiceDetails.Any() && SelectedClientId > 0;
         private void SaveInvoice()
         {
             try
             {
-                if (SelectedClientId <= 0)
-                {
-                    MessageBox.Show("Kérlek válassz ügyfelet a számlához!", "Hiányzó adat",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // --- 1. MENTÉS ADATBÁZISBA ---
+                if (SelectedClientId <= 0) { MessageBox.Show("Kérlek válassz ügyfelet!", "Hiányzó adat", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
                 var headerTable = new INVOICE_HEADERSTable();
-
-                var header = new INVOICE_HEADERS
-                {
-                    CLIENT_ID = SelectedClientId,
-                    INVOICE_NUMBER = InvoiceNumber,
-                    ISSUE_DATE = DateTime.Today,
-                    DUE_DATE = DateTime.Today.AddDays(14),
-                    CREATED = DateTime.Now,
-                    PAYMENT_METHOD = "Készpénz", // Ez alapértelmezett, később UI-ról jöhet
-                    SZLASTAT = "0",
-                    FIZSTAT = "0",
-                    STORNO_ID = "0"
-                };
-
-                // Fejléc beszúrása
+                var header = new INVOICE_HEADERS { CLIENT_ID = SelectedClientId, INVOICE_NUMBER = InvoiceNumber, ISSUE_DATE = DateTime.Today, DUE_DATE = DateTime.Today.AddDays(14), CREATED = DateTime.Now, PAYMENT_METHOD = "Készpénz", SZLASTAT = "0", FIZSTAT = "0", STORNO_ID = "0" };
                 headerTable.Insert(header, _conn);
-
-                // Tételek beszúrása
                 var detailTable = new INVOICE_DETAILSTable();
-
-                foreach (var item in InvoiceDetails)
-                {
-                    item.INVOICEHEADERS_ID = header.ID;
-                    detailTable.Insert(item, _conn);
-                }
-
-                MessageBox.Show("Számla sikeresen mentve az adatbázisba.", "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                // =========================================================
-                // 🚀 2. PDF GENERÁLÁS AUTOMATIKUS INDÍTÁSA
-                // =========================================================
-                try
-                {
-                    // Példányosítjuk a PDF kezelőt
-                    var exportManager = new InvoiceExportManager();
-
-                    // Meghívjuk a generálást az új számla ID-jával
-                    exportManager.ExportInvoiceById(header.ID);
-
-                    // Ha a PDF generálás lefutott, törölhetjük az űrlapot a következő számlához
-                    CancelInvoice();
-                }
-                catch (Exception pdfEx)
-                {
-                    MessageBox.Show($"Az adatbázisba mentés sikerült, de a PDF generálás során hiba történt:\n{pdfEx.Message}",
-                                    "PDF Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                // =========================================================
+                foreach (var item in InvoiceDetails) { item.INVOICEHEADERS_ID = header.ID; detailTable.Insert(item, _conn); }
+                MessageBox.Show("Számla mentve.", "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+                try { var exportManager = new InvoiceExportManager(); exportManager.ExportInvoiceById(header.ID); CancelInvoice(); }
+                catch (Exception pdfEx) { MessageBox.Show($"PDF Hiba: {pdfEx.Message}", "PDF Hiba", MessageBoxButton.OK, MessageBoxImage.Warning); }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Mentési hiba:\n{ex.Message}", "Hiba",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { MessageBox.Show($"Mentési hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
-        // =====================================================
-        // EGYEBEK (Mégse, Előnézet)
-        // =====================================================
-        private void CancelInvoice()
-        {
-            InvoiceDetails.Clear();
-            InvoiceNumber = string.Empty;
-            RecalculateTotals();
-            // Panel alaphelyzetbe
-            IsAddItemPanelVisible = false;
-        }
-
-        private void PreviewInvoice()
-        {
-            MessageBox.Show("PDF előnézet funkció hamarosan...");
-        }
-
-        // =====================================================
-        // BETÖLTÉSEK (Szolgáltatások, ÁFA)
-        // =====================================================
-        private void LoadServices()
-        {
-            var t = new SERVICESTable();
-            foreach (var s in t.GetList(_conn))
-                Services.Add(s);
-        }
-
-        private void LoadVatRates()
-        {
-            var t = new VATRATESTable();
-            foreach (var v in t.GetList(_conn))
-                VatRates.Add(v);
-        }
+        private void CancelInvoice() { InvoiceDetails.Clear(); InvoiceNumber = string.Empty; RecalculateTotals(); IsAddItemPanelVisible = false; }
+        private void PreviewInvoice() { MessageBox.Show("PDF előnézet hamarosan..."); }
+        private void LoadServices() { Services.Clear(); var t = new SERVICESTable(); foreach (var s in t.GetList(_conn)) Services.Add(s); }
+        private void LoadVatRates() { var t = new VATRATESTable(); foreach (var v in t.GetList(_conn)) VatRates.Add(v); }
     }
 }
