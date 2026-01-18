@@ -20,7 +20,6 @@ namespace Ecoinv.DataContext
 
             ClientsList = new ObservableCollection<CLIENTS>();
 
-            // --- ITT VOLT A HIÁNYOSSÁG, JAVÍTVA: ---
 
             // 1. Új ügyfél: CSAK ADMIN
             CommandNew = new DelegateCommand(
