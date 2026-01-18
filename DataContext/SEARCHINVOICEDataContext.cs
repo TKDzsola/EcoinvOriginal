@@ -19,13 +19,14 @@ namespace Ecoinv.DataContext
     public class SEARCHINVOICEDataContext : DataContextBase
     {
         private readonly INVOICE_HEADERSTable _invoiceTable;
+        private readonly INVOICE_DETAILSTable _detailsTable; // ÚJ
 
         public SEARCHINVOICEDataContext()
         {
             _invoiceTable = new INVOICE_HEADERSTable();
+            _detailsTable = new INVOICE_DETAILSTable(); // ÚJ
 
             INVOICE_HEADERSList = new ObservableCollection<INVOICE_HEADERS>();
-
             StatusList = new ObservableCollection<StatusItem>();
             LoadStatusList();
 
@@ -33,60 +34,23 @@ namespace Ecoinv.DataContext
             CommandOpen = new DelegateCommand(_ => DoOpen(), _ => SelectedINVOICE_HEADERS != null);
             CommandPrint = new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
 
-            // Sztornó gomb feltételei
             CommandStorno = new DelegateCommand(
                 _ => DoStorno(),
                 _ => SelectedINVOICE_HEADERS != null &&
-                     SelectedINVOICE_HEADERS.SZLASTAT != "2" &&
-                     DataContextBase.IsAdmin // Csak Admin
+                     SelectedINVOICE_HEADERS.SZLASTAT != "2" && // Már sztornózottat nem lehet
+                     DataContextBase.IsAdmin
             );
         }
 
         public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
         public ObservableCollection<StatusItem> StatusList { get; }
+        public INVOICE_HEADERS SelectedINVOICE_HEADERS { get; set; }
 
-        private INVOICE_HEADERS _selectedInvoice;
-        public INVOICE_HEADERS SelectedINVOICE_HEADERS
-        {
-            get => _selectedInvoice;
-            set => SetPropertyValue(nameof(SelectedINVOICE_HEADERS), ref _selectedInvoice, value);
-        }
-
-        // --- SZŰRŐK ---
-        private string _searchClientName;
-        public string SearchClientName
-        {
-            get => _searchClientName;
-            set => SetPropertyValue(nameof(SearchClientName), ref _searchClientName, value);
-        }
-
-        private string _searchInvoiceNumber;
-        public string SearchInvoiceNumber
-        {
-            get => _searchInvoiceNumber;
-            set => SetPropertyValue(nameof(SearchInvoiceNumber), ref _searchInvoiceNumber, value);
-        }
-
-        private DateTime? _fromDate;
-        public DateTime? FromDate
-        {
-            get => _fromDate;
-            set => SetPropertyValue(nameof(FromDate), ref _fromDate, value);
-        }
-
-        private DateTime? _toDate;
-        public DateTime? ToDate
-        {
-            get => _toDate;
-            set => SetPropertyValue(nameof(ToDate), ref _toDate, value);
-        }
-
-        private string _selectedStatus;
-        public string SelectedStatus
-        {
-            get => _selectedStatus;
-            set => SetPropertyValue(nameof(SelectedStatus), ref _selectedStatus, value);
-        }
+        public string SearchClientName { get; set; }
+        public string SearchInvoiceNumber { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public string SelectedStatus { get; set; }
 
         private void LoadStatusList()
         {
@@ -103,88 +67,37 @@ namespace Ecoinv.DataContext
         public ICommand CommandPrint { get; }
         public ICommand CommandStorno { get; }
 
-        // =====================================================
-        // JAVÍTOTT KERESÉS (Hibatűrés és Dátum fix)
-        // =====================================================
         private void DoSearch()
         {
             FBConnectX localConn = new FBConnectX();
-
             try
             {
                 localConn.GetConnectionX();
                 localConn.FBConnOpenX();
 
-                // JAVÍTÁS: Dátum kezelés
-                // Ha nincs megadva dátum, akkor null. 
-                // Ha meg van adva, biztosítjuk a helyes formátumot.
-                DateTime? from = FromDate.HasValue
-                    ? FromDate.Value.Date // .Date levágja az időt (00:00:00)
-                    : (DateTime?)null;
+                DateTime? from = FromDate.HasValue ? FromDate.Value.Date : (DateTime?)null;
+                DateTime? to = ToDate.HasValue ? ToDate.Value.Date.AddDays(1).AddSeconds(-1) : (DateTime?)null;
 
-                DateTime? to = ToDate.HasValue
-                    // JAVÍTÁS: A Firebird néha elhasal a 23:59:59.999-en. 
-                    // Biztonságosabb, ha a következő nap éjféljét nézzük, és a lekérdezésben < (kisebb) jelet használunk,
-                    // DE mivel a TableBaseClass-t nem látom, maradunk a nap végénél, de milliszekundum nélkül.
-                    ? ToDate.Value.Date.AddDays(1).AddSeconds(-1) // 23:59:59
-                    : (DateTime?)null;
-
-                var result = _invoiceTable.SearchInvoices(
-                    localConn,
-                    SearchClientName?.Trim(),
-                    SearchInvoiceNumber?.Trim(),
-                    from,
-                    to,
-                    SelectedStatus
-                );
+                var result = _invoiceTable.SearchInvoices(localConn, SearchClientName?.Trim(), SearchInvoiceNumber?.Trim(), from, to, SelectedStatus);
 
                 INVOICE_HEADERSList.Clear();
-
-                foreach (var item in result)
-                {
-                    INVOICE_HEADERSList.Add(item);
-                }
+                foreach (var item in result) INVOICE_HEADERSList.Add(item);
 
                 if (INVOICE_HEADERSList.Count == 0)
-                {
-                    // JAVÍTÁS: Barátságos üzenet, ha nincs találat (üres lista)
-                    MessageBox.Show("A megadott feltételekkel nem található számla.", "Keresés eredménye", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                    MessageBox.Show("Nincs találat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                // JAVÍTÁS: Barátságos hibaüzenet összeomlás esetén
-                // Ha a felhasználó ADMIN, akkor látja a technikai részletet is (zárójelben), hogy tudja jelezni a fejlesztőnek.
-                // Ha NEM ADMIN, akkor csak egy szép üzenetet kap.
-
-                string msg = "Nem sikerült végrehajtani a keresést.\n\n" +
-                             "Lehetséges okok:\n" +
-                             "- Nincs találat az adott időszakban.\n" +
-                             "- Adatbázis kapcsolódási hiba.\n" +
-                             "- Érvénytelen dátum formátum.";
-
-                if (DataContextBase.IsAdmin)
-                {
-                    msg += $"\n\n(Technikai hiba: {ex.Message})";
-                }
-
-                MessageBox.Show(msg, "Keresési hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            finally
-            {
-                localConn.FBConnCloseX();
-            }
+            finally { localConn.FBConnCloseX(); }
         }
 
         private void DoOpen() => DoPrint();
 
         private void DoPrint()
         {
-            if (SelectedINVOICE_HEADERS == null)
-            {
-                MessageBox.Show("Válassz ki egy számlát a listából!", "Figyelem", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (SelectedINVOICE_HEADERS == null) return;
             try
             {
                 var exportManager = new InvoiceExportManager();
@@ -193,10 +106,20 @@ namespace Ecoinv.DataContext
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
+        // --- AUTOMATIZÁLT SZTORNÓ FOLYAMAT ---
         private void DoStorno()
         {
+            // 1. Biztonsági ellenőrzés
             if (SelectedINVOICE_HEADERS == null) return;
-            if (MessageBox.Show("Biztosan sztornózod?", "Sztornó", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+
+            // Biztonsági kérdés maradjon, mert a sztornó nem visszavonható!
+            if (MessageBox.Show("Biztosan sztornózod a számlát?\nEz véglegesen érvényteleníti és létrehoz egy korrekciós bizonylatot.",
+                                "Sztornó megerősítése",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            {
+                return;
+            }
 
             FBConnectX localConn = new FBConnectX();
             try
@@ -204,19 +127,39 @@ namespace Ecoinv.DataContext
                 localConn.GetConnectionX();
                 localConn.FBConnOpenX();
 
-                _invoiceTable.SetStorno(SelectedINVOICE_HEADERS.ID, localConn);
-
+                // 2. Eredeti számla státuszának átállítása "2"-re (Sztornózott)
+                _invoiceTable.SetStornoStatus(SelectedINVOICE_HEADERS.ID, localConn);
                 SelectedINVOICE_HEADERS.SZLASTAT = "2";
 
-                // UI frissítés trükk
-                var tmp = SelectedINVOICE_HEADERS;
-                SelectedINVOICE_HEADERS = null;
-                SelectedINVOICE_HEADERS = tmp;
+                // 3. Új sztornó számla létrehozása (Fejléc) -> Visszakapjuk az ÚJ ID-t!
+                int newStornoInvoiceId = _invoiceTable.InsertStorno(SelectedINVOICE_HEADERS, localConn);
 
-                MessageBox.Show("Sikeres sztornózás!", "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+                // 4. Tételek átmásolása az új számlához
+                _detailsTable.CopyItems(SelectedINVOICE_HEADERS.ID, newStornoInvoiceId, localConn);
+
+                // 5. Lista frissítése (hogy látszódjon az új sor)
+                DoSearch();
+
+                // 6. SIKERES ÜZENET
+                MessageBox.Show("A számla sztornózása sikeres!\nMost elkészítjük a sztornó bizonylatot.",
+                                "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // =========================================================
+                // 🚀 AUTOMATIKUS PDF GENERÁLÁS INDÍTÁSA
+                // =========================================================
+                // Nem kérdezünk, hanem csináljuk:
+                var exportManager = new InvoiceExportManager();
+                // Fontos: Az ÚJ ID-t (newStornoInvoiceId) adjuk át neki!
+                exportManager.ExportInvoiceById(newStornoInvoiceId);
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { localConn.FBConnCloseX(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Hiba a sztornózás közben:\n{ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                localConn.FBConnCloseX();
+            }
         }
     }
 }
