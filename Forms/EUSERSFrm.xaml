@@ -68,7 +68,7 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Content="ID" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top" />
-        <Label Grid.Row="0" Content="Bejelentk." HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" />
+        <Label Grid.Row="0" Content="Bej. név" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" />
         <Label Grid.Row="0" Content="Teljes név" HorizontalAlignment="Left" Margin="176,0,0,0" VerticalAlignment="Top" />
         <Label Grid.Row="0" Content="Jelszó" HorizontalAlignment="Right" Margin="0,0,82,0" VerticalAlignment="Top"/>
         <Label Grid.Row="0" Content="Akt." HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Top"/>

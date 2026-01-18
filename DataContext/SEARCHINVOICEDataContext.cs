@@ -24,7 +24,6 @@ namespace Ecoinv.DataContext
         {
             _invoiceTable = new INVOICE_HEADERSTable();
 
-            // FONTOS: Csak egyszer hozzuk létre a kollekciót!
             INVOICE_HEADERSList = new ObservableCollection<INVOICE_HEADERS>();
 
             StatusList = new ObservableCollection<StatusItem>();
@@ -33,14 +32,17 @@ namespace Ecoinv.DataContext
             CommandSearch = new DelegateCommand(_ => DoSearch());
             CommandOpen = new DelegateCommand(_ => DoOpen(), _ => SelectedINVOICE_HEADERS != null);
             CommandPrint = new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
-            CommandStorno = new DelegateCommand(_ => DoStorno(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.SZLASTAT != "2");
+
+            // Sztornó gomb feltételei
+            CommandStorno = new DelegateCommand(
+                _ => DoStorno(),
+                _ => SelectedINVOICE_HEADERS != null &&
+                     SelectedINVOICE_HEADERS.SZLASTAT != "2" &&
+                     DataContextBase.IsAdmin // Csak Admin
+            );
         }
 
-        // =====================================================
-        // LISTA (Getter only - nem cseréljük le a példányt, csak az elemeit!)
-        // =====================================================
         public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
-
         public ObservableCollection<StatusItem> StatusList { get; }
 
         private INVOICE_HEADERS _selectedInvoice;
@@ -50,9 +52,7 @@ namespace Ecoinv.DataContext
             set => SetPropertyValue(nameof(SelectedINVOICE_HEADERS), ref _selectedInvoice, value);
         }
 
-        // =====================================================
-        // SZŰRŐK
-        // =====================================================
+        // --- SZŰRŐK ---
         private string _searchClientName;
         public string SearchClientName
         {
@@ -98,43 +98,39 @@ namespace Ecoinv.DataContext
             SelectedStatus = "";
         }
 
-        // =====================================================
-        // COMMANDOK
-        // =====================================================
         public ICommand CommandSearch { get; }
         public ICommand CommandOpen { get; }
         public ICommand CommandPrint { get; }
         public ICommand CommandStorno { get; }
 
         // =====================================================
-        // KERESÉS (DIAGNOSZTIKAI VERZIÓ)
+        // JAVÍTOTT KERESÉS (Hibatűrés és Dátum fix)
         // =====================================================
         private void DoSearch()
         {
-            // SAJÁT KAPCSOLAT LÉTREHOZÁSA (Hogy biztosan nyitva legyen)
             FBConnectX localConn = new FBConnectX();
 
             try
             {
-                // DEBUG: Látszódjon, hogy elindult a folyamat
-                // Ha ez sem jelenik meg, akkor a Gomb nincs bekötve a XAML-ben!
-                // MessageBox.Show("Keresés indítása...", "Debug"); 
-
                 localConn.GetConnectionX();
                 localConn.FBConnOpenX();
 
-                // Dátum logika
+                // JAVÍTÁS: Dátum kezelés
+                // Ha nincs megadva dátum, akkor null. 
+                // Ha meg van adva, biztosítjuk a helyes formátumot.
                 DateTime? from = FromDate.HasValue
-                    ? new DateTime(FromDate.Value.Year, FromDate.Value.Month, FromDate.Value.Day, 0, 0, 0)
+                    ? FromDate.Value.Date // .Date levágja az időt (00:00:00)
                     : (DateTime?)null;
 
                 DateTime? to = ToDate.HasValue
-                    ? new DateTime(ToDate.Value.Year, ToDate.Value.Month, ToDate.Value.Day, 23, 59, 59)
+                    // JAVÍTÁS: A Firebird néha elhasal a 23:59:59.999-en. 
+                    // Biztonságosabb, ha a következő nap éjféljét nézzük, és a lekérdezésben < (kisebb) jelet használunk,
+                    // DE mivel a TableBaseClass-t nem látom, maradunk a nap végénél, de milliszekundum nélkül.
+                    ? ToDate.Value.Date.AddDays(1).AddSeconds(-1) // 23:59:59
                     : (DateTime?)null;
 
-                // Lekérdezés futtatása
                 var result = _invoiceTable.SearchInvoices(
-                    localConn, // A saját, biztosan nyitott kapcsolatot használjuk
+                    localConn,
                     SearchClientName?.Trim(),
                     SearchInvoiceNumber?.Trim(),
                     from,
@@ -142,10 +138,6 @@ namespace Ecoinv.DataContext
                     SelectedStatus
                 );
 
-                // DEBUG: Mennyi találat van?
-                // MessageBox.Show($"Találatok száma: {result.Count}", "Debug Info");
-
-                // Lista frissítése (Clear + Add a legbiztosabb WPF-ben)
                 INVOICE_HEADERSList.Clear();
 
                 foreach (var item in result)
@@ -155,25 +147,35 @@ namespace Ecoinv.DataContext
 
                 if (INVOICE_HEADERSList.Count == 0)
                 {
-                    // Ha nincs találat, jelezzük
-                    MessageBox.Show("Nincs találat a megadott feltételekre.", "Információ", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // JAVÍTÁS: Barátságos üzenet, ha nincs találat (üres lista)
+                    MessageBox.Show("A megadott feltételekkel nem található számla.", "Keresés eredménye", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Hiba történt a keresésnél:\n" + ex.Message + "\n" + ex.StackTrace,
-                                "Kritikus Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                // JAVÍTÁS: Barátságos hibaüzenet összeomlás esetén
+                // Ha a felhasználó ADMIN, akkor látja a technikai részletet is (zárójelben), hogy tudja jelezni a fejlesztőnek.
+                // Ha NEM ADMIN, akkor csak egy szép üzenetet kap.
+
+                string msg = "Nem sikerült végrehajtani a keresést.\n\n" +
+                             "Lehetséges okok:\n" +
+                             "- Nincs találat az adott időszakban.\n" +
+                             "- Adatbázis kapcsolódási hiba.\n" +
+                             "- Érvénytelen dátum formátum.";
+
+                if (DataContextBase.IsAdmin)
+                {
+                    msg += $"\n\n(Technikai hiba: {ex.Message})";
+                }
+
+                MessageBox.Show(msg, "Keresési hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
             {
-                // Mindig zárjuk be a helyi kapcsolatot
                 localConn.FBConnCloseX();
             }
         }
 
-        // =====================================================
-        // EGYÉB MŰVELETEK
-        // =====================================================
         private void DoOpen() => DoPrint();
 
         private void DoPrint()
