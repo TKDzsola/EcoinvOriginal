@@ -9,26 +9,21 @@
         Background="#F9FAFB"
         WindowStartupLocation="CenterScreen">
 
-    <!-- ====================== DATACONTEXT ====================== -->
     <Window.DataContext>
         <dataContext:SEARCHINVOICEDataContext />
     </Window.DataContext>
 
-    <!-- ====================== RESOURCES ====================== -->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-                <!-- Külső stílusfájlok -->
                 <ResourceDictionary Source="../Components/RoundedButton.xaml"/>
                 <ResourceDictionary Source="../Components/ShadowLabel.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Converter -->
             <components:StatusToTextConverter x:Key="StatusToTextConverter"/>
 
-            <!-- Árnyék -->
             <DropShadowEffect x:Key="CardShadow"
                               Color="#33000000"
                               BlurRadius="10"
@@ -36,14 +31,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- ====================== LAYOUT ====================== -->
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="360"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- BAL OLDALI PANEL -->
         <Border Background="White"
                 CornerRadius="12"
                 Padding="25"
@@ -58,7 +51,6 @@
                            Foreground="#1F2937"
                            Margin="0 0 0 20"/>
 
-                <!-- Ügyfél neve -->
                 <StackPanel Margin="0 0 0 15">
                     <TextBlock Text="Ügyfél neve"
                                FontWeight="SemiBold"
@@ -70,7 +62,6 @@
                              Text="{Binding SearchClientName, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Számlaszám -->
                 <StackPanel Margin="0 0 0 15">
                     <TextBlock Text="Számlaszám"
                                FontWeight="SemiBold"
@@ -82,24 +73,24 @@
                              Text="{Binding SearchInvoiceNumber, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Dátum intervallum -->
                 <StackPanel Margin="0 0 0 15">
                     <TextBlock Text="Dátum intervallum"
                                FontWeight="SemiBold"
                                Margin="0 0 0 5"/>
 
                     <StackPanel Orientation="Horizontal">
-                        <DatePicker Width="140"
+                        <DatePicker Width="125"
                                     SelectedDate="{Binding FromDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                         <TextBlock Text=" - "
                                    VerticalAlignment="Center"
-                                   Margin="10 0"/>
-                        <DatePicker Width="140"
+                                   Margin="5 0"/>
+
+                        <DatePicker Width="125"
                                     SelectedDate="{Binding ToDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Státusz -->
                 <StackPanel Margin="0 0 0 15">
                     <TextBlock Text="Státusz"
                                FontWeight="SemiBold"
@@ -115,7 +106,6 @@
                               SelectedValuePath="Code"/>
                 </StackPanel>
 
-                <!-- KERESÉS GOMB -->
                 <Button Content="Keresés"
                         Height="44"
                         Cursor="Hand"
@@ -126,7 +116,6 @@
         </Border>
 
 
-        <!-- JOBB OLDALI PANEL -->
         <Border Grid.Column="1"
                 Background="White"
                 CornerRadius="12"
@@ -135,7 +124,6 @@
 
             <DockPanel LastChildFill="True">
 
-                <!-- GOMBOK -->
                 <StackPanel DockPanel.Dock="Bottom"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
@@ -166,7 +154,6 @@
                 </StackPanel>
 
 
-                <!-- DATAGRID -->
                 <Border Background="#F9FAFB"
                         CornerRadius="10"
                         Padding="10">
@@ -178,22 +165,18 @@
                               BorderBrush="#E5E7EB">
 
                         <DataGrid.Columns>
-                            <!-- Számlaszám -->
                             <DataGridTextColumn Header="Számlaszám"
                                                 Binding="{Binding INVOICE_NUMBER}"
                                                 Width="150"/>
 
-                            <!-- Dátum -->
                             <DataGridTextColumn Header="Kelt"
                                                 Binding="{Binding ISSUE_DATE, StringFormat=\{0:yyyy.MM.dd\}}"
                                                 Width="120"/>
 
-                            <!-- Vevő -->
                             <DataGridTextColumn Header="Vevő"
                                                 Binding="{Binding CLIENT_NAME}"
                                                 Width="200"/>
 
-                            <!-- Státusz -->
                             <DataGridTextColumn Header="Státusz"
                                                 Binding="{Binding SZLASTAT, Converter={StaticResource StatusToTextConverter}}"
                                                 Width="160"/>

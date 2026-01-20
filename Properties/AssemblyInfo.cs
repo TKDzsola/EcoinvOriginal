@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Ecoinv")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Pásztor Zsolt")]
 [assembly: AssemblyProduct("Ecoinv")]
-[assembly: AssemblyCopyright("Copyright ©  2025")]
+[assembly: AssemblyCopyright("Copyright ©  2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
