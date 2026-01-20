@@ -1,4 +1,5 @@
 ﻿using Ecoinv.Common;
+using FirebirdSql.Data.FirebirdClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -83,17 +84,11 @@ namespace Ecoinv.BL
             src.ID = id;
         }
 
-        // =================================================================
-        // HIÁNYZÓ METÓDUSOK PÓTLÁSA
-        // =================================================================
-
-        // 1. SetStorno (Ez hiányzott a hibaüzenet szerint)
         public void SetStorno(int id, FBConnectX conn)
         {
             conn.UpdateSQL(string.Format(updStornoSQL, id));
         }
 
-        // 2. InsertStorno (Ez hozza létre az új ST- számlát)
         public int InsertStorno(INVOICE_HEADERS original, FBConnectX conn)
         {
             var newId = GetGenerator(conn);
@@ -112,26 +107,57 @@ namespace Ecoinv.BL
                 today,
                 created,
                 original.PAYMENT_METHOD,
-                "2", // Státusz: Sztornó
+                "2",
                 "1",
-                original.ID // Hivatkozás az eredetire
+                original.ID
             );
 
             conn?.InsertSQL(sql);
             return newId;
         }
 
+        // JAVÍTOTT METÓDUS: Paraméterezett lekérdezés a dátumhiba ellen
         public List<INVOICE_HEADERS> SearchInvoices(FBConnectX conn, string clientName, string invoiceNumber, DateTime? fromDate, DateTime? toDate, string statusCode)
         {
             string sql = selectSQL + " WHERE 1=1 ";
-            if (!string.IsNullOrWhiteSpace(clientName)) sql += $" AND c.NAME CONTAINING '{clientName}'";
-            if (!string.IsNullOrWhiteSpace(invoiceNumber)) sql += $" AND h.INVOICE_NUMBER CONTAINING '{invoiceNumber}'";
-            if (fromDate.HasValue) sql += $" AND h.ISSUE_DATE >= '{fromDate:yyyy-MM-dd}'";
-            if (toDate.HasValue) sql += $" AND h.ISSUE_DATE <= '{toDate:yyyy-MM-dd 23:59:59}'";
-            if (!string.IsNullOrWhiteSpace(statusCode)) sql += $" AND h.SZLASTAT = '{statusCode}'";
+            List<FbParameter> parameters = new List<FbParameter>();
+
+            if (!string.IsNullOrWhiteSpace(clientName))
+            {
+                sql += " AND c.NAME CONTAINING @clientName";
+                parameters.Add(new FbParameter("@clientName", clientName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(invoiceNumber))
+            {
+                sql += " AND h.INVOICE_NUMBER CONTAINING @invoiceNumber";
+                parameters.Add(new FbParameter("@invoiceNumber", invoiceNumber));
+            }
+
+            if (fromDate.HasValue)
+            {
+                sql += " AND h.ISSUE_DATE >= @fromDate";
+                parameters.Add(new FbParameter("@fromDate", fromDate.Value.Date));
+            }
+
+            if (toDate.HasValue)
+            {
+                sql += " AND h.ISSUE_DATE <= @toDate";
+                // A nap végét pontosan számoljuk ki: 23:59:59
+                DateTime endOfDay = toDate.Value.Date.AddDays(1).AddSeconds(-1);
+                parameters.Add(new FbParameter("@toDate", endOfDay));
+            }
+
+            if (!string.IsNullOrWhiteSpace(statusCode))
+            {
+                sql += " AND h.SZLASTAT = @statusCode";
+                parameters.Add(new FbParameter("@statusCode", statusCode));
+            }
+
             sql += " ORDER BY h.ID DESC";
 
-            var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn);
+            // A TableBaseClass.GetListBase-nek átadjuk a paramétertömböt is
+            var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn, parameters.ToArray());
             return rawList.ToList();
         }
     }

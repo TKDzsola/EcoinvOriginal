@@ -3,11 +3,11 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using FirebirdSql.Data.FirebirdClient;
-using System.Windows; // MessageBox miatt
+using System.Windows;
+using Ecoinv.Common; // Biztosítjuk a Logger elérését
 
 namespace Ecoinv.Common
 {
-    // A ": IDisposable" jelzi, hogy az osztály támogatja a 'using' blokkot és a takarítást
     public class FBConnectX : IDisposable
     {
         public FBConnectX()
@@ -27,12 +27,8 @@ namespace Ecoinv.Common
 
         #endregion
 
-        // -------------------------------------------------------------------
-        // KAPCSOLAT LÉTREHOZÁSA (A te App.Config logikáddal)
-        // -------------------------------------------------------------------
         public void GetConnectionX()
         {
-            // Ha már létezik a kapcsolat objektum, nem hozzuk létre újra
             if (FBCConnectionX != null) return;
 
             try
@@ -56,13 +52,11 @@ namespace Ecoinv.Common
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "GetConnectionX - Connection String összeállítási hiba");
                 MessageBox.Show("Hiba a Connection String összeállításakor:\n" + ex.Message);
             }
         }
 
-        // -------------------------------------------------------------------
-        // KAPCSOLAT NYITÁSA / ZÁRÁSA
-        // -------------------------------------------------------------------
         public void FBConnOpenX()
         {
             try
@@ -70,10 +64,14 @@ namespace Ecoinv.Common
                 if (FBCConnectionX == null) GetConnectionX();
 
                 if (GetConStateX() != ConnectionState.Open)
+                {
                     FBCConnectionX?.Open();
+                    Logger.Log("Adatbázis kapcsolat sikeresen megnyitva.");
+                }
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "FBConnOpenX - Kapcsolat nyitási hiba");
                 MessageBox.Show("Adatbázis kapcsolódási hiba:\n" + ex.Message);
             }
         }
@@ -83,6 +81,7 @@ namespace Ecoinv.Common
             if (FBCConnectionX != null && GetConStateX() != ConnectionState.Closed)
             {
                 FBCConnectionX.Close();
+                Logger.Log("Adatbázis kapcsolat lezárva.");
             }
         }
 
@@ -93,44 +92,39 @@ namespace Ecoinv.Common
 
         public FbTransaction FBConnBeginTransactionX() => FBCConnectionX?.BeginTransaction();
 
-        // -------------------------------------------------------------------
-        // SQL VÉGREHAJTÓK (Egyszerűsítve az IDisposable mintához)
-        // Mostantól a hívó fél (a using blokk) felel a kapcsolat nyitvatartásáért!
-        // -------------------------------------------------------------------
-        public string InsertSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
-        public string UpdateSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
-        public string DeleteSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr);
+        public string InsertSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr, "INSERT");
+        public string UpdateSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr, "UPDATE");
+        public string DeleteSQL(string sqlstr) => ExecuteSimpleSQL(sqlstr, "DELETE");
 
-        private string ExecuteSimpleSQL(string sqlstr)
+        private string ExecuteSimpleSQL(string sqlstr, string type)
         {
-            if (FBCConnectionX == null || GetConStateX() != ConnectionState.Open) return "Connection Error";
+            if (FBCConnectionX == null || GetConStateX() != ConnectionState.Open)
+            {
+                Logger.Log($"Sikertelen {type} művelet: Nincs nyitott kapcsolat.", "WARNING");
+                return "Connection Error";
+            }
 
             try
             {
-                // Itt nem nyitunk/zárunk tranzakciót, hanem a nyitott kapcsolaton futtatjuk.
-                // A 'using' itt a Command objektumot takarítja el futás után.
                 using (var cmd = new FbCommand(sqlstr, FBCConnectionX))
                 {
                     cmd.ExecuteNonQuery();
+                    Logger.Log($"{type} sikeres: {sqlstr}");
                 }
             }
             catch (Exception ex)
             {
-                // Ha hiba van, eldobjuk, hogy a hívó (pl. a Manager) tudja kezelni
+                Logger.LogError(ex, $"ExecuteSimpleSQL ({type}) hiba. SQL: {sqlstr}");
                 throw new Exception(ex.Message);
             }
 
             return string.Empty;
         }
 
-        // -------------------------------------------------------------------
-        // LEKÉRDEZŐK (Refaktorálva a biztonságos működéshez)
-        // -------------------------------------------------------------------
         public string SelectSQL_FirstCol(string sqlstr)
         {
             var retstr = string.Empty;
 
-            // Biztosítjuk, hogy nyitva legyen (ha a using blokkon belül hívják)
             if (FBCConnectionX == null) GetConnectionX();
             if (GetConStateX() != ConnectionState.Open) FBConnOpenX();
 
@@ -142,12 +136,13 @@ namespace Ecoinv.Common
                     if (fbdr.Read() && !fbdr.IsDBNull(0))
                         retstr = fbdr.GetString(0);
                 }
+                Logger.Log($"SelectSQL_FirstCol sikeres. SQL: {sqlstr}");
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, $"SelectSQL_FirstCol hiba. SQL: {sqlstr}");
                 throw new Exception(ex.Message);
             }
-            // Nem zárjuk be a kapcsolatot, mert a using blokk fogja a végén!
             return retstr;
         }
 
@@ -169,34 +164,31 @@ namespace Ecoinv.Common
                         {
                             var values = new object[reader.FieldCount];
                             reader.GetValues(values);
+                            Logger.Log($"SelectSQL_FirstRow sikeres. SQL: {sqlstr}");
                             return values;
                         }
                     }
                 }
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex, $"SelectSQL_FirstRow hiba. SQL: {sqlstr}");
                 throw;
             }
         }
 
-        // =================================================================
-        // IDISPOSABLE IMPLEMENTÁCIÓ (A Lényeg!)
-        // =================================================================
         public void Dispose()
         {
-            // 1. Bezárjuk a kapcsolatot
             FBConnCloseX();
 
-            // 2. Megszüntetjük az objektumot a memóriában
             if (FBCConnectionX != null)
             {
                 FBCConnectionX.Dispose();
                 FBCConnectionX = null;
+                Logger.Log("FBConnectX erőforrások felszabadítva (Dispose).");
             }
 
-            // 3. Jelezzük a Garbage Collectornek, hogy végeztünk
             GC.SuppressFinalize(this);
         }
     }

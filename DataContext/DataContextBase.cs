@@ -69,7 +69,7 @@ namespace Ecoinv.DataContext
         #region ... LoginUserName property ...
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static string __loginusername = "ADMIN";
+        private static string __loginusername = "";
 
         public static string LoginUserName
         {

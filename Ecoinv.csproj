@@ -181,6 +181,7 @@
     <Compile Include="Common\Annotations.cs" />
     <Compile Include="Common\DBFunc.cs" />
     <Compile Include="Common\FBConnectX.cs" />
+    <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\MD5Func.cs" />
     <Compile Include="Common\SimpleModel.cs" />
     <Compile Include="Components\BoolToVisibilityConverter.cs" />

@@ -1,0 +1,175 @@
+[2026.01.19 11:40:19] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 11:40:19] [WARNING] Sikertelen bejelentkezési kísérlet: a
+[2026.01.19 11:40:21] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 11:40:21] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 13:44:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 13:44:22] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.19 13:44:22] [INFO] Sikeres bejelentkezés: b
+[2026.01.19 13:44:28] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 13:44:28] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:00:26] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:00:26] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.19 14:00:26] [INFO] Sikeres bejelentkezés: b
+[2026.01.19 14:00:37] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:00:37] [ERROR] TableBaseClass.InternalGetList hiba. SQL: SELECT h.*, c.NAME as CLIENT_NAME FROM INVOICE_HEADERS h LEFT JOIN CLIENTS c ON h.CLIENT_ID = c.ID WHERE 1=1  AND h.ISSUE_DATE >= '2026-01-18' AND h.ISSUE_DATE <= '2026-01-19 23:59:59' ORDER BY h.ID DESC: conversion error from string "2026-01-19 23:59:59"
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 71
+[2026.01.19 14:00:37] [ERROR] Számla keresési hiba: conversion error from string "2026-01-19 23:59:59"
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 83
+   a következő helyen: Ecoinv.BL.TableBaseClass.GetListBase[T](String selectSQL, FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 49
+   a következő helyen: Ecoinv.BL.INVOICE_HEADERSTable.SearchInvoices(FBConnectX conn, String clientName, String invoiceNumber, Nullable`1 fromDate, Nullable`1 toDate, String statusCode) hely: C:\Users\prozs\source\repos\Ecoinv\BL\INVOICE_HEADERS.cs, sor: 134
+   a következő helyen: Ecoinv.DataContext.SEARCHINVOICEDataContext.DoSearch() hely: C:\Users\prozs\source\repos\Ecoinv\DataContext\SEARCHINVOICEDataContext.cs, sor: 88
+[2026.01.19 14:02:00] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:02:00] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:08:56] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:08:56] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.19 14:08:56] [INFO] Sikeres bejelentkezés: b
+[2026.01.19 14:09:05] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:09:05] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:09:05] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:09:12] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:09:12] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:11:36] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:11:36] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.19 14:11:36] [INFO] Sikeres bejelentkezés: b
+[2026.01.19 14:11:46] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:11:48] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:11:48] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:11:54] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.19 14:11:54] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:11:54] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.19 14:12:01] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.19 14:12:01] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 14:45:10] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 14:45:10] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 14:45:10] [INFO] Sikeres bejelentkezés: b
+[2026.01.20 14:45:18] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 14:45:18] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 14:45:18] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 14:45:18] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 14:45:18] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 14:45:18] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 14:45:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 14:45:24] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 14:45:24] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 14:45:43] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 14:45:43] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 15:12:51] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:12:51] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 15:12:51] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.20 15:12:54] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:12:54] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 15:12:54] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 15:12:54] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:12:54] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 15:12:54] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 15:13:20] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:13:20] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 15:13:20] [INFO] Sikeres bejelentkezés: ADMIN
+[2026.01.20 15:13:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:13:22] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 15:13:22] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 15:13:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 15:13:22] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 15:13:22] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:24:30] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:24:30] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 18:24:30] [INFO] Sikeres bejelentkezés: b
+[2026.01.20 18:24:51] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:24:51] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:24:51] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:24:51] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:24:51] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:24:51] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:24:57] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:24:57] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:24:57] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:25:09] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:25:09] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:26:36] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:26:36] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 18:26:36] [INFO] Sikeres bejelentkezés: b
+[2026.01.20 18:26:44] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:26:44] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:26:44] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:26:44] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:26:44] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:26:44] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:27:49] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:27:51] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:27:51] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:27:57] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:27:57] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:27:57] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:28:11] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:28:11] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:28:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:28:22] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 18:28:22] [INFO] Sikeres bejelentkezés: ADMIN
+[2026.01.20 18:28:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:28:24] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:28:24] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:28:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:28:24] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:28:24] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:37:20] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:37:20] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 18:37:20] [INFO] Sikeres bejelentkezés: ADMIN
+[2026.01.20 18:37:21] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:37:21] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:37:21] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:37:21] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:37:21] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:37:21] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:57:58] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:57:58] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.20 18:57:58] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.20 18:57:59] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:57:59] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:57:59] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:57:59] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:57:59] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:57:59] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:58:00] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:58:00] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:58:00] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:58:03] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:58:03] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:58:03] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:58:05] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:58:05] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:58:05] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:58:38] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:58:38] [INFO] Számla mentése indítva. Sorszám: 120/1
+[2026.01.20 18:58:38] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (67, 15, '120/1', '2026-01-20', '2026-02-03', '2026-01-20 18:58:38', 'Készpénz', '1', '0', '0')
+[2026.01.20 18:58:38] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (63, 67, 21, 5, 1, 120, 20, 120, 24, 144)
+[2026.01.20 18:58:38] [INFO] Számla mentése sikeres.
+[2026.01.20 18:58:40] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:58:45] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:58:45] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:58:45] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:58:45] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:59:26] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:59:26] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:59:26] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:59:32] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:59:32] [INFO] Sztornózás indítása. Eredeti ID: 67
+[2026.01.20 18:59:32] [INFO] UPDATE sikeres: UPDATE INVOICE_HEADERS SET SZLASTAT = '2' WHERE ID = 67
+[2026.01.20 18:59:32] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (68, 15, 'ST-120/1', '2026-01-20', '2026-01-20', '2026-01-20 18:59:32', 'Készpénz', '2', '1', '67')
+[2026.01.20 18:59:33] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (64, 68, 21, 5, 1, 120, 20, 120, 24, 144)
+[2026.01.20 18:59:33] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:59:33] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:59:33] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:59:34] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 18:59:40] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:59:40] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 18:59:40] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 18:59:40] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 19:02:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.20 19:02:31] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 19:02:31] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.20 19:02:48] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.20 19:02:48] [INFO] FBConnectX erőforrások felszabadítva (Dispose).

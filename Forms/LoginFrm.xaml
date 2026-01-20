@@ -37,7 +37,8 @@
     </StackPanel>
     <Label Content="Név" HorizontalAlignment="Right" Margin="0,46,24,0" VerticalAlignment="Top" Height="26" Width="31"/>
     <Label Content="Jelszó" HorizontalAlignment="Right" Margin="0,69,24,0" VerticalAlignment="Top" Height="26" Width="41"/>
-    <TextBox HorizontalAlignment="Left" 
+    <TextBox HorizontalAlignment="Left"
+             ToolTip="Felhasználónév..."
              Height="19" 
              Margin="3,53,0,0" 
              TextWrapping="Wrap" 
@@ -46,13 +47,16 @@
              VerticalAlignment="Top" 
              Width="102" 
              Grid.Column="1"/>
-    <components:PasswordBox2 HorizontalAlignment="Left" 
-                 Margin="3,77,0,0" 
-                 VerticalAlignment="Top" 
-                 Width="102" 
-                 Password="{Binding Path=LogPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Grid.Column="1"
-                 Height="18" />
+    <components:PasswordBox2 
+        HorizontalAlignment="Left"
+        ToolTip="Jelszó..."
+        Margin="3,77,0,0" 
+        VerticalAlignment="Top" 
+        Width="102" 
+        Password="{Binding Path=LogPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        Grid.Column="1"
+        Height="18" />
+      
     <Button Content="Tovább" HorizontalAlignment="Left" Margin="52,115,0,0" VerticalAlignment="Top" Width="75"
             FontFamily="Arial" FontSize="12"
             Command="{Binding Path=LoginCmd}" Height="20" Style="{DynamicResource RoundedButtonStyle}" />

@@ -23,7 +23,7 @@ namespace Ecoinv.DataContext
 
         #region ... LogPassword property ...
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static string __logpassword = "*";
+        private static string __logpassword = "";
         public static string LogPassword
         {
             get => __logpassword;
@@ -33,7 +33,6 @@ namespace Ecoinv.DataContext
 
         private static void DoLogin()
         {
-            // ÚJ: IDisposable használata a bejelentkezésnél
             using (FBConnectX conn = new FBConnectX())
             {
                 conn.GetConnectionX();
@@ -41,8 +40,9 @@ namespace Ecoinv.DataContext
 
                 if (conn.FBCConnectionX != null)
                 {
-                    if (GetLogin(conn)) // Átadjuk a kapcsolatot
+                    if (GetLogin(conn))
                     {
+                        Logger.Log($"Sikeres bejelentkezés: {LoginUserName}");
                         var lgfloginform = Application.Current.Windows[0];
                         lgfloginform?.Hide();
 
@@ -51,6 +51,7 @@ namespace Ecoinv.DataContext
                     }
                     else
                     {
+                        Logger.Log($"Sikertelen bejelentkezési kísérlet: {LoginUserName}", "WARNING");
                         MessageBox.Show("Hibás bejelentkezés!" + Environment.NewLine + "Inaktív felhasználó, vagy hibás név/jelszó páros!");
                     }
                 }
@@ -58,7 +59,7 @@ namespace Ecoinv.DataContext
                 {
                     MessageBox.Show("Adatbázis kapcsolódási hiba!");
                 }
-            } // Itt a Dispose() automatikusan lezár mindent
+            }
         }
 
         private static bool GetLogin(FBConnectX conn)
@@ -70,7 +71,6 @@ namespace Ecoinv.DataContext
                 var md5f = new MD5Func();
                 var logpsswMD5 = md5f.MD5Encode(LogPassword);
 
-                // SQL: upssw és isadmin lekérése az EUSERS táblából
                 var alkres = conn.SelectSQL_FirstRow(
                     "select upssw, isadmin from eusers where uname = @uname and uactive='I'",
                     new FbParameter("@uname", LoginUserName));
@@ -90,6 +90,8 @@ namespace Ecoinv.DataContext
             }
             catch (Exception Ex)
             {
+                // JAVÍTÁS: Naplózzuk a konkrét hibát a belépésnél
+                Logger.LogError(Ex, $"Bejelentkezési adatbázis hiba. User: {LoginUserName}");
                 MessageBox.Show(Ex.Message);
                 return false;
             }

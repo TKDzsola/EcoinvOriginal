@@ -3,44 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\tablebaseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\tablebaseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\common\\dbfunc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:common\\dbfunc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\clients.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\clients.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\datacontext\\loginfrmdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\loginfrmdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\common\\fbconnectx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:common\\fbconnectx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\bl\\invoice_details.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\invoice_details.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\bl\\invoice_headers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\invoice_headers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\datacontext\\searchinvoicedatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\searchinvoicedatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\pdf\\services\\invoiceexportmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\services\\invoiceexportmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\pdf\\models\\invoicepdfmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\models\\invoicepdfmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\eusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\eusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,135 +22,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginFrmDataContext.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\LoginFrmDataContext.cs",
-              "RelativeDocumentMoniker": "DataContext\\LoginFrmDataContext.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\LoginFrmDataContext.cs",
-              "RelativeToolTip": "DataContext\\LoginFrmDataContext.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAywGcAAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "CLIENTSDataContext.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\CLIENTSDataContext.cs",
+              "RelativeDocumentMoniker": "DataContext\\CLIENTSDataContext.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\CLIENTSDataContext.cs",
+              "RelativeToolTip": "DataContext\\CLIENTSDataContext.cs",
+              "ViewState": "AgIAACIBAAAAAAAAAAAgwC4BAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T21:42:47.813Z",
+              "WhenOpened": "2026-01-20T17:28:29.223Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DBFunc.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Common\\DBFunc.cs",
-              "RelativeDocumentMoniker": "Common\\DBFunc.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Common\\DBFunc.cs",
-              "RelativeToolTip": "Common\\DBFunc.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAywC4AAAABAAAAAAAAAA==",
+              "Title": "CLIENTS.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
+              "RelativeDocumentMoniker": "BL\\CLIENTS.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
+              "RelativeToolTip": "BL\\CLIENTS.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAgwHAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T21:42:21.554Z",
+              "WhenOpened": "2026-01-20T17:55:54.23Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "TableBaseClass.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\TableBaseClass.cs",
-              "RelativeDocumentMoniker": "BL\\TableBaseClass.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\TableBaseClass.cs*",
-              "RelativeToolTip": "BL\\TableBaseClass.cs*",
-              "ViewState": "AgIAADQAAAAAAAAAAAAywEsAAAABAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "EUSERS.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\EUSERS.cs",
+              "RelativeDocumentMoniker": "BL\\EUSERS.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\EUSERS.cs",
+              "RelativeToolTip": "BL\\EUSERS.cs",
+              "ViewState": "AgIAAA8BAAAAAAAAAAA0wBgBAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T21:42:02.779Z",
+              "WhenOpened": "2026-01-20T13:49:12.885Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "FBConnectX.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Common\\FBConnectX.cs",
-              "RelativeDocumentMoniker": "Common\\FBConnectX.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Common\\FBConnectX.cs",
-              "RelativeToolTip": "Common\\FBConnectX.cs",
-              "ViewState": "AgIAALUAAAAAAAAAAAA1wMMAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T21:15:25.383Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "SEARCHINVOICEDataContext.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\SEARCHINVOICEDataContext.cs",
-              "RelativeDocumentMoniker": "DataContext\\SEARCHINVOICEDataContext.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\SEARCHINVOICEDataContext.cs",
-              "RelativeToolTip": "DataContext\\SEARCHINVOICEDataContext.cs",
-              "ViewState": "AgIAAJUAAAAAAAAAAAA1wKQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:38:23.034Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "INVOICE_DETAILS.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_DETAILS.cs",
-              "RelativeDocumentMoniker": "BL\\INVOICE_DETAILS.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_DETAILS.cs",
-              "RelativeToolTip": "BL\\INVOICE_DETAILS.cs",
-              "ViewState": "AgIAAFgAAAAAAAAAAAA1wHAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:38:00.17Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "INVOICE_HEADERS.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_HEADERS.cs",
-              "RelativeDocumentMoniker": "BL\\INVOICE_HEADERS.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_HEADERS.cs",
-              "RelativeToolTip": "BL\\INVOICE_HEADERS.cs",
-              "ViewState": "AgIAAHEAAAAAAAAAAAA1wIkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:37:38.86Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "InvoicePdfDocument.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
-              "RelativeDocumentMoniker": "Pdf\\Documents\\InvoicePdfDocument.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
-              "RelativeToolTip": "Pdf\\Documents\\InvoicePdfDocument.cs",
-              "ViewState": "AgIAAIMAAAAAAAAAAAA2wJoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:30:35.205Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "InvoiceExportManager.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Services\\InvoiceExportManager.cs",
-              "RelativeDocumentMoniker": "Pdf\\Services\\InvoiceExportManager.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Services\\InvoiceExportManager.cs",
-              "RelativeToolTip": "Pdf\\Services\\InvoiceExportManager.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAA1wJQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:30:00.201Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "InvoicePdfModel.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Models\\InvoicePdfModel.cs",
-              "RelativeDocumentMoniker": "Pdf\\Models\\InvoicePdfModel.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Models\\InvoicePdfModel.cs",
-              "RelativeToolTip": "Pdf\\Models\\InvoicePdfModel.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAABBwDIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-18T20:29:38.006Z"
             }
           ]
         }

@@ -75,7 +75,6 @@ namespace Ecoinv.DataContext
 
         private void DoSearch()
         {
-            // ÚJ: AUTOMATIKUS LEZÁRÁS 'USING'-GAL
             using (FBConnectX localConn = new FBConnectX())
             {
                 try
@@ -96,6 +95,8 @@ namespace Ecoinv.DataContext
                 }
                 catch (Exception ex)
                 {
+                    // JAVÍTÁS: Keresési hiba naplózása
+                    Logger.LogError(ex, "Számla keresési hiba");
                     MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
@@ -109,25 +110,22 @@ namespace Ecoinv.DataContext
             try
             {
                 var exportManager = new InvoiceExportManager();
-                // Itt a manager belső 'using' blokkja intézi a kapcsolatot
                 exportManager.ExportInvoiceById(SelectedINVOICE_HEADERS.ID);
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Nyomtatási hiba. ID: {SelectedINVOICE_HEADERS.ID}");
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DoStorno()
         {
             if (SelectedINVOICE_HEADERS == null) return;
 
-            if (MessageBox.Show("Biztosan sztornózod a számlát?\nEz véglegesen érvényteleníti és létrehoz egy korrekciós bizonylatot.",
-                                "Sztornó megerősítése",
-                                MessageBoxButton.YesNo,
-                                MessageBoxImage.Warning) != MessageBoxResult.Yes)
-            {
+            if (MessageBox.Show("Biztosan sztornózod a számlát?", "Megerősítés", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return;
-            }
 
-            // ÚJ: AUTOMATIKUS LEZÁRÁS 'USING'-GAL
             using (FBConnectX localConn = new FBConnectX())
             {
                 try
@@ -135,29 +133,24 @@ namespace Ecoinv.DataContext
                     localConn.GetConnectionX();
                     localConn.FBConnOpenX();
 
-                    // 1. Eredeti státusz frissítése
+                    Logger.Log($"Sztornózás indítása. Eredeti ID: {SelectedINVOICE_HEADERS.ID}");
+
                     _invoiceTable.SetStorno(SelectedINVOICE_HEADERS.ID, localConn);
-                    SelectedINVOICE_HEADERS.SZLASTAT = "2";
-
-                    // 2. Új sztornó számla létrehozása
                     int newStornoInvoiceId = _invoiceTable.InsertStorno(SelectedINVOICE_HEADERS, localConn);
-
-                    // 3. Tételek másolása
                     _detailsTable.CopyItems(SelectedINVOICE_HEADERS.ID, newStornoInvoiceId, localConn);
 
-                    // 4. Lista frissítése
                     DoSearch();
 
-                    MessageBox.Show("A számla sztornózása sikeres!\nMost elkészítjük a sztornó bizonylatot.",
-                                    "Kész", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Sikeres sztornózás!");
 
-                    // 5. Automatikus PDF generálás
                     var exportManager = new InvoiceExportManager();
                     exportManager.ExportInvoiceById(newStornoInvoiceId);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Hiba a sztornózás közben:\n{ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // JAVÍTÁS: Kritikus hiba a sztornónál
+                    Logger.LogError(ex, $"Sztornózási folyamat hiba. Eredeti ID: {SelectedINVOICE_HEADERS.ID}");
+                    MessageBox.Show($"Hiba: {ex.Message}");
                 }
             }
         }

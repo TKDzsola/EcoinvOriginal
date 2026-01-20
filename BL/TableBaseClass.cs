@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
@@ -35,18 +36,25 @@ namespace Ecoinv.BL
                             prop.SetValue(obj, value, null);
                         }
                     }
-                    catch { }
+                    catch { /* Itt nem logolunk, mert ez gyakran csak hiányzó oszlop */ }
                 }
                 list.Add(obj);
             }
             return list;
         }
 
+        // Meglévő metódus a kompatibilitás miatt
         public static ObservableCollection<T> GetListBase<T>(string selectSQL, FBConnectX conn)
+        {
+            return GetListBase<T>(selectSQL, conn, null);
+        }
+
+        // ÚJ METÓDUS: Ez kezeli a paraméterezett lekérdezéseket a dátumhiba ellen
+        public static ObservableCollection<T> GetListBase<T>(string selectSQL, FBConnectX conn, FbParameter[] parameters)
         {
             if (conn != null)
             {
-                return InternalGetList<T>(selectSQL, conn);
+                return InternalGetList<T>(selectSQL, conn, parameters);
             }
             else
             {
@@ -54,22 +62,45 @@ namespace Ecoinv.BL
                 {
                     localConn.GetConnectionX();
                     localConn.FBConnOpenX();
-                    return InternalGetList<T>(selectSQL, localConn);
+                    return InternalGetList<T>(selectSQL, localConn, parameters);
                 }
             }
         }
 
-        private static ObservableCollection<T> InternalGetList<T>(string sql, FBConnectX conn)
+        // MÓDOSÍTOTT BELSŐ METÓDUS: Átadja a paramétereket az FbCommand-nak
+        private static ObservableCollection<T> InternalGetList<T>(string sql, FBConnectX conn, FbParameter[] parameters = null)
         {
             if (conn.GetConStateX() != ConnectionState.Open) conn.FBConnOpenX();
 
-            using (var fbtr = conn.FBConnBeginTransactionX())
-            using (var cmd = new FbCommand(sql, conn.FBCConnectionX, fbtr))
-            using (var fbdr = cmd.ExecuteReader())
+            FbTransaction fbtr = null;
+            try
             {
-                var list = BaseReadList<T>(fbdr);
-                fbtr.Commit();
-                return list;
+                fbtr = conn.FBConnBeginTransactionX();
+                using (var cmd = new FbCommand(sql, conn.FBCConnectionX, fbtr))
+                {
+                    // Ha vannak paraméterek (pl. dátumok), hozzáadjuk őket a parancshoz
+                    if (parameters != null)
+                    {
+                        cmd.Parameters.AddRange(parameters);
+                    }
+
+                    using (var fbdr = cmd.ExecuteReader())
+                    {
+                        var list = BaseReadList<T>(fbdr);
+                        fbtr.Commit();
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"TableBaseClass.InternalGetList hiba. SQL: {sql}");
+                fbtr?.Rollback();
+                throw;
+            }
+            finally
+            {
+                fbtr?.Dispose();
             }
         }
     }

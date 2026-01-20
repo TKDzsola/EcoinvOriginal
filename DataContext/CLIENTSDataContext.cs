@@ -1,6 +1,7 @@
 ﻿using Ecoinv.BL;
 using Ecoinv.Common;
 using Ecoinv.Components;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -19,7 +20,6 @@ namespace Ecoinv.DataContext
             _addressesTable = new ADRESSESTable();
 
             ClientsList = new ObservableCollection<CLIENTS>();
-
 
             // 1. Új ügyfél: CSAK ADMIN
             CommandNew = new DelegateCommand(
@@ -45,7 +45,7 @@ namespace Ecoinv.DataContext
                 _ => SelectedClient != null && DataContextBase.IsAdmin
             );
 
-            // 5. Kiválasztás (Számlához) és Keresés: BÁRKI (Ezek maradnak)
+            // 5. Kiválasztás (Számlához) és Keresés: BÁRKI
             CommandSelect = new DelegateCommand(_ => DoSelect(), _ => SelectedClient != null);
             CommandSearch = new DelegateCommand(_ => DoSearch());
 
@@ -53,13 +53,20 @@ namespace Ecoinv.DataContext
 
             // Alaphelyzet
             IsEditing = false;
-
-            // Alapértelmezetten legyen HAMIS a szűrés
             IsActiveOnly = false;
             SearchText = "";
 
-            // Induláskor betöltés
-            DoSearch();
+            // BIZTONSÁGOS INDÍTÁS: Try-Catch blokkba tesszük, hogy ne omoljon össze az ablak nyitáskor
+            try
+            {
+                DoSearch();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Hiba az ügyfelek betöltésekor (Konstruktor)");
+                // Itt nem dobunk MessageBox-ot, mert az ablak még nem jött létre teljesen, 
+                // de a logba beírjuk a hibát.
+            }
         }
 
         // =====================================================
@@ -135,52 +142,64 @@ namespace Ecoinv.DataContext
         public ICommand CommandSearch { get; }
 
         // =====================================================
-        // METÓDUSOK
+        // METÓDUSOK - JAVÍTOTT (USING BLOKKOS) VERZIÓK
         // =====================================================
 
         private void DoSearch()
         {
-            if (FBConnX.GetConStateX() != System.Data.ConnectionState.Open)
-                FBConnX.FBConnOpenX();
-
-            var fullList = _clientsTable.GetList(FBConnX);
-
-            // Biztonságosabb szűrés (Null Check)
-            var filtered = fullList.Where(x =>
-                (string.IsNullOrEmpty(SearchText) || (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())))
-                &&
-                (!IsActiveOnly || (x.CACTIVE != null && x.CACTIVE.Trim() == "1"))
-            ).ToList();
-
-            ClientsList.Clear();
-            foreach (var item in filtered)
+            // JAVÍTÁS: Mindig új kapcsolatot hozunk létre a 'using' blokkal!
+            using (FBConnectX conn = new FBConnectX())
             {
-                ClientsList.Add(item);
-            }
+                conn.GetConnectionX();
+                conn.FBConnOpenX(); // Kapcsolat nyitása
 
-            if (ClientsList.Count == 0 && string.IsNullOrEmpty(SearchText) && !IsActiveOnly && fullList.Count > 0)
-            {
-                MessageBox.Show("Hiba: Az adatok beolvasása sikeres, de a megjelenítés nem sikerült.");
-            }
+                if (conn.GetConStateX() != System.Data.ConnectionState.Open)
+                    throw new Exception("Nem sikerült megnyitni az adatbázis kapcsolatot.");
 
-            // Alaphelyzetbe állítás
-            CurrentClient = new CLIENTS();
-            CurrentAddress = new ADRESSES();
-            IsEditing = false;
+                var fullList = _clientsTable.GetList(conn);
+
+                // Biztonságosabb szűrés (Null Check)
+                var filtered = fullList.Where(x =>
+                    (string.IsNullOrEmpty(SearchText) || (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())))
+                    &&
+                    (!IsActiveOnly || (x.CACTIVE != null && x.CACTIVE.Trim() == "1"))
+                ).ToList();
+
+                ClientsList.Clear();
+                foreach (var item in filtered)
+                {
+                    ClientsList.Add(item);
+                }
+
+                // Ha nincs adat, de a kapcsolat jó volt, nem kell hibaüzenet, csak üres a lista.
+
+                // Alaphelyzetbe állítás
+                // Csak akkor nullázzuk le, ha nincs kiválasztott elem, vagy a lista frissült
+                if (CurrentClient == null) CurrentClient = new CLIENTS();
+                if (CurrentAddress == null) CurrentAddress = new ADRESSES();
+                IsEditing = false;
+            } // Itt automatikusan lezárul a kapcsolat (Dispose)
         }
 
         private void LoadClientDetails(CLIENTS client)
         {
             CurrentClient = client;
 
-            var addresses = _addressesTable.GetList(FBConnX, client.ID);
-            var address = addresses.FirstOrDefault();
-
-            if (address == null)
+            // JAVÍTÁS: Itt is saját kapcsolatot használunk
+            using (FBConnectX conn = new FBConnectX())
             {
-                address = new ADRESSES { CLIENT_ID = client.ID };
+                conn.GetConnectionX();
+                conn.FBConnOpenX();
+
+                var addresses = _addressesTable.GetList(conn, client.ID);
+                var address = addresses.FirstOrDefault();
+
+                if (address == null)
+                {
+                    address = new ADRESSES { CLIENT_ID = client.ID };
+                }
+                CurrentAddress = address;
             }
-            CurrentAddress = address;
         }
 
         private void DoNew()
@@ -207,28 +226,37 @@ namespace Ecoinv.DataContext
                 return;
             }
 
-            try
+            // JAVÍTÁS: Saját kapcsolat a mentéshez
+            using (FBConnectX conn = new FBConnectX())
             {
-                // Null értékek kezelése
-                if (string.IsNullOrEmpty(CurrentClient.CACTIVE)) CurrentClient.CACTIVE = "0";
+                try
+                {
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
 
-                _clientsTable.Save(CurrentClient, FBConnX);
+                    // Null értékek kezelése
+                    if (string.IsNullOrEmpty(CurrentClient.CACTIVE)) CurrentClient.CACTIVE = "0";
 
-                CurrentAddress.CLIENT_ID = CurrentClient.ID;
-                _addressesTable.Save(CurrentAddress, FBConnX);
+                    _clientsTable.Save(CurrentClient, conn);
 
-                MessageBox.Show("Sikeres mentés!", "Infó", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CurrentAddress.CLIENT_ID = CurrentClient.ID;
+                    _addressesTable.Save(CurrentAddress, conn);
 
-                DoSearch();
+                    MessageBox.Show("Sikeres mentés!", "Infó", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                var savedItem = ClientsList.FirstOrDefault(x => x.ID == CurrentClient.ID);
-                if (savedItem != null) SelectedClient = savedItem;
+                    // Frissítjük a listát (ez nyit majd egy újabb kapcsolatot, ami rendben van)
+                    DoSearch();
 
-                IsEditing = false;
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Hiba a mentéskor: " + ex.Message);
+                    var savedItem = ClientsList.FirstOrDefault(x => x.ID == CurrentClient.ID);
+                    if (savedItem != null) SelectedClient = savedItem;
+
+                    IsEditing = false;
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.LogError(ex, "Hiba az ügyfél mentésekor");
+                    MessageBox.Show("Hiba a mentéskor: " + ex.Message);
+                }
             }
         }
 
@@ -239,18 +267,26 @@ namespace Ecoinv.DataContext
             if (MessageBox.Show("Biztosan törölni szeretnéd ezt az ügyfelet?", "Törlés",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                try
+                // JAVÍTÁS: Saját kapcsolat a törléshez
+                using (FBConnectX conn = new FBConnectX())
                 {
-                    var addresses = _addressesTable.GetList(FBConnX, SelectedClient.ID);
-                    foreach (var addr in addresses) _addressesTable.Delete(addr, FBConnX);
+                    try
+                    {
+                        conn.GetConnectionX();
+                        conn.FBConnOpenX();
 
-                    _clientsTable.Delete(SelectedClient, FBConnX);
+                        var addresses = _addressesTable.GetList(conn, SelectedClient.ID);
+                        foreach (var addr in addresses) _addressesTable.Delete(addr, conn);
 
-                    DoSearch();
-                }
-                catch (System.Exception ex)
-                {
-                    MessageBox.Show("Törlési hiba: " + ex.Message);
+                        _clientsTable.Delete(SelectedClient, conn);
+
+                        DoSearch();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogError(ex, "Hiba az ügyfél törlésekor");
+                        MessageBox.Show("Törlési hiba: " + ex.Message);
+                    }
                 }
             }
         }
