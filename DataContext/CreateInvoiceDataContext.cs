@@ -4,6 +4,7 @@ using Ecoinv.Components;
 using Ecoinv.Forms;
 using Ecoinv.Pdf.Services;
 using System;
+using System.Collections.Generic; // Kell a List<string>-hez
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -19,6 +20,19 @@ namespace Ecoinv.DataContext
             InvoiceDetails = new ObservableCollection<INVOICE_DETAILS>();
             Services = new ObservableCollection<SERVICES>();
             VatRates = new ObservableCollection<VATRATES>();
+
+            // FIZETÉSI MÓDOK FELTÖLTÉSE
+            PaymentMethods = new ObservableCollection<string>
+            {
+                "Készpénz",
+                "Átutalás",
+                "Bankkártya"
+            };
+            // Alapértelmezett kiválasztás
+            SelectedPaymentMethod = PaymentMethods.FirstOrDefault();
+
+            // ALAPÉRTELMEZETT HATÁRIDŐ (Ma + 8 nap)
+            PaymentDeadline = DateTime.Today.AddDays(8);
 
             LoadServices();
             LoadVatRates();
@@ -48,6 +62,26 @@ namespace Ecoinv.DataContext
             UpdateActionButtonTexts();
             LoadSelectedClientFromStatic();
             RecalculateTotals();
+        }
+
+        // =====================================================
+        // ÚJ PROPERTY-K (FIZETÉSI MÓD ÉS HATÁRIDŐ)
+        // =====================================================
+
+        public ObservableCollection<string> PaymentMethods { get; }
+
+        private string _selectedPaymentMethod;
+        public string SelectedPaymentMethod
+        {
+            get => _selectedPaymentMethod;
+            set => SetPropertyValue(nameof(SelectedPaymentMethod), ref _selectedPaymentMethod, value);
+        }
+
+        private DateTime _paymentDeadline;
+        public DateTime PaymentDeadline
+        {
+            get => _paymentDeadline;
+            set => SetPropertyValue(nameof(PaymentDeadline), ref _paymentDeadline, value);
         }
 
         // =====================================================
@@ -91,7 +125,7 @@ namespace Ecoinv.DataContext
         }
 
         // =====================================================
-        // SZERKESZTŐ MEZŐK ÉS ÖSSZESÍTŐK (Javított, nincs duplikáció)
+        // SZERKESZTŐ MEZŐK ÉS ÖSSZESÍTŐK
         // =====================================================
         private decimal _editQty = 1;
         public decimal EditQty
@@ -250,20 +284,28 @@ namespace Ecoinv.DataContext
                     conn.FBConnOpenX();
                     Logger.Log($"Számla mentése indítva. Sorszám: {InvoiceNumber}");
 
+                    // 1. HEADER mentése (MOST MÁR A VALÓS ADATOKKAL)
                     var header = new INVOICE_HEADERS
                     {
                         CLIENT_ID = SelectedClientId,
                         INVOICE_NUMBER = InvoiceNumber,
                         ISSUE_DATE = DateTime.Today,
-                        DUE_DATE = DateTime.Today.AddDays(14),
+
+                        // JAVÍTVA: A felhasználó által választott határidő
+                        DUE_DATE = PaymentDeadline,
+
                         CREATED = DateTime.Now,
-                        PAYMENT_METHOD = "Készpénz",
-                        SZLASTAT = "1",
-                        FIZSTAT = "0",
+
+                        // JAVÍTVA: A felhasználó által választott fizetési mód
+                        PAYMENT_METHOD = SelectedPaymentMethod ?? "Készpénz", // Ha esetleg null lenne, fallback
+
+                        SZLASTAT = "1", // Kiállítva
+                        FIZSTAT = "0",  // Még nem fizetett
                         STORNO_ID = "0"
                     };
                     new INVOICE_HEADERSTable().Insert(header, conn);
 
+                    // 2. TÉTELEK mentése
                     var detailTable = new INVOICE_DETAILSTable();
                     foreach (var item in InvoiceDetails)
                     {
@@ -274,8 +316,10 @@ namespace Ecoinv.DataContext
                     Logger.Log("Számla mentése sikeres.");
                     MessageBox.Show("Számla mentve.");
 
+                    // 3. PDF GENERÁLÁS (A PdfService már olvassa az adatbázist, így a mentett adatokkal fog dolgozni)
                     var exportManager = new InvoiceExportManager();
                     exportManager.ExportInvoiceById(header.ID);
+
                     CancelInvoice();
                 }
                 catch (Exception ex)
@@ -304,7 +348,18 @@ namespace Ecoinv.DataContext
             }
         }
 
-        private void CancelInvoice() { InvoiceDetails.Clear(); InvoiceNumber = string.Empty; RecalculateTotals(); IsAddItemPanelVisible = false; }
+        private void CancelInvoice()
+        {
+            InvoiceDetails.Clear();
+            InvoiceNumber = string.Empty;
+            RecalculateTotals();
+            IsAddItemPanelVisible = false;
+
+            // Visszaállítás alaphelyzetbe
+            PaymentDeadline = DateTime.Today.AddDays(8);
+            SelectedPaymentMethod = PaymentMethods.FirstOrDefault();
+        }
+
         private void PreviewInvoice() => MessageBox.Show("Előnézet funkció fejlesztés alatt.");
     }
 }

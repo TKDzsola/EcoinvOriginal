@@ -29,9 +29,9 @@ namespace Ecoinv.Pdf.Services
                 SellerName = seller?.SZKNEV ?? "Unbekannt",
                 SellerAddress = seller?.SZKCIM ?? string.Empty,
 
-                // Adószámok szétválogatása
-                SellerTaxNumber = seller?.SZKTAX ?? string.Empty,       // Steuernummer
-                SellerEuTaxNumber = seller?.SZKCOMTAX ?? string.Empty,  // UID-Nummer (Ezt használjuk EU-s adószámnak)
+                // Adószámok
+                SellerTaxNumber = seller?.SZKTAX ?? string.Empty,
+                SellerEuTaxNumber = seller?.SZKCOMTAX ?? string.Empty,
                 SellerBankAccount = seller?.SZKBANKACCOUNT ?? string.Empty,
 
                 // --- VEVŐ ADATOK ---
@@ -53,7 +53,7 @@ namespace Ecoinv.Pdf.Services
             {
                 model.Items.Add(new InvoicePdfItem
                 {
-                    Description = d.SERVICE_NAME, // A szolgáltatás neve marad, ahogy beírták (vagy ezt is fordítani kell?)
+                    Description = d.SERVICE_NAME,
                     Quantity = d.QTY,
                     NetUnitPrice = d.NET_UNIT_PRICE,
                     NetTotal = d.LINE_TOTAL_NET,
@@ -71,16 +71,23 @@ namespace Ecoinv.Pdf.Services
             return model;
         }
 
-        // Segédfüggvény a fizetési módok fordítására
+        // --- JAVÍTOTT FORDÍTÓ FÜGGVÉNY ---
         private string TranslatePaymentMethod(string hungarianMethod)
         {
-            if (string.IsNullOrWhiteSpace(hungarianMethod)) return string.Empty;
+            if (string.IsNullOrWhiteSpace(hungarianMethod)) return "Barzahlung";
 
             var lower = hungarianMethod.ToLower().Trim();
 
-            if (lower.Contains("átutalás") || lower.Contains("bank")) return "Überweisung";
-            if (lower.Contains("készpénz") || lower.Contains("kp")) return "Barzahlung";
-            if (lower.Contains("kártya")) return "Kartenzahlung";
+            // 1. Kártya ellenőrzése (FONTOS: Ez legyen az első!)
+            if (lower.Contains("kártya") || lower.Contains("card")) return "Kartenzahlung";
+
+            // 2. Utána az Átutalás / Bank
+            if (lower.Contains("átutalás") || lower.Contains("bank") || lower.Contains("transfer")) return "Überweisung";
+
+            // 3. Készpénz
+            if (lower.Contains("készpénz") || lower.Contains("kp") || lower.Contains("cash")) return "Barzahlung";
+
+            // 4. Utánvét
             if (lower.Contains("utánvét")) return "Nachnahme";
 
             // Ha nem ismerjük fel, visszaadjuk az eredetit

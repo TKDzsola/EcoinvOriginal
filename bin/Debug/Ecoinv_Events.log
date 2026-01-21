@@ -265,3 +265,175 @@ Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.
 [2026.01.20 21:13:24] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
 [2026.01.20 21:13:34] [INFO] Adatbázis kapcsolat lezárva.
 [2026.01.20 21:13:34] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:27:09] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:27:09] [WARNING] Sikertelen bejelentkezési kísérlet: DMIN
+[2026.01.21 07:27:11] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:27:11] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:27:16] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:27:16] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 07:27:16] [INFO] Sikeres bejelentkezés: ADMIN
+[2026.01.21 07:27:19] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:27:19] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:27:19] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:27:19] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:27:19] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:27:19] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:30:35] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:30:35] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:32:52] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:32:52] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 07:32:52] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 07:32:54] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:32:54] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:32:54] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:32:54] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:32:54] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:32:54] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:33:07] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:33:07] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:33:07] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:33:10] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:33:10] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:33:10] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:33:15] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:33:15] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:33:15] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:34:34] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:34:34] [INFO] Számla mentése indítva. Sorszám: 0121/001/HU
+[2026.01.21 07:34:34] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (71, 22, '0121/001/HU', '2026-01-21', '2026-02-04', '2026-01-21 07:34:34', 'Készpénz', '1', '0', '0')
+[2026.01.21 07:34:34] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (70, 71, 21, 5, 1, 120, 20, 120, 24, 144)
+[2026.01.21 07:34:34] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (71, 71, 20, 6, 1, 10, 30, 10, 3, 13)
+[2026.01.21 07:34:34] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (72, 71, 22, 5, 1, 111, 20, 111, 22.2, 133.2)
+[2026.01.21 07:34:34] [INFO] Számla mentése sikeres.
+[2026.01.21 07:34:36] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:34:52] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:34:52] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:34:52] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:34:52] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:35:16] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:35:16] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:00] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:00] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 07:46:00] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 07:46:03] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:03] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:03] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:03] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:03] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:03] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:05] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:05] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:05] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:09] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:09] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:09] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:10] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:11] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:11] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:46:12] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:46:12] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:46:12] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:47:16] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:47:16] [INFO] Számla mentése indítva. Sorszám: Rechnung_0121-002-HU
+[2026.01.21 07:47:16] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (72, 19, 'Rechnung_0121-002-HU', '2026-01-21', '2026-02-28', '2026-01-21 07:47:16', 'Átutalás', '1', '0', '0')
+[2026.01.21 07:47:16] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (73, 72, 21, 5, 1, 120, 20, 120, 24, 144)
+[2026.01.21 07:47:16] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (74, 72, 20, 5, 60, 10, 20, 600, 120, 720)
+[2026.01.21 07:47:16] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (75, 72, 19, 5, 64, 3, 20, 192, 38.4, 230.4)
+[2026.01.21 07:47:16] [INFO] Számla mentése sikeres.
+[2026.01.21 07:47:19] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:47:27] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:47:27] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:47:27] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:47:27] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:58:08] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:58:08] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:58:08] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:58:09] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:58:10] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:58:10] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:58:11] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:58:11] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:58:11] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:58:47] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:58:47] [INFO] Számla mentése indítva. Sorszám: Rechnung_0121-003-HU
+[2026.01.21 07:58:47] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (73, 17, 'Rechnung_0121-003-HU', '2026-01-21', '2026-03-31', '2026-01-21 07:58:47', 'Bankkártya', '1', '0', '0')
+[2026.01.21 07:58:47] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (76, 73, 19, 5, 116, 3, 20, 348, 69.6, 417.6)
+[2026.01.21 07:58:47] [INFO] Számla mentése sikeres.
+[2026.01.21 07:58:49] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 07:58:55] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:58:55] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 07:58:55] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 07:58:55] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:00:14] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:00:14] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:19:41] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:19:41] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 08:19:41] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 08:19:43] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:19:43] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:19:43] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:19:43] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:19:43] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:19:43] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:21:19] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:21:19] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:20] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:20] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 08:22:20] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 08:22:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:22] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:22:22] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:22] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:22] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:22:22] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:24] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:22:24] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:25] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:25] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:22:25] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:27] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:22:27] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:22:59] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:22:59] [INFO] Számla mentése indítva. Sorszám: Rechnung_0121-004-HU
+[2026.01.21 08:22:59] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (74, 21, 'Rechnung_0121-004-HU', '2026-01-21', '2026-01-30', '2026-01-21 08:22:59', 'Bankkártya', '1', '0', '0')
+[2026.01.21 08:22:59] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (77, 74, 10, 5, 1, 5, 20, 5, 1, 6)
+[2026.01.21 08:22:59] [INFO] Számla mentése sikeres.
+[2026.01.21 08:23:01] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:23:08] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:23:08] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:23:08] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:23:08] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:30:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:30:27] [INFO] Számla mentése indítva. Sorszám: 0121/1
+[2026.01.21 08:30:27] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (75, 21, '0121/1', '2026-01-21', '2026-01-29', '2026-01-21 08:30:27', 'Átutalás', '1', '0', '0')
+[2026.01.21 08:30:27] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (78, 75, 21, 5, 1, 120, 20, 120, 24, 144)
+[2026.01.21 08:30:27] [INFO] Számla mentése sikeres.
+[2026.01.21 08:30:28] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:30:34] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:30:34] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:30:34] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:30:34] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:33:06] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:33:06] [INFO] Számla mentése indítva. Sorszám: 0121/2
+[2026.01.21 08:33:06] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (76, 21, '0121/2', '2026-01-21', '2026-04-30', '2026-01-21 08:33:06', 'Bankkártya', '1', '0', '0')
+[2026.01.21 08:33:06] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (79, 76, 19, 5, 98, 3, 20, 294, 58.8, 352.8)
+[2026.01.21 08:33:06] [INFO] Számla mentése sikeres.
+[2026.01.21 08:33:07] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:33:13] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:33:13] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:33:13] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:33:13] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:34:18] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:34:18] [INFO] Számla mentése indítva. Sorszám: 0121/3
+[2026.01.21 08:34:18] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (77, 21, '0121/3', '2026-01-21', '2026-01-29', '2026-01-21 08:34:18', 'Készpénz', '1', '0', '0')
+[2026.01.21 08:34:18] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (80, 77, 12, 5, 75, 10, 20, 750, 150, 900)
+[2026.01.21 08:34:18] [INFO] Számla mentése sikeres.
+[2026.01.21 08:34:19] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 08:34:25] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:34:25] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:34:25] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:34:25] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 08:52:34] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 08:52:34] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
