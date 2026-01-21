@@ -437,3 +437,130 @@ Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.
 [2026.01.21 08:34:25] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
 [2026.01.21 08:52:34] [INFO] Adatbázis kapcsolat lezárva.
 [2026.01.21 08:52:34] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 09:48:11] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:48:11] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 09:48:11] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 09:48:13] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:48:13] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 09:48:13] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 09:48:13] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:48:13] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 09:48:13] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 09:49:02] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 09:49:02] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 09:50:05] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:50:05] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 09:50:05] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 09:50:07] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:50:07] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 09:50:07] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 09:50:07] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 09:50:07] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 09:50:07] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 10:23:20] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 10:23:20] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:16:12] [ERROR] FBConnOpenX - Kapcsolat nyitási hiba: I/O error during "CreateFile (open)" operation for file "C:\PROGRAM FILES (X86)\ECOINV\ECOINV\ECINVFBDB4.FDB"
+Error while trying to open file
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnectionInternal.Connect()
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnection.Open()
+   a következő helyen: Ecoinv.Common.FBConnectX.FBConnOpenX() hely: C:\Users\prozs\source\repos\Ecoinv\Common\FBConnectX.cs, sor: 68
+[2026.01.21 18:16:17] [ERROR] FBConnOpenX - Kapcsolat nyitási hiba: I/O error during "CreateFile (open)" operation for file "C:\PROGRAM FILES (X86)\ECOINV\ECOINV\ECINVFBDB4.FDB"
+Error while trying to open file
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnectionInternal.Connect()
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnection.Open()
+   a következő helyen: Ecoinv.Common.FBConnectX.FBConnOpenX() hely: C:\Users\prozs\source\repos\Ecoinv\Common\FBConnectX.cs, sor: 68
+[2026.01.21 18:16:18] [ERROR] SelectSQL_FirstRow hiba. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I': Connection must be valid and open.
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnection.EnsureOpen(FbConnection connection)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.CheckCommand()
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.Common.FBConnectX.SelectSQL_FirstRow(String sqlstr, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\Common\FBConnectX.cs, sor: 161
+[2026.01.21 18:16:18] [ERROR] Bejelentkezési adatbázis hiba. User: fbe: Connection must be valid and open.
+Stack Trace:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbConnection.EnsureOpen(FbConnection connection)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.CheckCommand()
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.Common.FBConnectX.SelectSQL_FirstRow(String sqlstr, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\Common\FBConnectX.cs, sor: 177
+   a következő helyen: Ecoinv.DataContext.LoginFrmDataContext.GetLogin(FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\DataContext\LoginFrmDataContext.cs, sor: 74
+[2026.01.21 18:16:19] [WARNING] Sikertelen bejelentkezési kísérlet: fbe
+[2026.01.21 18:16:20] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:32:28] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:32:28] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 18:32:28] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 18:32:31] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:32:31] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:32:31] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:32:31] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:32:31] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:32:31] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:32:39] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:32:39] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:34:00] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:34:00] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 18:34:00] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 18:34:01] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:34:01] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:34:01] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:34:01] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:34:01] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:34:01] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:34:09] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:34:09] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:57:17] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:57:17] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 18:57:17] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 18:57:18] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:57:18] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:57:18] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:57:18] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 18:57:18] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:57:18] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 18:57:21] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 18:57:21] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:05:38] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:05:38] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 19:05:38] [INFO] Sikeres bejelentkezés: b
+[2026.01.21 19:05:45] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:05:45] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:05:45] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:05:50] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:05:50] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:18:57] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:18:57] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 19:18:57] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 19:18:58] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:18:58] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:18:58] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:18:58] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:18:58] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:18:58] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:19:00] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:19:00] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:19:00] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:19:01] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:19:01] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:19:01] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:19:03] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:19:03] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:19:03] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:19:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:19:24] [INFO] Számla mentése indítva. Sorszám: 123/1
+[2026.01.21 19:19:24] [INFO] INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (78, 17, '123/1', '2026-01-21', '2026-06-01', '2026-01-21 19:19:24', 'Bankkártya', '1', '0', '0')
+[2026.01.21 19:19:24] [INFO] INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS) VALUES (81, 78, 21, 5, 2, 120, 20, 240, 48, 288)
+[2026.01.21 19:19:24] [INFO] Számla mentése sikeres.
+[2026.01.21 19:19:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:19:31] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:19:31] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:19:31] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:19:31] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:21:24] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:21:24] [INFO] SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I'
+[2026.01.21 19:21:24] [INFO] Sikeres bejelentkezés: fbe
+[2026.01.21 19:21:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:21:27] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:21:27] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:21:27] [INFO] Adatbázis kapcsolat sikeresen megnyitva.
+[2026.01.21 19:21:27] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:21:27] [INFO] FBConnectX erőforrások felszabadítva (Dispose).
+[2026.01.21 19:21:38] [INFO] Adatbázis kapcsolat lezárva.
+[2026.01.21 19:21:38] [INFO] FBConnectX erőforrások felszabadítva (Dispose).

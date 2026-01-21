@@ -16,10 +16,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="../Components/RoundedButton.xaml"/>
                 <ResourceDictionary Source="../Components/ShadowLabel.xaml"/>
-
             </ResourceDictionary.MergedDictionaries>
 
             <components:StatusToTextConverter x:Key="StatusToTextConverter"/>
@@ -32,19 +30,24 @@
     </Window.Resources>
 
     <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="360"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Background="White"
+        <Border Grid.Row="0" Grid.Column="0" 
+                Background="White"
                 CornerRadius="12"
                 Padding="25"
                 Effect="{StaticResource CardShadow}"
                 Margin="0 0 20 0">
 
             <StackPanel>
-
                 <TextBlock Text="Számla keresése"
                            FontSize="22"
                            FontWeight="Bold"
@@ -116,7 +119,7 @@
         </Border>
 
 
-        <Border Grid.Column="1"
+        <Border Grid.Row="0" Grid.Column="1"
                 Background="White"
                 CornerRadius="12"
                 Padding="20"
@@ -188,6 +191,24 @@
             </DockPanel>
 
         </Border>
+
+        <Border Grid.Row="1" Grid.ColumnSpan="2" 
+                Margin="0,15,0,0" 
+                BorderBrush="#FF64CCf1" 
+                BorderThickness="1" 
+                CornerRadius="2">
+            <Grid Background="AntiqueWhite">
+                <Button Content="Kilép"
+                        HorizontalAlignment="Right"
+                        Height="25"
+                        Margin="0,5,10,8"
+                        Width="60"
+                        Command="{Binding CommandQuitBase}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        Style="{DynamicResource RoundedButtonStyle}" />
+            </Grid>
+        </Border>
+
     </Grid>
 
 </Window>

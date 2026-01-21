@@ -7,7 +7,7 @@
         xmlns:components="clr-namespace:Ecoinv.Components"
         mc:Ignorable="d"
         Title="Számla kiállítása"
-        Height="800" Width="1000"
+        Height="850" Width="1000"
         WindowStartupLocation="CenterScreen"
         Background="#F3F4F6">
 
@@ -32,6 +32,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -172,7 +173,7 @@
                             Width="200" Height="40" Margin="0,0,15,0"
                             FontSize="14" FontWeight="Bold" Style="{DynamicResource RoundedButtonStyle}"/>
                     <Button Content="Mégse" 
-                            Command="{Binding CommandCancelInvoice}"
+                            Command="{Binding CommandCloseWindow}"
                             Width="100" Height="40" Style="{DynamicResource RoundedButtonStyle}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -193,5 +194,20 @@
                 </StackPanel>
             </Grid>
         </Border>
+
+        <Border Grid.Row="5" Margin="0,15,0,0" BorderBrush="#FF64CCf1" BorderThickness="1" CornerRadius="2">
+            <Grid Background="AntiqueWhite">
+                <Button Name="QuitBtn"
+        Content="Kilép"
+        HorizontalAlignment="Right"
+        Height="25"
+        Margin="0,5,10,8"
+        Width="60"
+        Command="{Binding CommandQuitBase}"
+        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+        Style="{DynamicResource RoundedButtonStyle}" />
+            </Grid>
+        </Border>
+
     </Grid>
 </Window>
