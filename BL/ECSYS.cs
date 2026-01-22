@@ -137,6 +137,44 @@ namespace Ecoinv.BL
         private void OnSZKBANKACCOUNTChanged() { }
         #endregion
 
+        // --- ÚJ MEZŐK ---
+
+        #region ... IBAN property ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __iban;
+
+        public string IBAN
+        {
+            get => __iban;
+            set
+            {
+                OnIBANChanging(value);
+                SetPropertyValue(nameof(IBAN), ref __iban, value);
+                OnIBANChanged();
+            }
+        }
+        private void OnIBANChanging(string value) { }
+        private void OnIBANChanged() { }
+        #endregion
+
+        #region ... BIC property ...
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __bic;
+
+        public string BIC
+        {
+            get => __bic;
+            set
+            {
+                OnBICChanging(value);
+                SetPropertyValue(nameof(BIC), ref __bic, value);
+                OnBICChanged();
+            }
+        }
+        private void OnBICChanging(string value) { }
+        private void OnBICChanged() { }
+        #endregion
+
         public object PrimaryKeyValue => ID;
 
     } // ECSYS class vége
@@ -144,15 +182,16 @@ namespace Ecoinv.BL
 
     public partial class ECSYSTable
     {
-        // SQL lekérdezések frissítve a 3 új oszloppal
-        private readonly string selectSQL = "SELECT ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT FROM ECSYS";
+        // SQL lekérdezések frissítve az IBAN és BIC mezőkkel
+        private readonly string selectSQL = "SELECT ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT, IBAN, BIC FROM ECSYS";
 
-        private readonly string insSQL = "INSERT INTO ECSYS (ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
+        private readonly string insSQL = "INSERT INTO ECSYS (ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT, IBAN, BIC) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')";
 
         private readonly string delSQL = "DELETE FROM ECSYS WHERE ID = {0}";
 
-        // Paraméterek sorrendje: 0:NEV, 1:CIM, 2:ACTIVE, 3:TAX, 4:COMTAX, 5:BANK, 6:ID
-        private readonly string updSQL = "UPDATE ECSYS SET SZKNEV = '{0}', SZKCIM = '{1}', SZKACTIVE = '{2}', SZKTAX = '{3}', SZKCOMTAX = '{4}', SZKBANKACCOUNT = '{5}' WHERE ID = {6}";
+        // Paraméterek sorrendje frissítve:
+        // 0:SZKNEV, 1:SZKCIM, 2:SZKACTIVE, 3:SZKTAX, 4:SZKCOMTAX, 5:SZKBANKACCOUNT, 6:IBAN, 7:BIC, 8:ID
+        private readonly string updSQL = "UPDATE ECSYS SET SZKNEV = '{0}', SZKCIM = '{1}', SZKACTIVE = '{2}', SZKTAX = '{3}', SZKCOMTAX = '{4}', SZKBANKACCOUNT = '{5}', IBAN = '{6}', BIC = '{7}' WHERE ID = {8}";
 
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_ECSYS_ID, 1) FROM RDB$DATABASE";
 
@@ -179,7 +218,9 @@ namespace Ecoinv.BL
                 SZKACTIVE = "I",
                 SZKTAX = "",
                 SZKCOMTAX = "",
-                SZKBANKACCOUNT = ""
+                SZKBANKACCOUNT = "",
+                IBAN = "",
+                BIC = ""
             };
             __innerList.Add(rec);
             return rec;
@@ -204,13 +245,15 @@ namespace Ecoinv.BL
             _actrec.SZKTAX = oldecsys.SZKTAX;
             _actrec.SZKCOMTAX = oldecsys.SZKCOMTAX;
             _actrec.SZKBANKACCOUNT = oldecsys.SZKBANKACCOUNT;
+            _actrec.IBAN = oldecsys.IBAN;
+            _actrec.BIC = oldecsys.BIC;
         }
 
         public void Insert(ECSYS src, FBConnectX conn)
         {
             var _id = GetGenerator(conn);
-            // Paraméterek: ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT
-            var _inssql = string.Format(insSQL, _id, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT);
+            // Paraméterek bővítve: IBAN ({7}), BIC ({8})
+            var _inssql = string.Format(insSQL, _id, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT, src.IBAN, src.BIC);
             conn?.InsertSQL(_inssql);
 
             var _actrec = __innerList.FirstOrDefault(r => r.ID == -1);
@@ -223,8 +266,8 @@ namespace Ecoinv.BL
             var _actrec = __innerList.FirstOrDefault(r => r.ID == src.ID);
             if (_actrec != null)
             {
-                // Paraméterek: SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT, ID
-                var _updsql = string.Format(updSQL, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT, src.ID);
+                // Paraméterek bővítve: IBAN ({6}), BIC ({7}), ID eltolódott ({8}-ra)
+                var _updsql = string.Format(updSQL, src.SZKNEV, src.SZKCIM, src.SZKACTIVE, src.SZKTAX, src.SZKCOMTAX, src.SZKBANKACCOUNT, src.IBAN, src.BIC, src.ID);
                 conn?.UpdateSQL(_updsql);
             }
         }

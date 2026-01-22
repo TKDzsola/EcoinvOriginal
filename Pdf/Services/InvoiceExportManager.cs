@@ -26,7 +26,7 @@ namespace Ecoinv.Pdf.Services
         public void ExportInvoiceById(int invoiceId)
         {
             // =============================================================
-            // ÚJ: 'using' blokk használata -> Automatikus lezárás!
+            // 'using' blokk használata -> Automatikus lezárás!
             // =============================================================
             using (FBConnectX conn = new FBConnectX())
             {
@@ -60,7 +60,10 @@ namespace Ecoinv.Pdf.Services
                     var allDetails = detailTable.GetList(conn);
                     var details = allDetails.Where(x => x.INVOICEHEADERS_ID == invoiceId).ToList();
 
+                    // Itt töltjük be a szolgáltatásokat, amiben a DESCRIPTION van
                     var allServices = serviceTable.GetList(conn);
+
+                    // Frissítjük a neveket a részleteknél (ez eddig is itt volt)
                     foreach (var item in details)
                     {
                         var serv = allServices.FirstOrDefault(s => s.ID == item.SERVICES_ID);
@@ -84,11 +87,12 @@ namespace Ecoinv.Pdf.Services
                     var allEcsys = ecsysTable.GetList(conn);
                     var sellerData = allEcsys.FirstOrDefault();
 
-                    // --- MODELL ÉPÍTÉSE ---
-                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData);
+                    // --- MODELL ÉPÍTÉSE (MÓDOSÍTVA!) ---
+                    // Átadjuk az allServices listát is, hogy a PDFService ki tudja szedni a DESCRIPTION-t!
+                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData, allServices);
 
                     // =============================================================
-                    // SZTORNÓ KEZELÉS (Javított)
+                    // SZTORNÓ KEZELÉS 
                     // =============================================================
                     bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
                     bool isStornoNumber = (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-"));
@@ -142,7 +146,6 @@ namespace Ecoinv.Pdf.Services
                 {
                     MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                // NINCS FINALLY BLOKK! A using automatikusan lezárja a kapcsolatot.
             }
         }
     }

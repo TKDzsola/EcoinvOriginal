@@ -9,24 +9,24 @@ namespace Ecoinv.Pdf.Models
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }
 
-        // --- ÚJ MEZŐK A SZTORNÓHOZ ---
         public bool IsStorno { get; set; }
         public string OriginalInvoiceNumber { get; set; }
 
-        // --- Eladó (Ausztria) ---
+        // --- Eladó ---
         public string SellerName { get; set; }
         public string SellerAddress { get; set; }
+        public string SellerTaxNumber { get; set; }
+        public string SellerEuTaxNumber { get; set; }
+        public string SellerBankAccount { get; set; } // Régi mező, megtarthatjuk
 
-        // Ausztriában kétféle adószámot szokás feltüntetni:
-        public string SellerTaxNumber { get; set; }   // Belföldi adószám (Steuernummer)
-        public string SellerEuTaxNumber { get; set; } // Közösségi adószám (UID-Nummer)
-
-        public string SellerBankAccount { get; set; } // IBAN / Bankszámla
+        // --- ÚJ MEZŐK ---
+        public string SellerIBAN { get; set; }
+        public string SellerBIC { get; set; }
 
         // --- Vevő ---
         public string ClientName { get; set; }
         public string ClientAddress { get; set; }
-        public string ClientTaxNumber { get; set; }   // Steuernummer vagy UID
+        public string ClientTaxNumber { get; set; }
 
         public List<InvoicePdfItem> Items { get; set; } = new List<InvoicePdfItem>();
 
@@ -40,6 +40,7 @@ namespace Ecoinv.Pdf.Models
 
     public class InvoicePdfItem
     {
+        public string Name { get; set; }
         public string Description { get; set; }
         public decimal Quantity { get; set; }
         public decimal NetUnitPrice { get; set; }

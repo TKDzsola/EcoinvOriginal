@@ -33,10 +33,10 @@ namespace Ecoinv.Pdf.Documents
                 {
                     col.Spacing(10);
 
-                    // FEJLÉC
+                    // --- FEJLÉC ---
                     col.Item().Row(row =>
                     {
-                        // BAL OLDAL
+                        // BAL OLDAL (Logó + Eladó)
                         row.RelativeItem().Column(c =>
                         {
                             string logoPath = @"c:\Users\prozs\source\repos\Ecoinv\Images\econtologo.jpg";
@@ -50,18 +50,24 @@ namespace Ecoinv.Pdf.Documents
                                 else { c.Item().Text(_model.SellerAddress); }
                             }
                             c.Item().Text("Österreich");
+
                             c.Item().PaddingTop(5);
-                            if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber)) c.Item().Text($"UID-Nummer: {_model.SellerEuTaxNumber}").FontSize(9).FontColor(Colors.Grey.Darken2);
+                            if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber))
+                                c.Item().Text($"UID-Nummer: {_model.SellerEuTaxNumber}").FontSize(9).FontColor(Colors.Grey.Darken2);
+
+                            // --- ÚJ: IBAN és BIC megjelenítése a Fejlécben is ---
+                            if (!string.IsNullOrEmpty(_model.SellerIBAN))
+                                c.Item().Text($"IBAN: {_model.SellerIBAN}").FontSize(9).FontColor(Colors.Grey.Darken2);
+                            if (!string.IsNullOrEmpty(_model.SellerBIC))
+                                c.Item().Text($"BIC: {_model.SellerBIC}").FontSize(9).FontColor(Colors.Grey.Darken2);
                         });
 
-                        // JOBB OLDAL (EZT FIGYELD!)
+                        // JOBB OLDAL (Számla fejléc)
                         row.RelativeItem().AlignRight().Column(c =>
                         {
                             if (_model.IsStorno)
                             {
-                                // --- HA SZTORNÓ ---
-                                c.Item().Text("STORNORECHNUNG")
-                                    .FontSize(20).Bold().FontColor(Colors.Red.Medium);
+                                c.Item().Text("STORNORECHNUNG").FontSize(20).Bold().FontColor(Colors.Red.Medium);
                                 c.Item().Text($"Nr.: {_model.InvoiceNumber}").FontSize(12);
 
                                 if (!string.IsNullOrEmpty(_model.OriginalInvoiceNumber))
@@ -73,9 +79,7 @@ namespace Ecoinv.Pdf.Documents
                             }
                             else
                             {
-                                // --- HA SIMA ---
-                                c.Item().Text("RECHNUNG")
-                                    .FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
+                                c.Item().Text("RECHNUNG").FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
                                 c.Item().Text($"Nr.: {_model.InvoiceNumber}").FontSize(12);
                             }
                         });
@@ -83,7 +87,7 @@ namespace Ecoinv.Pdf.Documents
 
                     col.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
-                    // DÁTUMOK
+                    // --- DÁTUMOK ---
                     col.Item().AlignRight().Column(c =>
                     {
                         c.Item().Text($"Ausstellungsdatum: {_model.IssueDate.ToString("d", _culture)}");
@@ -92,7 +96,7 @@ namespace Ecoinv.Pdf.Documents
 
                     col.Spacing(20);
 
-                    // VEVŐ
+                    // --- VEVŐ ---
                     col.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Column(c =>
                     {
                         c.Item().Text("Empfänger:").FontSize(8).FontColor(Colors.Grey.Darken2);
@@ -108,10 +112,16 @@ namespace Ecoinv.Pdf.Documents
 
                     col.Spacing(20);
 
-                    // TÁBLÁZAT
+                    // --- TÁBLÁZAT ---
                     col.Item().Table(table =>
                     {
-                        table.ColumnsDefinition(columns => { columns.RelativeColumn(4); columns.RelativeColumn(); columns.RelativeColumn(); columns.RelativeColumn(); });
+                        table.ColumnsDefinition(columns => {
+                            columns.RelativeColumn(4);
+                            columns.RelativeColumn();
+                            columns.RelativeColumn();
+                            columns.RelativeColumn();
+                        });
+
                         table.Header(header => {
                             header.Cell().Element(HeaderStyle).Text("Beschreibung");
                             header.Cell().Element(HeaderStyle).AlignRight().Text("Menge");
@@ -121,21 +131,43 @@ namespace Ecoinv.Pdf.Documents
 
                         foreach (var item in _model.Items)
                         {
-                            table.Cell().Element(CellStyle).Text(item.Description);
+                            table.Cell().Element(CellStyle).Column(column =>
+                            {
+                                column.Item().Text(item.Name).SemiBold();
+                                if (!string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    column.Item().PaddingTop(2).Text(text =>
+                                    {
+                                        text.Span("Megjegyzés: ").FontSize(9).FontColor(Colors.Grey.Darken2);
+                                        text.Span(item.Description).FontSize(9).FontColor(Colors.Grey.Darken1).Italic();
+                                    });
+                                }
+                            });
+
                             table.Cell().Element(CellStyle).AlignRight().Text(item.Quantity.ToString("0.##", _culture));
                             table.Cell().Element(CellStyle).AlignRight().Text(item.NetUnitPrice.ToString("N2", _culture));
                             table.Cell().Element(CellStyle).AlignRight().Text(item.NetTotal.ToString("N2", _culture));
                         }
                     });
 
-                    // LÁBLÉC (ÖSSZESÍTÉS)
+                    // --- LÁBLÉC ---
                     col.Spacing(10);
                     col.Item().Row(row =>
                     {
                         row.RelativeItem().Column(c => {
                             c.Item().Text("Zahlungsinformationen:").Bold();
                             c.Item().Text($"Zahlungsart: {_model.PaymentMethod}");
-                            c.Item().Text($"Bankverbindung (IBAN): {_model.SellerBankAccount}");
+
+                            // --- ITT IS MEGJELENÍTJÜK AZ IBAN/BIC-ET A LÁBLÉCBEN ---
+                            if (!string.IsNullOrEmpty(_model.SellerIBAN))
+                                c.Item().Text($"IBAN: {_model.SellerIBAN}");
+
+                            if (!string.IsNullOrEmpty(_model.SellerBIC))
+                                c.Item().Text($"BIC: {_model.SellerBIC}");
+
+                            // Ha nincs IBAN, de van régi bankszámlaszám, azt írjuk ki (biztonsági tartalék)
+                            if (string.IsNullOrEmpty(_model.SellerIBAN) && !string.IsNullOrEmpty(_model.SellerBankAccount))
+                                c.Item().Text($"Bankverbindung: {_model.SellerBankAccount}");
                         });
 
                         row.RelativeItem().AlignRight().Column(c => {

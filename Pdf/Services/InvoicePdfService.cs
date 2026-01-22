@@ -1,4 +1,5 @@
 ﻿using Ecoinv.BL;
+using Ecoinv.Common;
 using Ecoinv.Pdf.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,8 @@ namespace Ecoinv.Pdf.Services
             IEnumerable<INVOICE_DETAILS> details,
             CLIENTS client,
             ADRESSES clientAddress,
-            ECSYS seller)
+            ECSYS seller,
+            IEnumerable<SERVICES> allServices)
         {
             if (header == null) throw new ArgumentNullException(nameof(header));
             if (details == null) throw new ArgumentNullException(nameof(details));
@@ -25,35 +27,38 @@ namespace Ecoinv.Pdf.Services
                 IssueDate = header.ISSUE_DATE ?? DateTime.Now,
                 DueDate = header.DUE_DATE ?? DateTime.Now,
 
-                // --- KIBOCSÁTÓ ADATOK (ECSYS) ---
+                // --- KIBOCSÁTÓ ADATOK ---
                 SellerName = seller?.SZKNEV ?? "Unbekannt",
                 SellerAddress = seller?.SZKCIM ?? string.Empty,
-
-                // Adószámok
                 SellerTaxNumber = seller?.SZKTAX ?? string.Empty,
                 SellerEuTaxNumber = seller?.SZKCOMTAX ?? string.Empty,
                 SellerBankAccount = seller?.SZKBANKACCOUNT ?? string.Empty,
 
+                // --- ÚJ ADATOK BETÖLTÉSE ---
+                SellerIBAN = seller?.IBAN ?? string.Empty,
+                SellerBIC = seller?.BIC ?? string.Empty,
+
                 // --- VEVŐ ADATOK ---
                 ClientName = client?.NAME ?? string.Empty,
                 ClientTaxNumber = client?.TAX_NUMBER ?? string.Empty,
-
                 ClientAddress = clientAddress != null
                     ? $"{clientAddress.POSTALCODE} {clientAddress.CITY}, {clientAddress.ADDRESS}"
                     : string.Empty,
 
-                // FIZETÉSI MÓD FORDÍTÁSA (Magyar -> Német)
                 PaymentMethod = TranslatePaymentMethod(header.PAYMENT_METHOD),
-
                 Comment = string.Empty
             };
 
-            // --- TÉTELEK ---
+            // --- TÉTELEK FELTÖLTÉSE ---
             foreach (var d in details)
             {
+                var service = allServices?.FirstOrDefault(s => s.ID == d.SERVICES_ID);
+                string descriptionText = service != null ? service.DESCRIPTION : "";
+
                 model.Items.Add(new InvoicePdfItem
                 {
-                    Description = d.SERVICE_NAME,
+                    Name = d.SERVICE_NAME,
+                    Description = descriptionText,
                     Quantity = d.QTY,
                     NetUnitPrice = d.NET_UNIT_PRICE,
                     NetTotal = d.LINE_TOTAL_NET,
@@ -71,26 +76,16 @@ namespace Ecoinv.Pdf.Services
             return model;
         }
 
-        // --- JAVÍTOTT FORDÍTÓ FÜGGVÉNY ---
         private string TranslatePaymentMethod(string hungarianMethod)
         {
             if (string.IsNullOrWhiteSpace(hungarianMethod)) return "Barzahlung";
-
             var lower = hungarianMethod.ToLower().Trim();
 
-            // 1. Kártya ellenőrzése (FONTOS: Ez legyen az első!)
             if (lower.Contains("kártya") || lower.Contains("card")) return "Kartenzahlung";
-
-            // 2. Utána az Átutalás / Bank
             if (lower.Contains("átutalás") || lower.Contains("bank") || lower.Contains("transfer")) return "Überweisung";
-
-            // 3. Készpénz
             if (lower.Contains("készpénz") || lower.Contains("kp") || lower.Contains("cash")) return "Barzahlung";
-
-            // 4. Utánvét
             if (lower.Contains("utánvét")) return "Nachnahme";
 
-            // Ha nem ismerjük fel, visszaadjuk az eredetit
             return hungarianMethod;
         }
     }
