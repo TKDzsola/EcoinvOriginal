@@ -21,25 +21,13 @@ namespace Ecoinv.DataContext
             vatTable = new VATRATESTable();
             SERVICESList = new ObservableCollection<SERVICES>();
 
-            // Induláskor gombok beállítása
             UpdateLabels();
             try { RefreshData(); } catch { }
         }
 
-        // --- DINAMIKUS GOMB FELIRATOK ---
-        private string _contentBtnNewSave;
-        public string ContentBtnNewSave
-        {
-            get => _contentBtnNewSave;
-            set => SetPropertyValue(nameof(ContentBtnNewSave), ref _contentBtnNewSave, value);
-        }
-
-        private string _contentBtnModifyCancel;
-        public string ContentBtnModifyCancel
-        {
-            get => _contentBtnModifyCancel;
-            set => SetPropertyValue(nameof(ContentBtnModifyCancel), ref _contentBtnModifyCancel, value);
-        }
+        // --- ITT VOLTAK A DUPLIKÁLT TULAJDONSÁGOK (TÖRÖLVE) ---
+        // A ContentBtnNewSave és ContentBtnModifyCancel változókat
+        // most már a DataContextBase-ből örököljük, nem definiáljuk újra.
 
         private void UpdateLabels()
         {
@@ -104,7 +92,6 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- ÁRKALKULÁCIÓ ---
         public decimal EditNetPrice
         {
             get => SelectedSERVICES?.NETPRICE ?? 0;
@@ -133,7 +120,7 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- OKOS KOMBINÁLT PARANCSOK ---
+        // --- PARANCSOK ---
 
         public ICommand CommandNewSave => new DelegateCommand(_ => DoNewSave(), _ => IsAdmin);
 
@@ -152,16 +139,14 @@ namespace Ecoinv.DataContext
                         conn.FBConnOpenX();
                         alkTable.Save(SelectedSERVICES, conn);
 
-                        // JAVÍTÁS ITT: Elmentjük a számot, mielőtt a RefreshData törölné a kijelölést!
                         int savedId = SelectedSERVICES.ID;
 
                         MessageBox.Show("Sikeres mentés!");
-                        RefreshData(); // Ez nullázza a SelectedSERVICES-t, de a savedId megvan!
+                        RefreshData();
 
                         IsEditing = false;
                         UpdateLabels();
 
-                        // Most már a biztonságos számot (savedId) használjuk a kereséshez
                         var saved = SERVICESList.FirstOrDefault(x => x.ID == savedId);
                         if (saved != null) SelectedSERVICES = saved;
                     }
@@ -171,7 +156,7 @@ namespace Ecoinv.DataContext
                     }
                 }
             }
-            else // ÚJ FELVITELE
+            else // ÚJ
             {
                 SelectedSERVICES = new SERVICES { SACTIVE = "I" };
                 _selectedVatRate = null;

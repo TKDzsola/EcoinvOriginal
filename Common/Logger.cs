@@ -1,34 +1,78 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Ecoinv.Common
 {
     public static class Logger
     {
-        // A log fájl a program .exe fájlja mellett fog létrejönni
-        private static string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Ecoinv_Events.log");
+        private static readonly object _lock = new object();
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
 
+        // --- ÚJ, PROFI METÓDUSOK ---
+
+        public static void LogInfo(string message, [CallerMemberName] string caller = "", [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            WriteLog("INFO", message, null, caller, file, line);
+        }
+
+        public static void LogError(Exception ex, string message = "", [CallerMemberName] string caller = "", [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            WriteLog("ERROR", message, ex, caller, file, line);
+        }
+
+        // --- RÉGI KÓD KOMPATIBILITÁS (Ez javítja a hibákat!) ---
+        // Ha valahol a régi kód azt hívja, hogy Logger.Log("üzenet"), 
+        // ez elkapja, és átirányítja az új LogInfo-ra.
         public static void Log(string message, string level = "INFO")
+        {
+            if (level == "ERROR")
+                WriteLog("ERROR", message, null, "LegacyCall", "Unknown", 0);
+            else
+                WriteLog("INFO", message, null, "LegacyCall", "Unknown", 0);
+        }
+        // -------------------------------------------------------
+
+        private static void WriteLog(string level, string message, Exception ex, string caller, string file, int line)
         {
             try
             {
-                // Formátum: [2026.01.19 08:30:15] [INFO] Üzenet szövege
-                string logLine = $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] [{level}] {message}";
+                if (!Directory.Exists(LogDirectory))
+                    Directory.CreateDirectory(LogDirectory);
 
-                // Hozzáírja a fájlhoz, ha nem létezik, létrehozza
-                File.AppendAllLines(logFilePath, new[] { logLine });
-            }
-            catch
-            {
-                // Ha a logolás hibázik, nem akarjuk, hogy a program leálljon
-            }
-        }
+                string fileName = $"log_{DateTime.Now:yyyyMMdd}.txt";
+                string fullPath = Path.Combine(LogDirectory, fileName);
 
-        public static void LogError(Exception ex, string context = "")
-        {
-            string message = string.IsNullOrEmpty(context) ? ex.Message : $"{context}: {ex.Message}";
-            // Beírjuk a hibaüzenetet és a technikai részleteket (Stack Trace) is
-            Log(message + Environment.NewLine + "Stack Trace: " + ex.StackTrace, "ERROR");
+                string shortFileName = Path.GetFileName(file);
+
+                var logLine = new StringBuilder();
+                logLine.Append($"[{DateTime.Now:HH:mm:ss}] ");
+                logLine.Append($"[{level}] ");
+
+                // Ha legacy hívás, máshogy formázzuk
+                if (caller == "LegacyCall")
+                    logLine.Append("[RégiKód] ");
+                else
+                    logLine.Append($"[{shortFileName}::{caller}:{line}] ");
+
+                if (!string.IsNullOrEmpty(message))
+                    logLine.Append($"- {message} ");
+
+                if (ex != null)
+                {
+                    logLine.AppendLine();
+                    logLine.Append($"   >>> HIBA: {ex.Message}");
+                    logLine.AppendLine();
+                    logLine.Append($"   >>> STACK: {ex.StackTrace}");
+                }
+
+                lock (_lock)
+                {
+                    File.AppendAllText(fullPath, logLine.ToString() + Environment.NewLine);
+                }
+            }
+            catch { }
         }
     }
 }
