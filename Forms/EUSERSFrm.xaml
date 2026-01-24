@@ -38,6 +38,7 @@
                 <DataGridTextColumn Width="50" Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Width="120" Header="Bej. Név" Binding="{Binding UNAME}" />
                 <DataGridTextColumn Width="*" Header="Teljes Név" Binding="{Binding FULNAME}" />
+                <DataGridCheckBoxColumn Width="50" Header="Admin" Binding="{Binding IsAdminUser}"/>
                 <DataGridCheckBoxColumn Width="50" Header="Aktív" Binding="{Binding IsActive}"/>
             </DataGrid.Columns>
         </DataGrid>
@@ -65,8 +66,10 @@
                 <components:PasswordBox2 Grid.Row="1" Grid.Column="1" Margin="2" 
                                          Password="{Binding SelectedEUSERS.JELSZO_NO_MD5, Mode=TwoWay}"/>
 
-                <CheckBox Grid.Row="1" Grid.Column="3" Content="Aktív" Margin="5" VerticalAlignment="Center"
-                          IsChecked="{Binding SelectedEUSERS.IsActive}"/>
+                <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <CheckBox Content="Admin" Margin="5" IsChecked="{Binding SelectedEUSERS.IsAdminUser}"/>
+                    <CheckBox Content="Aktív" Margin="15,5,5,5" IsChecked="{Binding SelectedEUSERS.IsActive}"/>
+                </StackPanel>
             </Grid>
         </Border>
 

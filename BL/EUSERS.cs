@@ -1,7 +1,7 @@
 ﻿using Ecoinv.Common;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq; // Ez kell a Remove-hoz
+using System.Linq;
 
 namespace Ecoinv.BL
 {
@@ -21,9 +21,26 @@ namespace Ecoinv.BL
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string __fulname;
         public string FULNAME { get => __fulname; set => SetPropertyValue(nameof(FULNAME), ref __fulname, value); }
 
+        // --- ADMIN JOGOSULTSÁG ---
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string __isadmin = "N";
-        public string ISADMIN { get => __isadmin; set => SetPropertyValue(nameof(ISADMIN), ref __isadmin, value); }
+        public string ISADMIN
+        {
+            get => __isadmin;
+            set
+            {
+                if (SetPropertyValue(nameof(ISADMIN), ref __isadmin, value))
+                    OnPropertyChanged(nameof(IsAdminUser)); // Értesítjük a felületet, hogy a pipa változzon
+            }
+        }
 
+        // Segédmező a CheckBox-hoz (Konverter nélkül!)
+        public bool IsAdminUser
+        {
+            get => ISADMIN == "I";
+            set => ISADMIN = value ? "I" : "N";
+        }
+
+        // --- AKTÍV STÁTUSZ ---
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string __uactive = "I";
         public string UACTIVE
         {
@@ -92,7 +109,6 @@ namespace Ecoinv.BL
             }
         }
 
-        // JAVÍTVA: Itt "EUSERS item"-et várunk, nem int-et!
         public void Delete(EUSERS item, FBConnectX conn)
         {
             conn.DeleteSQL(string.Format(delSQL, item.ID));
