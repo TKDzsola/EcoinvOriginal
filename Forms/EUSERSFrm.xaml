@@ -7,130 +7,78 @@
         xmlns:components="clr-namespace:Ecoinv.Components"
         mc:Ignorable="d"
         x:Name="DataFormName"
-        Title="Alkalmazott törzsadatok" Height="377" Width="452">
+        Title="Alkalmazott törzsadatok" Height="400" Width="500">
 
-  <Window.DataContext>
-    <dataContext:EUSERSDataContext/>
-  </Window.DataContext>
-  
-  <Window.Resources>
+    <Window.DataContext>
+        <dataContext:EUSERSDataContext/>
+    </Window.DataContext>
 
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="../Components/RoundedButton.xaml" />
-        <ResourceDictionary Source="../Components/ShadowLabel.xaml" />
-        <ResourceDictionary Source="../Components/Converters.xaml"/>
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Components/RoundedButton.xaml" />
+                <ResourceDictionary Source="../Components/ShadowLabel.xaml" />
+                <ResourceDictionary Source="../Components/Converters.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
-  </Window.Resources>
-
-  <Grid>
-
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
-      <ColumnDefinition Width="0*"/>
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*" />
-      <RowDefinition Height="62" />
-      <RowDefinition Height="50" />
-    </Grid.RowDefinitions>
-
-
-    <DataGrid Grid.Row="0"
-              VerticalContentAlignment="Stretch"
-              Margin="5,5,5,5"
-              AutoGenerateColumns="False"
-              IsReadOnly="True"
-              SelectionMode="Single"
-              AlternatingRowBackground="BlanchedAlmond"
-              IsEnabled="{Binding Path=IsGridBrowsing}"
-              SelectedItem="{Binding Path=SelectedEUSERS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-              ItemsSource="{Binding Path=EUSERSList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
-
-
-      <DataGrid.Columns>
-        <DataGridTextColumn Width="50"  Header="ID"                   Binding="{Binding Path=ID}"/>
-        <DataGridTextColumn Width="110" Header="Bejelentkezési név"   Binding="{Binding Path=UNAME}" />
-        <DataGridTextColumn Width="*"   Header="Teljes név"           Binding="{Binding Path=FULNAME}" />
-        <DataGridCheckBoxColumn Width="30" Header="Aktív" Binding="{Binding Path=UACTIVE, Converter={StaticResource in2bool}}"/>
-      </DataGrid.Columns>
-
-    </DataGrid>
-
-    <Border Grid.Row="1" Margin="5,5,5,5" BorderBrush="#FF64CCf1" BorderThickness="1" CornerRadius="2">
-      <Grid Background="AntiqueWhite" HorizontalAlignment="Stretch"
-            IsEnabled="{Binding Path=IsEditing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+    <Grid>
         <Grid.RowDefinitions>
-          <RowDefinition Height="25" />
-          <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Content="ID" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top" />
-        <Label Grid.Row="0" Content="Bej. név" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" />
-        <Label Grid.Row="0" Content="Teljes név" HorizontalAlignment="Left" Margin="176,0,0,0" VerticalAlignment="Top" />
-        <Label Grid.Row="0" Content="Jelszó" HorizontalAlignment="Right" Margin="0,0,82,0" VerticalAlignment="Top"/>
-        <Label Grid.Row="0" Content="Akt." HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Top"/>
-        <TextBox Grid.Row="1" HorizontalAlignment="Left" Height="19" Margin="7,0,0,6" 
-                 TextWrapping="Wrap" Text="{Binding Path=SelectedEUSERS.ID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Width="38" IsEnabled="False" />
-        <TextBox Grid.Row="1" HorizontalAlignment="Left" Height="19" Margin="51,0,0,6" 
-                 TextWrapping="Wrap" Text="{Binding Path=SelectedEUSERS.UNAME, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Width="73" IsEnabled="{Binding Path=IsNewRecord}" MaxLength="15" />
-        <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Height="19" Margin="130,0,152,6" 
-                 TextWrapping="Wrap" Text="{Binding Path=SelectedEUSERS.FULNAME, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Width="auto" IsEnabled="{Binding Path=IsEditing}" MaxLength="30"/>
+        <DataGrid Grid.Row="0" Margin="5" AutoGenerateColumns="False" IsReadOnly="True" 
+                  SelectionMode="Single" AlternatingRowBackground="BlanchedAlmond"
+                  SelectedItem="{Binding SelectedEUSERS, Mode=TwoWay}"
+                  ItemsSource="{Binding EUSERSList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="50" Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Width="120" Header="Bej. Név" Binding="{Binding UNAME}" />
+                <DataGridTextColumn Width="*" Header="Teljes Név" Binding="{Binding FULNAME}" />
+                <DataGridCheckBoxColumn Width="50" Header="Aktív" Binding="{Binding IsActive}"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <components:PasswordBox2 Grid.Row="1" HorizontalAlignment="Right" Height="19" Margin="0,0,55,6"
-                Password="{Binding Path=SelectedEUSERS.JELSZO_NO_MD5, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="87" IsEnabled="{Binding Path=IsEditing}" MaxLength="32" />
+        <Border Grid.Row="1" Margin="5" BorderBrush="#FF64CCf1" BorderThickness="1" CornerRadius="2">
+            <Grid Background="AntiqueWhite" IsEnabled="{Binding IsEditing}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="0,2,21,6" Width="18" 
-                  IsChecked="{Binding Path=SelectedEUSERS.UACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource in2bool}}" 
-                  IsEnabled="{Binding Path=IsEditing}" />
-      </Grid>
-    </Border>
+                <Label Grid.Row="0" Grid.Column="0" Content="Bej. Név:" Margin="5"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="2" Text="{Binding SelectedEUSERS.UNAME}" MaxLength="15"/>
 
-    <Border Grid.Row="2" Margin="5,5,5,5" BorderBrush="#FF64CCf1" BorderThickness="1" CornerRadius="2">
-      <Grid Background="AntiqueWhite">
-        <Button Name="NewSaveBtn"
-                Content="{Binding Path=ContentBtnNewSave}"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="5,5,0,8"
-                Width="60"
-                ToolTip="{Binding Path=ToolTipBtnNewSave}"
-                Command="{Binding Path=CommandNewSave}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-        <Button Name="ModifyCancelBtn"
-                Content="{Binding ContentBtnModifyCancel}"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="72,5,0,8"
-                Width="60"
-                ToolTip="{Binding ToolTipBtnModifyCancel}"
-                Command="{Binding CommandModifyCancel}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-        <Button Name="DelBtn"
-                Content="Töröl"
-                HorizontalAlignment="Left"
-                Height="25"
-                Margin="139,5,0,8"
-                Width="60"
-                ToolTip="Kijelölt rekord törlése!"
-                Command="{Binding Path=CommandDelete}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-        <Button Name="QuitBtn"
-                Content="Kilép"
-                HorizontalAlignment="Right"
-                Height="25"
-                Margin="0,5,10,8"
-                Width="60"
-                Command="{Binding CommandQuitBase}" CommandParameter="{Binding ElementName=DataFormName}"
-                Style="{DynamicResource RoundedButtonStyle}" />
-      </Grid>
-    </Border>
+                <Label Grid.Row="0" Grid.Column="2" Content="Teljes Név:" Margin="5"/>
+                <TextBox Grid.Row="0" Grid.Column="3" Margin="2" Text="{Binding SelectedEUSERS.FULNAME}" MaxLength="30"/>
 
-  </Grid>
+                <Label Grid.Row="1" Grid.Column="0" Content="Jelszó:" Margin="5"/>
+                <components:PasswordBox2 Grid.Row="1" Grid.Column="1" Margin="2" 
+                                         Password="{Binding SelectedEUSERS.JELSZO_NO_MD5, Mode=TwoWay}"/>
+
+                <CheckBox Grid.Row="1" Grid.Column="3" Content="Aktív" Margin="5" VerticalAlignment="Center"
+                          IsChecked="{Binding SelectedEUSERS.IsActive}"/>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5" Background="AntiqueWhite">
+            <Button Content="Új" Command="{Binding CommandNew}" Width="80" Margin="5" Style="{DynamicResource RoundedButtonStyle}"/>
+            <Button Content="Módosít" Command="{Binding CommandModify}" Width="80" Margin="5" Style="{DynamicResource RoundedButtonStyle}"/>
+            <Button Content="Mentés" Command="{Binding CommandSave}" Width="80" Margin="5" Style="{DynamicResource RoundedButtonStyle}"/>
+            <Button Content="Töröl" Command="{Binding CommandDelete}" Width="80" Margin="5" Style="{DynamicResource RoundedButtonStyle}"/>
+        </StackPanel>
+
+        <Button Grid.Row="2" Content="Bezár" HorizontalAlignment="Right" Width="80" Margin="10" 
+                Style="{DynamicResource RoundedButtonStyle}" 
+                Command="{Binding CommandQuitBase}" CommandParameter="{Binding ElementName=DataFormName}"/>
+    </Grid>
 </Window>

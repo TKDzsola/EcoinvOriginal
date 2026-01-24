@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -6,187 +7,133 @@ using System.Windows.Input;
 using Ecoinv.BL;
 using Ecoinv.Common;
 using Ecoinv.Components;
-using Ecoinv.Forms;
 
 namespace Ecoinv.DataContext
 {
     public class EUSERSDataContext : DataContextBase
     {
+        private readonly EUSERSTable alkTable;
+
         public EUSERSDataContext()
         {
             alkTable = new EUSERSTable();
-            EUSERSList = alkTable.GetList(FBConnX);
+            EUSERSList = new ObservableCollection<EUSERS>();
+
+            // VÉDELEM AZ ÖSSZEOMLÁS ELLEN
+            try
+            {
+                RefreshData();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Users init hiba");
+            }
         }
 
-        private readonly EUSERSTable alkTable;
-
-        #region ... EUSERSList ...
-        private ObservableCollection<EUSERS> __eusersList = new ObservableCollection<EUSERS>();
-        public ObservableCollection<EUSERS> EUSERSList
+        private void RefreshData()
         {
-            get => __eusersList;
-            set => SetPropertyValue(nameof(EUSERSList), ref __eusersList, value);
-        }
-        #endregion
+            using (FBConnectX conn = new FBConnectX())
+            {
+                try
+                {
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
 
-        #region ... SelectedEUSERS ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private EUSERS __selectedEUSERS;
+                    EUSERSList.Clear();
+                    var list = alkTable.GetList(conn);
+                    foreach (var item in list) EUSERSList.Add(item);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Felhasználók betöltése sikertelen");
+                }
+            }
+        }
+
+        public ObservableCollection<EUSERS> EUSERSList { get; private set; }
+
+        private EUSERS _selectedEUSERS;
         public EUSERS SelectedEUSERS
         {
-            get => __selectedEUSERS;
+            get => _selectedEUSERS;
             set
             {
-                OnSelectedEUSERSChanging(value);
-                SetPropertyValue(nameof(SelectedEUSERS), ref __selectedEUSERS, value);
-                OnSelectedEUSERSChanged();
-            }
-        }
-        private void OnSelectedEUSERSChanging(EUSERS value) { }
-        private void OnSelectedEUSERSChanged()
-        {
-            OLDEUSERS ??= new EUSERS();
-            if (SelectedEUSERS != null)
-            {
-                OLDEUSERS.ID = SelectedEUSERS.ID;
-                OLDEUSERS.UNAME = SelectedEUSERS.UNAME;
-                OLDEUSERS.UPSSW = SelectedEUSERS.UPSSW;
-                OLDEUSERS.FULNAME = SelectedEUSERS.FULNAME;
-                OLDEUSERS.JELSZO_NO_MD5 = SelectedEUSERS.JELSZO_NO_MD5;
-                OLDEUSERS.UACTIVE = SelectedEUSERS.UACTIVE;
-            }
-        }
-        #endregion
-
-        #region ... OLDEUSERS ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private EUSERS __oldeusers;
-        public EUSERS OLDEUSERS
-        {
-            get => __oldeusers;
-            set => SetPropertyValue(nameof(OLDEUSERS), ref __oldeusers, value);
-        }
-        #endregion
-
-        // --- MÓDOSÍTÁS JOGOSULTSÁG ---
-        #region ... CommandModifyCancel ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandModifyCancel;
-
-        public ICommand CommandModifyCancel => __commandModifyCancel ??= new DelegateCommand(ac => ModifyCancelExecute(), fc => ModifyCancelCanExecute());
-
-        private bool ModifyCancelCanExecute()
-        {
-            if (IsEditing) return true;
-
-            // FONTOS: Csak és kizárólag ADMIN módosíthat!
-            // Kivettem azt, hogy (|| SelectedEUSERS.UNAME == LoginUserName), 
-            // mert kérted, hogy sima user semmit se érjen el.
-            return (SelectedEUSERS != null) && DataContextBase.IsAdmin;
-        }
-
-        private void ModifyCancelExecute()
-        {
-            if (IsEditing)
-            {
-                if (IsNewRecord)
+                if (SetPropertyValue(nameof(SelectedEUSERS), ref _selectedEUSERS, value))
                 {
-                    alkTable.DelNewEUSERS_M();
-                    var _actrec = EUSERSList.FirstOrDefault(r => r.ID == -1);
-                    if (EUSERSList.IndexOf(_actrec) != -1)
-                        EUSERSList.Remove(_actrec);
-                    IsNewRecord = false;
-                }
-                else
-                {
-                    if (SelectedEUSERS != null)
-                        alkTable.ReUpdateEUSERS_M(OLDEUSERS);
+                    IsEditing = false;
                 }
             }
-            IsEditing = !IsEditing;
-            ShowDetailPanel();
         }
-        #endregion
 
-        // --- ÚJ / MENTÉS JOGOSULTSÁG ---
-        #region ... CommandNewSave ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandNewSave;
+        // --- PARANCSOK ---
 
-        public ICommand CommandNewSave => __commandNewSave ??= new DelegateCommand(ac => NewSaveExecute(), fc => NewSaveCanExecute());
+        public ICommand CommandNew => new DelegateCommand(_ => DoNew(), _ => IsAdmin);
+        public ICommand CommandSave => new DelegateCommand(_ => DoSave(), _ => IsEditing && IsAdmin);
+        public ICommand CommandDelete => new DelegateCommand(_ => DoDelete(), _ => SelectedEUSERS != null && IsAdmin && !IsEditing);
+        public ICommand CommandModify => new DelegateCommand(_ => IsEditing = true, _ => SelectedEUSERS != null && IsAdmin);
 
-        private bool NewSaveCanExecute()
+        private void DoNew()
         {
-            if (IsEditing)
-            {
-                // Validáció + Admin jog
-                bool isValid = false;
-                if (IsNewRecord)
-                {
-                    isValid = !string.IsNullOrEmpty(SelectedEUSERS.UNAME) &&
-                              !string.IsNullOrEmpty(SelectedEUSERS.UPSSW) &&
-                              !string.IsNullOrEmpty(SelectedEUSERS.JELSZO_NO_MD5);
-                }
-                else
-                {
-                    isValid = (SelectedEUSERS != null) &&
-                              !string.IsNullOrEmpty(SelectedEUSERS.UPSSW) &&
-                              !string.IsNullOrEmpty(SelectedEUSERS.JELSZO_NO_MD5);
-                }
-                return isValid && DataContextBase.IsAdmin;
-            }
-            else
-            {
-                // Új gomb: Csak Admin
-                return DataContextBase.IsAdmin;
-            }
+            SelectedEUSERS = new EUSERS { UACTIVE = "I", ISADMIN = "N" };
+            IsEditing = true;
         }
 
-        private void NewSaveExecute()
+        private void DoSave()
         {
-            IsEditing = !IsEditing;
-            if (IsEditing)
+            if (string.IsNullOrWhiteSpace(SelectedEUSERS.UNAME))
             {
-                IsNewRecord = true;
-                SelectedEUSERS = alkTable.NewEUSERS_M();
+                MessageBox.Show("Felhasználónév kötelező!");
+                return;
             }
-            else
+            // Ha új felhasználó és nincs jelszó megadva
+            if (SelectedEUSERS.ID <= 0 && string.IsNullOrEmpty(SelectedEUSERS.UPSSW))
             {
-                if (IsNewRecord)
+                MessageBox.Show("Új felhasználónál a jelszó kötelező!");
+                return;
+            }
+
+            using (FBConnectX conn = new FBConnectX())
+            {
+                try
                 {
-                    if (SelectedEUSERS != null)
-                        alkTable.Insert(SelectedEUSERS, FBConnX);
-                    IsNewRecord = false;
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
+
+                    alkTable.Save(SelectedEUSERS, conn);
+
+                    MessageBox.Show("Sikeres mentés!");
+                    IsEditing = false;
+                    RefreshData();
                 }
-                else
+                catch (Exception ex)
                 {
-                    if (SelectedEUSERS != null)
-                        alkTable.Update(SelectedEUSERS, FBConnX);
+                    Logger.LogError(ex, "User mentési hiba");
+                    MessageBox.Show("Hiba: " + ex.Message);
                 }
             }
-            ShowDetailPanel();
         }
-        #endregion
 
-        // --- TÖRLÉS JOGOSULTSÁG ---
-        #region ... CommandDelete ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandDelete;
-
-        public ICommand CommandDelete => __commandDelete ??= new DelegateCommand(ac => DeleteExecute(), fc => DeleteCanExecute());
-
-        // CSAK ADMIN TÖRÖLHET
-        private bool DeleteCanExecute() => DataContextBase.IsAdmin && (SelectedEUSERS != null) && (!IsEditing);
-
-        private void DeleteExecute()
+        private void DoDelete()
         {
-            if (MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Biztosan törölni szeretnéd?", "Törlés", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (SelectedEUSERS != null)
-                    alkTable.Delete(SelectedEUSERS.ID, FBConnX);
-                ShowDetailPanel();
+                using (FBConnectX conn = new FBConnectX())
+                {
+                    try
+                    {
+                        conn.GetConnectionX();
+                        conn.FBConnOpenX();
+
+                        alkTable.Delete(SelectedEUSERS, conn);
+                        RefreshData();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "User törlési hiba");
+                        MessageBox.Show("Hiba: " + ex.Message);
+                    }
+                }
             }
         }
-        #endregion
     }
 }

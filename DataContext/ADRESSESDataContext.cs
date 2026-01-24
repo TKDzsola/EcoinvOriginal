@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -17,16 +18,32 @@ namespace Ecoinv.DataContext
         public ADRESSESDataContext()
         {
             alkTable = new ADRESSESTable();
-            ADRESSESList = alkTable.GetList(FBConnX);
+            ADRESSESList = new ObservableCollection<ADRESSES>();
+            RefreshData();
+        }
+
+        private void RefreshData()
+        {
+            using (FBConnectX conn = new FBConnectX())
+            {
+                try
+                {
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
+
+                    ADRESSESList.Clear();
+                    var list = alkTable.GetList(conn);
+                    foreach (var item in list) ADRESSESList.Add(item);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Címek betöltése sikertelen");
+                }
+            }
         }
 
         #region ... ADRESSESList ...
-        private ObservableCollection<ADRESSES> __ADRESSESList = new ObservableCollection<ADRESSES>();
-        public ObservableCollection<ADRESSES> ADRESSESList
-        {
-            get => __ADRESSESList;
-            set => SetPropertyValue(nameof(ADRESSESList), ref __ADRESSESList, value);
-        }
+        public ObservableCollection<ADRESSES> ADRESSESList { get; private set; }
         #endregion
 
         #region ... SelectedADRESSES ...
@@ -37,12 +54,11 @@ namespace Ecoinv.DataContext
             get => __selectedADRESSES;
             set
             {
-                OnSelectedADRESSESChanging(value);
                 SetPropertyValue(nameof(SelectedADRESSES), ref __selectedADRESSES, value);
                 OnSelectedADRESSESChanged();
             }
         }
-        private void OnSelectedADRESSESChanging(ADRESSES value) { }
+
         private void OnSelectedADRESSESChanged()
         {
             OLDADRESSES ??= new ADRESSES();
@@ -69,17 +85,14 @@ namespace Ecoinv.DataContext
         }
         #endregion
 
-        // --- MÓDOSÍTÁS JOGOSULTSÁG ---
-        #region ... CommandModifyCancel ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandModifyCancel;
-
+        // --- MÓDOSÍTÁS ---
         public ICommand CommandModifyCancel => __commandModifyCancel ??= new DelegateCommand(ac => ModifyCancelExecute(), fc => ModifyCancelCanExecute());
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private ICommand __commandModifyCancel;
 
         private bool ModifyCancelCanExecute()
         {
-            if (IsEditing) return true; // Cancel mindig mehet
-            return (SelectedADRESSES != null) && DataContextBase.IsAdmin; // Modify csak Admin
+            if (IsEditing) return true;
+            return (SelectedADRESSES != null) && DataContextBase.IsAdmin;
         }
 
         private void ModifyCancelExecute()
@@ -94,6 +107,7 @@ namespace Ecoinv.DataContext
                 }
                 else
                 {
+                    // Visszaállítás
                     if (SelectedADRESSES != null)
                     {
                         SelectedADRESSES.POSTALCODE = OLDADRESSES.POSTALCODE;
@@ -107,20 +121,15 @@ namespace Ecoinv.DataContext
             IsEditing = !IsEditing;
             ShowDetailPanel();
         }
-        #endregion
 
-        // --- ÚJ / MENTÉS JOGOSULTSÁG ---
-        #region ... CommandNewSave ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandNewSave;
-
+        // --- ÚJ / MENTÉS ---
         public ICommand CommandNewSave => __commandNewSave ??= new DelegateCommand(ac => NewSaveExecute(), fc => NewSaveCanExecute());
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private ICommand __commandNewSave;
 
         private bool NewSaveCanExecute()
         {
             if (IsEditing)
             {
-                // Validáció + Admin jog
                 bool isValid = false;
                 if (IsNewRecord)
                     isValid = (SelectedADRESSES != null) && !string.IsNullOrEmpty(SelectedADRESSES.CITY) && !string.IsNullOrEmpty(SelectedADRESSES.ADDRESS);
@@ -129,45 +138,52 @@ namespace Ecoinv.DataContext
 
                 return isValid && DataContextBase.IsAdmin;
             }
-            else
-            {
-                // Új gomb: Csak Admin
-                return DataContextBase.IsAdmin;
-            }
+            return DataContextBase.IsAdmin;
         }
 
         private void NewSaveExecute()
         {
             IsEditing = !IsEditing;
-            if (IsEditing)
+            if (IsEditing) // Új
             {
                 IsNewRecord = true;
                 var newItem = new ADRESSES { ID = -1, ATYPE = "1", AACTIVE = "1" };
                 ADRESSESList.Add(newItem);
                 SelectedADRESSES = newItem;
             }
-            else
+            else // Mentés
             {
-                if (IsNewRecord)
+                using (FBConnectX conn = new FBConnectX())
                 {
-                    if (SelectedADRESSES != null) alkTable.Insert(SelectedADRESSES, FBConnX);
-                    IsNewRecord = false;
+                    try
+                    {
+                        conn.GetConnectionX();
+                        conn.FBConnOpenX();
+
+                        if (IsNewRecord)
+                        {
+                            if (SelectedADRESSES != null) alkTable.Insert(SelectedADRESSES, conn);
+                        }
+                        else
+                        {
+                            if (SelectedADRESSES != null) alkTable.Update(SelectedADRESSES, conn);
+                        }
+                        RefreshData();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Cím mentési hiba");
+                        MessageBox.Show("Mentési hiba: " + ex.Message);
+                    }
                 }
-                else
-                {
-                    if (SelectedADRESSES != null) alkTable.Update(SelectedADRESSES, FBConnX);
-                }
+                IsNewRecord = false;
             }
             ShowDetailPanel();
         }
-        #endregion
 
-        // --- TÖRLÉS JOGOSULTSÁG ---
-        #region ... CommandDelete ...
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ICommand __commandDelete;
-
+        // --- TÖRLÉS ---
         public ICommand CommandDelete => __commandDelete ??= new DelegateCommand(ac => DeleteExecute(), fc => DeleteCanExecute());
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private ICommand __commandDelete;
 
         private bool DeleteCanExecute() => DataContextBase.IsAdmin && (SelectedADRESSES != null) && (!IsEditing);
 
@@ -175,14 +191,26 @@ namespace Ecoinv.DataContext
         {
             if (MessageBox.Show("Biztos a törlésben?", "Törlés", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (SelectedADRESSES != null)
+                using (FBConnectX conn = new FBConnectX())
                 {
-                    alkTable.Delete(SelectedADRESSES, FBConnX);
-                    ADRESSESList.Remove(SelectedADRESSES);
+                    try
+                    {
+                        conn.GetConnectionX();
+                        conn.FBConnOpenX();
+                        if (SelectedADRESSES != null)
+                        {
+                            alkTable.Delete(SelectedADRESSES, conn);
+                            RefreshData();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Cím törlési hiba");
+                        MessageBox.Show("Törlési hiba: " + ex.Message);
+                    }
                 }
                 ShowDetailPanel();
             }
         }
-        #endregion
     }
 }
