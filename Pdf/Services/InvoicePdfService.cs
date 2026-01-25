@@ -22,23 +22,21 @@ namespace Ecoinv.Pdf.Services
 
             var model = new InvoicePdfModel
             {
-                // --- SZÁMLA ADATOK ---
+                // --- FEJLÉC ADATOK ---
                 InvoiceNumber = header.INVOICE_NUMBER,
                 IssueDate = header.ISSUE_DATE ?? DateTime.Now,
                 DueDate = header.DUE_DATE ?? DateTime.Now,
 
-                // --- KIBOCSÁTÓ ADATOK ---
+                // --- ELADÓ ---
                 SellerName = seller?.SZKNEV ?? "Unbekannt",
                 SellerAddress = seller?.SZKCIM ?? string.Empty,
                 SellerTaxNumber = seller?.SZKTAX ?? string.Empty,
                 SellerEuTaxNumber = seller?.SZKCOMTAX ?? string.Empty,
                 SellerBankAccount = seller?.SZKBANKACCOUNT ?? string.Empty,
-
-                // --- ÚJ ADATOK BETÖLTÉSE ---
                 SellerIBAN = seller?.IBAN ?? string.Empty,
                 SellerBIC = seller?.BIC ?? string.Empty,
 
-                // --- VEVŐ ADATOK ---
+                // --- VEVŐ ---
                 ClientName = client?.NAME ?? string.Empty,
                 ClientTaxNumber = client?.TAX_NUMBER ?? string.Empty,
                 ClientAddress = clientAddress != null
@@ -49,16 +47,37 @@ namespace Ecoinv.Pdf.Services
                 Comment = string.Empty
             };
 
-            // --- TÉTELEK FELTÖLTÉSE ---
+            // --- TÉTELEK FELDOLGOZÁSA ---
             foreach (var d in details)
             {
+                // 1. Megkeressük az eredeti törzsadatot
                 var service = allServices?.FirstOrDefault(s => s.ID == d.SERVICES_ID);
-                string descriptionText = service != null ? service.DESCRIPTION : "";
+
+                string finalName = d.SERVICE_NAME;
+                // Alapesetben a törzsadat leírása jön:
+                string finalDescription = service != null ? service.DESCRIPTION : "";
+
+                // 2. MÓDOSÍTÁS: Most már a perjelet (/) keressük!
+                if (!string.IsNullOrEmpty(d.SERVICE_NAME) && d.SERVICE_NAME.Contains("/"))
+                {
+                    // A Split most a perjel mentén vág
+                    var parts = d.SERVICE_NAME.Split('/');
+
+                    // Az első rész a Név (pl. "Utiköltség")
+                    finalName = parts[0].Trim();
+
+                    // A második rész a Leírás (pl. "Güssing - München")
+                    if (parts.Length > 1)
+                    {
+                        // Ha több perjel is van, a maradékot összefűzzük
+                        finalDescription = string.Join("/", parts.Skip(1)).Trim();
+                    }
+                }
 
                 model.Items.Add(new InvoicePdfItem
                 {
-                    Name = d.SERVICE_NAME,
-                    Description = descriptionText,
+                    Name = finalName,
+                    Description = finalDescription,
                     Quantity = d.QTY,
                     NetUnitPrice = d.NET_UNIT_PRICE,
                     NetTotal = d.LINE_TOTAL_NET,
@@ -82,9 +101,8 @@ namespace Ecoinv.Pdf.Services
             var lower = hungarianMethod.ToLower().Trim();
 
             if (lower.Contains("kártya") || lower.Contains("card")) return "Kartenzahlung";
-            if (lower.Contains("átutalás") || lower.Contains("bank") || lower.Contains("transfer")) return "Überweisung";
-            if (lower.Contains("készpénz") || lower.Contains("kp") || lower.Contains("cash")) return "Barzahlung";
-            if (lower.Contains("utánvét")) return "Nachnahme";
+            if (lower.Contains("átutalás") || lower.Contains("bank")) return "Überweisung";
+            if (lower.Contains("készpénz") || lower.Contains("kp")) return "Barzahlung";
 
             return hungarianMethod;
         }

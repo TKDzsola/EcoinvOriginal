@@ -118,7 +118,6 @@
             </StackPanel>
         </Border>
 
-
         <Border Grid.Row="0" Grid.Column="1"
                 Background="White"
                 CornerRadius="12"
@@ -154,8 +153,18 @@
                             Margin="5"
                             Command="{Binding CommandStorno}"
                             Style="{DynamicResource RoundedButtonStyle}"/>
-                </StackPanel>
 
+                    <Button Content="🗑️ Törlés"
+                            Width="120"
+                            Height="40"
+                            Background="#7F1D1D"
+                            Foreground="White"
+                            Margin="5"
+                            Command="{Binding CommandDelete}"
+                            Style="{DynamicResource RoundedButtonStyle}"
+                            ToolTip="Végleges törlés (Csak Admin)"/>
+
+                </StackPanel>
 
                 <Border Background="#F9FAFB"
                         CornerRadius="10"

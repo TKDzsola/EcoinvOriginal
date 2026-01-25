@@ -30,6 +30,7 @@ namespace Ecoinv.DataContext
             StatusList = new ObservableCollection<StatusItem>();
             LoadStatusList();
 
+            // --- PARANCSOK ---
             CommandSearch = new DelegateCommand(_ => DoSearch());
             CommandOpen = new DelegateCommand(_ => DoOpen(), _ => SelectedINVOICE_HEADERS != null);
             CommandPrint = new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
@@ -39,6 +40,12 @@ namespace Ecoinv.DataContext
                 _ => SelectedINVOICE_HEADERS != null &&
                      SelectedINVOICE_HEADERS.SZLASTAT != "2" &&
                      DataContextBase.IsAdmin
+            );
+
+            // ÚJ: TÖRLÉS PARANCS (Csak Admin, ha van kijelölés)
+            CommandDelete = new DelegateCommand(
+                _ => DoDelete(),
+                _ => SelectedINVOICE_HEADERS != null && DataContextBase.IsAdmin
             );
         }
 
@@ -73,6 +80,9 @@ namespace Ecoinv.DataContext
         public ICommand CommandPrint { get; }
         public ICommand CommandStorno { get; }
 
+        // ÚJ: Property
+        public ICommand CommandDelete { get; }
+
         private void DoSearch()
         {
             using (FBConnectX localConn = new FBConnectX())
@@ -95,7 +105,6 @@ namespace Ecoinv.DataContext
                 }
                 catch (Exception ex)
                 {
-                    // JAVÍTÁS: Keresési hiba naplózása
                     Logger.LogError(ex, "Számla keresési hiba");
                     MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
@@ -148,9 +157,47 @@ namespace Ecoinv.DataContext
                 }
                 catch (Exception ex)
                 {
-                    // JAVÍTÁS: Kritikus hiba a sztornónál
                     Logger.LogError(ex, $"Sztornózási folyamat hiba. Eredeti ID: {SelectedINVOICE_HEADERS.ID}");
                     MessageBox.Show($"Hiba: {ex.Message}");
+                }
+            }
+        }
+
+        // --- ÚJ METÓDUS: TÖRLÉS VÉGREHAJTÁSA ---
+        private void DoDelete()
+        {
+            if (SelectedINVOICE_HEADERS == null) return;
+
+            string msg = $"FIGYELEM! Véglegesen törölni fogod a következő számlát:\n\n" +
+                         $"Sorszám: {SelectedINVOICE_HEADERS.INVOICE_NUMBER}\n" +
+                         $"Vevő: {SelectedINVOICE_HEADERS.CLIENT_NAME}\n\n" +
+                         "Ez sorszám-hiányt okozhat az adatbázisban, ami adóügyi kockázat!\n" +
+                         "Biztosan folytatod?";
+
+            if (MessageBox.Show(msg, "VÉGLEGES TÖRLÉS", MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
+            {
+                using (FBConnectX localConn = new FBConnectX())
+                {
+                    try
+                    {
+                        localConn.GetConnectionX();
+                        localConn.FBConnOpenX();
+
+                        // Törlés hívása (Adatbázis réteg)
+                        _invoiceTable.Delete(SelectedINVOICE_HEADERS.ID, localConn);
+
+                        Logger.LogInfo($"Számla véglegesen törölve ADMIN által. Sorszám: {SelectedINVOICE_HEADERS.INVOICE_NUMBER}");
+
+                        MessageBox.Show("A számla sikeresen törölve.");
+
+                        // Lista frissítése
+                        DoSearch();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Számla törlési hiba");
+                        MessageBox.Show($"Nem sikerült a törlés: {ex.Message}");
+                    }
                 }
             }
         }

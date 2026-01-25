@@ -25,9 +25,6 @@ namespace Ecoinv.Pdf.Services
 
         public void ExportInvoiceById(int invoiceId)
         {
-            // =============================================================
-            // 'using' blokk használata -> Automatikus lezárás!
-            // =============================================================
             using (FBConnectX conn = new FBConnectX())
             {
                 try
@@ -35,10 +32,7 @@ namespace Ecoinv.Pdf.Services
                     conn.GetConnectionX();
                     conn.FBConnOpenX();
 
-                    if (conn.GetConStateX() != System.Data.ConnectionState.Open)
-                    {
-                        return; // A hibaüzenet már lement a FBConnectX-ben
-                    }
+                    if (conn.GetConStateX() != System.Data.ConnectionState.Open) return;
 
                     // --- ADATOK LEKÉRÉSE ---
                     var headerTable = new INVOICE_HEADERSTable();
@@ -60,15 +54,13 @@ namespace Ecoinv.Pdf.Services
                     var allDetails = detailTable.GetList(conn);
                     var details = allDetails.Where(x => x.INVOICEHEADERS_ID == invoiceId).ToList();
 
-                    // Itt töltjük be a szolgáltatásokat, amiben a DESCRIPTION van
+                    // Fontos: Az allServices kelleni fog a leírásokhoz (ha nincs egyedi), 
+                    // de NEM írjuk felül a neveket!
                     var allServices = serviceTable.GetList(conn);
 
-                    // Frissítjük a neveket a részleteknél (ez eddig is itt volt)
-                    foreach (var item in details)
-                    {
-                        var serv = allServices.FirstOrDefault(s => s.ID == item.SERVICES_ID);
-                        if (serv != null) item.SERVICE_NAME = serv.NAME;
-                    }
+                    // --- ITT VOLT A HIBA! KIVETTEM A CIKLUST! ---
+                    // Korábban itt írtuk felül a te beírt szövegedet a törzsadattal.
+                    // Most már a 'details' lista azt tartalmazza, amit te beírtál (pl. "Teszt|aaaa")
 
                     var allClients = clientTable.GetList(conn);
                     CLIENTS client = null;
@@ -87,27 +79,21 @@ namespace Ecoinv.Pdf.Services
                     var allEcsys = ecsysTable.GetList(conn);
                     var sellerData = allEcsys.FirstOrDefault();
 
-                    // --- MODELL ÉPÍTÉSE (MÓDOSÍTVA!) ---
-                    // Átadjuk az allServices listát is, hogy a PDFService ki tudja szedni a DESCRIPTION-t!
+                    // --- MODELL ÉPÍTÉSE ---
+                    // Az _pdfService fogja feldolgozni a "|" jelet
                     InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData, allServices);
 
-                    // =============================================================
-                    // SZTORNÓ KEZELÉS 
-                    // =============================================================
+                    // --- SZTORNÓ KEZELÉS ---
                     bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
                     bool isStornoNumber = (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-"));
 
                     if (isStornoStatus || isStornoNumber)
                     {
                         pdfModel.IsStorno = true;
-
                         if (!string.IsNullOrEmpty(header.STORNO_ID) && int.TryParse(header.STORNO_ID.Trim(), out int originalId))
                         {
                             var originalHeader = allHeaders.FirstOrDefault(h => h.ID == originalId);
-                            if (originalHeader != null)
-                            {
-                                pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
-                            }
+                            if (originalHeader != null) pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
                         }
 
                         // Mínuszolás

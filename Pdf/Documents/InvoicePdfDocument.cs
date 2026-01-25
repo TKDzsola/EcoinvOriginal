@@ -4,6 +4,7 @@ using QuestPDF.Infrastructure;
 using Ecoinv.Pdf.Models;
 using System.Globalization;
 using System.IO;
+using System;
 
 namespace Ecoinv.Pdf.Documents
 {
@@ -15,6 +16,7 @@ namespace Ecoinv.Pdf.Documents
         public InvoicePdfDocument(InvoicePdfModel model)
         {
             _model = model;
+            // Német formátum (Ausztria), hogy az euró és a számok helyesek legyenek
             _culture = new CultureInfo("de-AT");
         }
 
@@ -33,154 +35,165 @@ namespace Ecoinv.Pdf.Documents
                 {
                     col.Spacing(10);
 
-                    // --- FEJLÉC ---
+                    // =========================================================
+                    // 1. FEJLÉC (Logó, Eladó, Vevő, Számlaadatok)
+                    // =========================================================
                     col.Item().Row(row =>
                     {
-                        // BAL OLDAL (Logó + Eladó)
+                        // BAL OLDAL: Logó és Eladó adatai
                         row.RelativeItem().Column(c =>
                         {
-                            string logoPath = @"c:\Users\prozs\source\repos\Ecoinv\Images\econtologo.jpg";
-                            if (File.Exists(logoPath)) c.Item().Height(50).Image(logoPath);
+                            // --- LOGÓ JAVÍTÁS START ---
+                            // Megkeressük az EXE mappáját, és onnan töltjük be a képet
+                            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                            string logoPath = Path.Combine(basePath, "econtologo.jpg");
 
-                            c.Item().Text(_model.SellerName).FontSize(14).Bold();
-                            if (!string.IsNullOrEmpty(_model.SellerAddress))
+                            if (File.Exists(logoPath))
                             {
-                                var parts = _model.SellerAddress.Split(',');
-                                if (parts.Length > 1) { c.Item().Text(parts[1].Trim()); c.Item().Text(parts[0].Trim()); }
-                                else { c.Item().Text(_model.SellerAddress); }
-                            }
-                            c.Item().Text("Österreich");
-
-                            c.Item().PaddingTop(5);
-                            if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber))
-                                c.Item().Text($"UID-Nummer: {_model.SellerEuTaxNumber}").FontSize(9).FontColor(Colors.Grey.Darken2);
-
-                            // --- ÚJ: IBAN és BIC megjelenítése a Fejlécben is ---
-                            if (!string.IsNullOrEmpty(_model.SellerIBAN))
-                                c.Item().Text($"IBAN: {_model.SellerIBAN}").FontSize(9).FontColor(Colors.Grey.Darken2);
-                            if (!string.IsNullOrEmpty(_model.SellerBIC))
-                                c.Item().Text($"BIC: {_model.SellerBIC}").FontSize(9).FontColor(Colors.Grey.Darken2);
-                        });
-
-                        // JOBB OLDAL (Számla fejléc)
-                        row.RelativeItem().AlignRight().Column(c =>
-                        {
-                            if (_model.IsStorno)
-                            {
-                                c.Item().Text("STORNORECHNUNG").FontSize(20).Bold().FontColor(Colors.Red.Medium);
-                                c.Item().Text($"Nr.: {_model.InvoiceNumber}").FontSize(12);
-
-                                if (!string.IsNullOrEmpty(_model.OriginalInvoiceNumber))
-                                {
-                                    c.Item().PaddingTop(5);
-                                    c.Item().Text("Korrektur zu Rechnung:").FontSize(10).FontColor(Colors.Red.Medium);
-                                    c.Item().Text($"Nr.: {_model.OriginalInvoiceNumber}").FontSize(10).Bold().FontColor(Colors.Red.Medium);
-                                }
+                                c.Item().Height(60).Image(logoPath);
                             }
                             else
                             {
-                                c.Item().Text("RECHNUNG").FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
-                                c.Item().Text($"Nr.: {_model.InvoiceNumber}").FontSize(12);
+                                // Ha véletlenül mégsem lenne ott, szövegesen kiírjuk
+                                c.Item().Text("ECONT").FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
+                            }
+                            // --- LOGÓ JAVÍTÁS END ---
+
+                            c.Item().PaddingTop(10).Text(_model.SellerName).Bold().FontSize(11);
+                            c.Item().Text(_model.SellerAddress);
+                            c.Item().Text($"Steuernummer: {_model.SellerTaxNumber}");
+                            if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber))
+                                c.Item().Text($"UID-Nr: {_model.SellerEuTaxNumber}");
+                        });
+
+                        // JOBB OLDAL: Címzett (Vevő) és Számla infók
+                        row.RelativeItem().AlignRight().Column(c =>
+                        {
+                            c.Item().Text("RECHNUNG").FontSize(20).SemiBold().FontColor(Colors.Blue.Darken2);
+                            c.Item().PaddingTop(5).Text($"Nr.: {_model.InvoiceNumber}").FontSize(12).Bold();
+
+                            c.Item().PaddingTop(15).Text("Kunde (Vevő):").FontSize(8).FontColor(Colors.Grey.Medium);
+                            c.Item().Text(_model.ClientName).Bold();
+                            c.Item().Text(_model.ClientAddress);
+                            if (!string.IsNullOrEmpty(_model.ClientTaxNumber))
+                                c.Item().Text($"Steuernummer: {_model.ClientTaxNumber}");
+
+                            c.Item().PaddingTop(10).Text($"Ausstellungsdatum: {_model.IssueDate:yyyy.MM.dd}");
+                            c.Item().Text($"Fälligkeitsdatum: {_model.DueDate:yyyy.MM.dd}");
+
+                            // Sztornó jelzés, ha van
+                            if (_model.IsStorno)
+                            {
+                                c.Item().PaddingTop(5).Text("STORNO RECHNUNG").FontColor(Colors.Red.Medium).Bold();
+                                c.Item().Text($"Original: {_model.OriginalInvoiceNumber}").FontColor(Colors.Red.Medium);
                             }
                         });
                     });
 
-                    col.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                    col.Item().PaddingVertical(5).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
-                    // --- DÁTUMOK ---
-                    col.Item().AlignRight().Column(c =>
-                    {
-                        c.Item().Text($"Ausstellungsdatum: {_model.IssueDate.ToString("d", _culture)}");
-                        c.Item().Text($"Fälligkeitsdatum: {_model.DueDate.ToString("d", _culture)}");
-                    });
-
-                    col.Spacing(20);
-
-                    // --- VEVŐ ---
-                    col.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Column(c =>
-                    {
-                        c.Item().Text("Empfänger:").FontSize(8).FontColor(Colors.Grey.Darken2);
-                        c.Item().Text(_model.ClientName).Bold();
-                        if (!string.IsNullOrEmpty(_model.ClientAddress))
-                        {
-                            var parts = _model.ClientAddress.Split(',');
-                            if (parts.Length > 1) { c.Item().Text(parts[1].Trim()); c.Item().Text(parts[0].Trim()); }
-                            else { c.Item().Text(_model.ClientAddress); }
-                        }
-                        if (!string.IsNullOrEmpty(_model.ClientTaxNumber)) c.Item().Text($"Steuernummer/UID: {_model.ClientTaxNumber}");
-                    });
-
-                    col.Spacing(20);
-
-                    // --- TÁBLÁZAT ---
+                    // =========================================================
+                    // 2. TÁBLÁZAT (Tételek)
+                    // =========================================================
                     col.Item().Table(table =>
                     {
-                        table.ColumnsDefinition(columns => {
-                            columns.RelativeColumn(4);
-                            columns.RelativeColumn();
-                            columns.RelativeColumn();
-                            columns.RelativeColumn();
+                        // Oszlopok definíciója
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(30);  // Sorszám
+                            columns.RelativeColumn(4);   // Megnevezés
+                            columns.RelativeColumn(1);   // Menny.
+                            columns.RelativeColumn(2);   // Egységár
+                            columns.RelativeColumn(2);   // Nettó
+                            columns.RelativeColumn(2);   // ÁFA
+                            columns.RelativeColumn(2);   // Bruttó
                         });
 
-                        table.Header(header => {
-                            header.Cell().Element(HeaderStyle).Text("Beschreibung");
+                        // Fejléc
+                        table.Header(header =>
+                        {
+                            header.Cell().Element(HeaderStyle).Text("#");
+                            header.Cell().Element(HeaderStyle).Text("Bezeichnung");
                             header.Cell().Element(HeaderStyle).AlignRight().Text("Menge");
-                            header.Cell().Element(HeaderStyle).AlignRight().Text("Einzelpreis");
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Einzel");
                             header.Cell().Element(HeaderStyle).AlignRight().Text("Netto");
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("MwSt");
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Brutto");
                         });
 
+                        // Sorok
+                        int i = 1;
                         foreach (var item in _model.Items)
                         {
-                            table.Cell().Element(CellStyle).Column(column =>
+                            table.Cell().Element(CellStyle).Text($"{i}.");
+                            table.Cell().Element(CellStyle).Column(c =>
                             {
-                                column.Item().Text(item.Name).SemiBold();
-                                if (!string.IsNullOrWhiteSpace(item.Description))
-                                {
-                                    column.Item().PaddingTop(2).Text(text =>
-                                    {
-                                        text.Span("Megjegyzés: ").FontSize(9).FontColor(Colors.Grey.Darken2);
-                                        text.Span(item.Description).FontSize(9).FontColor(Colors.Grey.Darken1).Italic();
-                                    });
-                                }
+                                c.Item().Text(item.Name).SemiBold();
+                                if (!string.IsNullOrEmpty(item.Description))
+                                    c.Item().Text(item.Description).FontSize(9).FontColor(Colors.Grey.Darken1);
                             });
-
-                            table.Cell().Element(CellStyle).AlignRight().Text(item.Quantity.ToString("0.##", _culture));
-                            table.Cell().Element(CellStyle).AlignRight().Text(item.NetUnitPrice.ToString("N2", _culture));
-                            table.Cell().Element(CellStyle).AlignRight().Text(item.NetTotal.ToString("N2", _culture));
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{item.Quantity:N0}");
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{item.NetUnitPrice.ToString("N2", _culture)} €");
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{item.NetTotal.ToString("N2", _culture)} €");
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{item.VatAmount.ToString("N2", _culture)} €\n({item.VatPercent:0}%)").FontSize(9);
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{item.GrossTotal.ToString("N2", _culture)} €").Bold();
+                            i++;
                         }
                     });
 
-                    // --- LÁBLÉC ---
-                    col.Spacing(10);
-                    col.Item().Row(row =>
+                    // =========================================================
+                    // 3. LÁBLÉC (Összesítő és Bank adatok)
+                    // =========================================================
+                    col.Item().PaddingTop(10).Row(row =>
                     {
-                        row.RelativeItem().Column(c => {
-                            c.Item().Text("Zahlungsinformationen:").Bold();
-                            c.Item().Text($"Zahlungsart: {_model.PaymentMethod}");
+                        // Bal oldal: Fizetési mód és Bank adatok
+                        row.RelativeItem().Column(c =>
+                        {
+                            c.Item().Text($"Zahlungsmethode: {_model.PaymentMethod}");
 
-                            // --- ITT IS MEGJELENÍTJÜK AZ IBAN/BIC-ET A LÁBLÉCBEN ---
+                            c.Item().PaddingTop(10).Text("Bankverbindung:").Bold();
                             if (!string.IsNullOrEmpty(_model.SellerIBAN))
                                 c.Item().Text($"IBAN: {_model.SellerIBAN}");
-
                             if (!string.IsNullOrEmpty(_model.SellerBIC))
                                 c.Item().Text($"BIC: {_model.SellerBIC}");
 
-                            // Ha nincs IBAN, de van régi bankszámlaszám, azt írjuk ki (biztonsági tartalék)
+                            // Ha nincs IBAN, de van régi bankszámla
                             if (string.IsNullOrEmpty(_model.SellerIBAN) && !string.IsNullOrEmpty(_model.SellerBankAccount))
-                                c.Item().Text($"Bankverbindung: {_model.SellerBankAccount}");
+                                c.Item().Text($"Konto: {_model.SellerBankAccount}");
+
+                            if (!string.IsNullOrEmpty(_model.Comment))
+                                c.Item().PaddingTop(10).Text($"Bemerkung: {_model.Comment}").Italic();
                         });
 
-                        row.RelativeItem().AlignRight().Column(c => {
+                        // Jobb oldal: Összesítő számok
+                        row.RelativeItem().AlignRight().Column(c =>
+                        {
                             c.Item().Row(r => { r.RelativeItem().Text("Netto:").AlignRight(); r.RelativeItem().Text($"{_model.TotalNet.ToString("N2", _culture)} €").AlignRight(); });
                             c.Item().Row(r => { r.RelativeItem().Text("USt. (MwSt.):").AlignRight(); r.RelativeItem().Text($"{_model.TotalVat.ToString("N2", _culture)} €").AlignRight(); });
+
                             c.Item().PaddingVertical(5).LineHorizontal(1);
-                            c.Item().Row(r => { r.RelativeItem().Text("Gesamtbetrag:").Bold().FontSize(12).AlignRight(); r.RelativeItem().Text($"{_model.TotalGross.ToString("N2", _culture)} €").Bold().FontSize(12).AlignRight(); });
+
+                            c.Item().Row(r =>
+                            {
+                                r.RelativeItem().Text("Gesamtbetrag:").Bold().FontSize(12).AlignRight();
+                                r.RelativeItem().Text($"{_model.TotalGross.ToString("N2", _culture)} €").Bold().FontSize(14).AlignRight();
+                            });
                         });
                     });
+                });
+
+                // Oldalszám az aljára
+                page.Footer().AlignCenter().Text(x =>
+                {
+                    x.Span("Seite ");
+                    x.CurrentPageNumber();
+                    x.Span(" von ");
+                    x.TotalPages();
                 });
             });
         }
 
+        // Stílus segédfüggvények
         static IContainer HeaderStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Darken1).PaddingVertical(5).PaddingHorizontal(2).DefaultTextStyle(x => x.SemiBold());
         static IContainer CellStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(5).PaddingHorizontal(2);
     }

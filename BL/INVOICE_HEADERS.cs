@@ -116,7 +116,18 @@ namespace Ecoinv.BL
             return newId;
         }
 
-        // JAVÍTOTT METÓDUS: Paraméterezett lekérdezés a dátumhiba ellen
+        // --- ÚJ RÉSZ: Számla törlése (gyerekekkel együtt) ---
+        public void Delete(int id, FBConnectX conn)
+        {
+            // 1. Tételek törlése
+            var detailsTable = new INVOICE_DETAILSTable();
+            detailsTable.DeleteByHeaderId(id, conn);
+
+            // 2. Fejsor törlése
+            string sql = string.Format("DELETE FROM INVOICE_HEADERS WHERE ID = {0}", id);
+            conn?.DeleteSQL(sql);
+        }
+
         public List<INVOICE_HEADERS> SearchInvoices(FBConnectX conn, string clientName, string invoiceNumber, DateTime? fromDate, DateTime? toDate, string statusCode)
         {
             string sql = selectSQL + " WHERE 1=1 ";
@@ -143,7 +154,6 @@ namespace Ecoinv.BL
             if (toDate.HasValue)
             {
                 sql += " AND h.ISSUE_DATE <= @toDate";
-                // A nap végét pontosan számoljuk ki: 23:59:59
                 DateTime endOfDay = toDate.Value.Date.AddDays(1).AddSeconds(-1);
                 parameters.Add(new FbParameter("@toDate", endOfDay));
             }
@@ -156,7 +166,6 @@ namespace Ecoinv.BL
 
             sql += " ORDER BY h.ID DESC";
 
-            // A TableBaseClass.GetListBase-nek átadjuk a paramétertömböt is
             var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn, parameters.ToArray());
             return rawList.ToList();
         }
