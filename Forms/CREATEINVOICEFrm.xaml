@@ -71,6 +71,11 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+                    <Label Content="Kiállítás dátuma:" FontWeight="Bold" Foreground="#4B5563"/>
+                    <DatePicker SelectedDate="{Binding IssueDate}" 
+                                Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center"
+                                Margin="0,0,0,10"/>
+
                     <Label Content="Fizetési határidő:" FontWeight="Bold" Foreground="#4B5563"/>
                     <DatePicker SelectedDate="{Binding PaymentDeadline}" 
                                 Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center"/>

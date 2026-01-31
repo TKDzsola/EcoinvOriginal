@@ -4,7 +4,7 @@ using Ecoinv.Components;
 using Ecoinv.Forms;
 using Ecoinv.Pdf.Services;
 using System;
-using System.Collections.Generic; // Kell a List<string>-hez
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -31,8 +31,9 @@ namespace Ecoinv.DataContext
             // Alapértelmezett kiválasztás
             SelectedPaymentMethod = PaymentMethods.FirstOrDefault();
 
-            // ALAPÉRTELMEZETT HATÁRIDŐ (Ma + 8 nap)
-            PaymentDeadline = DateTime.Today.AddDays(8);
+            // ALAPÉRTELMEZETT DÁTUMOK
+            IssueDate = DateTime.Today; // Mai nap
+            PaymentDeadline = DateTime.Today.AddDays(8); // +8 nap
 
             LoadServices();
             LoadVatRates();
@@ -65,7 +66,7 @@ namespace Ecoinv.DataContext
         }
 
         // =====================================================
-        // ÚJ PROPERTY-K (FIZETÉSI MÓD ÉS HATÁRIDŐ)
+        // ÚJ PROPERTY-K (DÁTUMOK ÉS FIZETÉSI MÓD)
         // =====================================================
 
         public ObservableCollection<string> PaymentMethods { get; }
@@ -75,6 +76,14 @@ namespace Ecoinv.DataContext
         {
             get => _selectedPaymentMethod;
             set => SetPropertyValue(nameof(SelectedPaymentMethod), ref _selectedPaymentMethod, value);
+        }
+
+        // --- ÚJ: KIÁLLÍTÁS DÁTUMA ---
+        private DateTime _issueDate;
+        public DateTime IssueDate
+        {
+            get => _issueDate;
+            set => SetPropertyValue(nameof(IssueDate), ref _issueDate, value);
         }
 
         private DateTime _paymentDeadline;
@@ -289,7 +298,9 @@ namespace Ecoinv.DataContext
                     {
                         CLIENT_ID = SelectedClientId,
                         INVOICE_NUMBER = InvoiceNumber,
-                        ISSUE_DATE = DateTime.Today,
+
+                        // JAVÍTVA: A felhasználó által választott kiállítási dátum
+                        ISSUE_DATE = IssueDate,
 
                         // JAVÍTVA: A felhasználó által választott határidő
                         DUE_DATE = PaymentDeadline,
@@ -297,7 +308,7 @@ namespace Ecoinv.DataContext
                         CREATED = DateTime.Now,
 
                         // JAVÍTVA: A felhasználó által választott fizetési mód
-                        PAYMENT_METHOD = SelectedPaymentMethod ?? "Készpénz", // Ha esetleg null lenne, fallback
+                        PAYMENT_METHOD = SelectedPaymentMethod ?? "Készpénz",
 
                         SZLASTAT = "1", // Kiállítva
                         FIZSTAT = "0",  // Még nem fizetett
@@ -316,7 +327,7 @@ namespace Ecoinv.DataContext
                     Logger.Log("Számla mentése sikeres.");
                     MessageBox.Show("Számla mentve.");
 
-                    // 3. PDF GENERÁLÁS (A PdfService már olvassa az adatbázist, így a mentett adatokkal fog dolgozni)
+                    // 3. PDF GENERÁLÁS
                     var exportManager = new InvoiceExportManager();
                     exportManager.ExportInvoiceById(header.ID);
 
@@ -356,6 +367,7 @@ namespace Ecoinv.DataContext
             IsAddItemPanelVisible = false;
 
             // Visszaállítás alaphelyzetbe
+            IssueDate = DateTime.Today;
             PaymentDeadline = DateTime.Today.AddDays(8);
             SelectedPaymentMethod = PaymentMethods.FirstOrDefault();
         }
