@@ -12,21 +12,21 @@ namespace Ecoinv.Pdf.Models
         public bool IsStorno { get; set; }
         public string OriginalInvoiceNumber { get; set; }
 
-        // --- Eladó ---
+        // --- Eladó (ECSYS) ---
         public string SellerName { get; set; }
         public string SellerAddress { get; set; }
-        public string SellerTaxNumber { get; set; }
-        public string SellerEuTaxNumber { get; set; }
-        public string SellerBankAccount { get; set; } // Régi mező, megtarthatjuk
+        public string SellerTaxNumber { get; set; }   // SZKTAX
+        public string SellerEuTaxNumber { get; set; } // SZKCOMTAX
+        public string SellerBankAccount { get; set; }
 
-        // --- ÚJ MEZŐK ---
         public string SellerIBAN { get; set; }
         public string SellerBIC { get; set; }
 
-        // --- Vevő ---
+        // --- Vevő (CLIENTS) ---
         public string ClientName { get; set; }
         public string ClientAddress { get; set; }
-        public string ClientTaxNumber { get; set; }
+        public string ClientTaxNumber { get; set; }   // TAX_NUMBER
+        public string ClientEuTaxNumber { get; set; } // COMTAX_NUMBER (Ez a javított név!)
 
         public List<InvoicePdfItem> Items { get; set; } = new List<InvoicePdfItem>();
 
@@ -35,7 +35,7 @@ namespace Ecoinv.Pdf.Models
         public decimal TotalGross { get; set; }
 
         public string PaymentMethod { get; set; }
-        public string Comment { get; set; }
+        public string Comment { get; set; } // Lábjegyzet
     }
 
     public class InvoicePdfItem

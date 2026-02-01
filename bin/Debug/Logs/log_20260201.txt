@@ -1,0 +1,702 @@
+[08:12:27] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:12:27] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[08:12:27] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[08:12:28] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:12:28] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:12:28] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:17:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:17:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:21:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:21:04] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[08:21:04] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[08:21:05] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:21:05] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:21:05] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:21:05] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:21:05] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:21:05] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:24:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:24:18] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[08:24:18] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[08:24:19] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:24:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:24:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:24:19] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:24:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:24:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:08] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[08:27:08] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[08:27:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:10] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:27:10] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:10] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:27:10] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:39] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:39] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:27:39] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:40] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:27:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:42] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:42] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:27:42] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:27:58] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:58] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (90, 23, '0201/1', '2026-01-31', '2026-01-31', '2026-02-01 08:27:58', 'Készpénz', '1', '0', '0') 
+[08:27:58] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (97, 90, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[08:27:59] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:27:59] [ERROR] [TableBaseClass.cs::InternalGetList:97] - TableBaseClass.InternalGetList hiba. SQL: SELECT ID, SZKNEV, SZKCIM, SZKACTIVE, SZKTAX, SZKCOMTAX, SZKBANKACCOUNT, IBAN, BIC, DEF_FOOTER FROM ECSYS 
+   >>> HIBA: Dynamic SQL Error
+SQL error code = -206
+Column unknown
+DEF_FOOTER
+At line 1, column 85
+   >>> STACK:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 87
+[08:29:38] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:29:38] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:29:38] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:29:38] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:29:41] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:29:41] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:29:41] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:29:41] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:29:41] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:29:41] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:11] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:11] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:13] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:13] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:22] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:22] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:22] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:45] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO services (id, name, description, netprice, grossprice, vatrate_id, sactive) VALUES (27, 'Teszt', 'Ez egy teszt leírás!', 521, 625, 8, 'I') 
+[08:30:48] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:30:51] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:30:51] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:30:51] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:31:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:31:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:36:33] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:36:33] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[08:36:33] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[08:36:35] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:36:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:36:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:36:35] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:36:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:36:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:38:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:38:46] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:38:46] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:38:47] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:38:47] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:38:47] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:38:48] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:38:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:38:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:38:50] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:38:50] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (91, 23, '0201/2', '2026-01-26', '2026-01-26', '2026-02-01 08:38:50', 'Készpénz', '1', '0', '0') 
+[08:38:50] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (98, 91, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség/rdtfuzgfdxdfcdtxgfctzh') 
+[08:38:50] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (99, 91, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[08:38:51] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[08:38:55] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:38:55] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:38:55] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:38:55] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[08:40:03] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[08:40:03] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:24:59] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:24:59] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[09:24:59] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[09:47:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:47:26] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[09:47:26] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[09:48:09] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:48:09] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[09:48:09] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[09:50:32] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:32] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[09:50:32] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[09:50:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:50:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:50:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:50:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:50:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:50:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:50:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:46] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:50:46] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:50:47] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:47] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:50:47] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:50:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:50:57] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (92, 23, '0201/3', '2026-02-01', '2026-02-09', '2026-02-01 09:50:57', 'Átutalás', '1', '0', '0') 
+[09:50:57] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (100, 92, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[09:50:57] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (101, 92, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[09:50:58] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:01] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:01] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:01] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:01] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:16] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:16] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:18] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:18] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:19] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:20] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:20] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:20] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:45] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (93, 23, '0201/4', '2026-02-01', '2026-02-09', '2026-02-01 09:51:45', 'Készpénz', '1', '0', '0') 
+[09:51:45] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (102, 93, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[09:51:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:51:49] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:49] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:51:49] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:51:49] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:53:20] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[09:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:53:20] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[09:53:39] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[09:53:39] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:09:41] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:09:41] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[12:09:41] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[12:09:42] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:09:42] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:09:42] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:09:42] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:09:43] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:09:43] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:17] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:10:17] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:17] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:10:18] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:18] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:22] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:10:22] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:22] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:25] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:10:25] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (94, 23, '0201/05', '2026-02-01', '2026-02-09', '2026-02-01 12:10:25', 'Készpénz', '1', '0', '0') 
+[12:10:25] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (103, 94, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[12:10:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:10:30] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:30] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:30] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:30] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:10:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:10:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:12:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:18] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[12:12:18] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[12:12:21] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:12:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:12:21] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:12:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:12:23] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:23] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:12:23] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:12:24] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:24] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:12:24] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:12:25] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:12:25] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:12:25] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:13:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:13:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (95, 23, '0201/6', '2026-02-01', '2026-02-09', '2026-02-01 12:13:10', 'Átutalás', '1', '0', '0') 
+[12:13:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (104, 95, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[12:13:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (105, 95, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[12:13:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (106, 95, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[12:13:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:13:17] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:13:17] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:13:17] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:13:17] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:14:00] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:14:00] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:10] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[12:22:10] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[12:22:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:14] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:16] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:36] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:36] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (96, 23, '0201/07', '2026-02-01', '2026-02-09', '2026-02-01 12:22:36', 'Átutalás', '1', '0', '0') 
+[12:22:36] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (107, 96, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[12:22:36] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (108, 96, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[12:22:37] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:22:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:22:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:22:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:17] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:17] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:53] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:53] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[12:23:53] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[12:23:55] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:55] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:55] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:55] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:55] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:55] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:56] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:56] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:56] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:23:58] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:23:58] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:23:58] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:24:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:24:11] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (97, 23, '0201/08', '2026-02-01', '2026-02-09', '2026-02-01 12:24:11', 'Átutalás', '1', '0', '0') 
+[12:24:11] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (109, 97, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[12:24:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[12:24:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:24:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:24:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:24:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[12:24:25] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[12:24:25] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:21:28] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:28] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:21:28] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:21:31] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:32] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:21:32] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:21:32] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:32] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:21:32] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:21:33] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:33] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:21:33] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:21:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:21:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:21:36] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:21:36] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:21:36] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:22:03] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:22:03] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (98, 23, '0201/10', '2026-02-01', '2026-02-09', '2026-02-01 13:22:03', 'Készpénz', '1', '0', '0') 
+[13:22:03] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (110, 98, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt') 
+[13:22:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:22:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:22:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:22:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:22:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:22:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:22:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:24:33] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:33] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:24:33] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:24:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:24:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:24:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:24:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:24:36] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:36] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:24:36] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:24:37] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:37] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:24:37] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:24:38] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:24:38] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:24:38] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:25:05] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:25:05] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (99, 23, '0201/11', '2026-01-28', '2026-01-28', '2026-02-01 13:25:05', 'Készpénz', '1', '0', '0') 
+[13:25:05] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (111, 99, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[13:25:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:25:09] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:25:09] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:25:09] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:25:09] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:26:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:26:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:30:53] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:53] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:30:53] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:30:54] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:54] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:30:54] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:30:54] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:54] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:30:54] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:30:56] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:56] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:30:56] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:30:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:30:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:30:58] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:30:58] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:30:58] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:31:13] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:31:13] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (100, 23, '0201/11', '2026-02-01', '2026-02-09', '2026-02-01 13:31:13', 'Átutalás', '1', '0', '0') 
+[13:31:13] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (112, 100, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[13:31:14] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:31:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:31:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:31:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:31:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:33:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:33:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:22] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:22] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:34:23] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:34:24] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:24] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:24] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:24] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:24] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:24] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:26] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:26] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:27] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:27] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:27] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:28] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:28] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:28] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:40] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:40] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (101, 23, '0201/12', '2026-02-01', '2026-02-09', '2026-02-01 13:34:40', 'Átutalás', '1', '0', '0') 
+[13:34:40] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (113, 101, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[13:34:41] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:34:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:34:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:34:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:03] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:03] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:37:03] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:37:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:04] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:04] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:04] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:04] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:06] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:06] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:07] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:17] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:17] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (102, 23, '0201/13', '2026-02-01', '2026-02-09', '2026-02-01 13:37:17', 'Átutalás', '1', '0', '0') 
+[13:37:17] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (114, 102, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[13:37:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:37:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:37:49] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:37:49] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:10] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:39:10] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:39:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:14] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:16] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:29] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:29] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (103, 23, '0201/14', '2026-02-01', '2026-02-09', '2026-02-01 13:39:29', 'Átutalás', '1', '0', '0') 
+[13:39:29] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (115, 103, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség') 
+[13:39:30] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:39:33] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:33] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:33] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:33] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:39:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:39:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:47:38] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:38] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:47:38] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:47:40] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:47:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:47:40] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:40] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:47:40] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:47:43] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:43] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:47:43] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:47:44] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:44] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:47:44] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:47:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:47:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:47:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:51:25] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:51:25] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:51:53] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:51:53] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:51:53] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:51:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:51:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:51:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:51:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:51:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:51:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:51:58] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:51:58] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:51:58] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:51:59] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:51:59] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:51:59] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:52:00] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:52:00] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:52:00] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:52:59] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:52:59] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (104, 23, '0201/16', '2026-02-01', '2026-02-09', '2026-02-01 13:52:59', 'Átutalás', '1', '0', '0') 
+[13:52:59] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (116, 104, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség
+Utólagos megjegyzés módosítási teszt.') 
+[13:53:00] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:53:04] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:53:04] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:53:04] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:53:04] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:54:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:54:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:04] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[13:58:04] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[13:58:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:06] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:06] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:06] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:06] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:07] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:46] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (105, 23, '0201/15', '2026-02-01', '2026-02-09', '2026-02-01 13:58:46', 'Átutalás', '1', '0', '0') 
+[13:58:46] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (117, 105, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt
+Ez a módosított teszt leírása!') 
+[13:58:47] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[13:58:50] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:50] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[13:58:50] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[13:58:50] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:06] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:06] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:52] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:52] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[14:02:52] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[14:02:54] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:54] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:54] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:54] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:54] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:54] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:55] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:55] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:55] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:56] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:56] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:56] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:02:57] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:02:57] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:02:57] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:03:30] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:03:30] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (106, 23, '0201/16', '2026-02-01', '2026-02-09', '2026-02-01 14:03:30', 'Átutalás', '1', '0', '0') 
+[14:03:30] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (118, 106, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt
+Ez egy teszt leírás! kvgvctrxtzcjvtzfrtcruczkl.') 
+[14:03:31] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:03:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:03:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:03:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:03:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:04:05] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:04:05] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:04:37] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:04:37] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[14:04:37] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[14:04:39] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:04:39] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:04:39] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:04:39] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:04:39] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:04:39] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:05] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:05:05] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:05] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:05:06] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:06] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:07] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:05:07] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:07] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:05:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (107, 23, '0201/18', '2026-02-01', '2026-02-09', '2026-02-01 14:05:10', 'Átutalás', '1', '0', '0') 
+[14:05:10] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (119, 107, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt
+Ez egy teszt leírás! gzzuifztfztczjctfcf.') 
+[14:05:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:05:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:05:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:05:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:07] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:07] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[14:07:07] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[14:07:09] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:09] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:09] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:09] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:09] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:09] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:10] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:10] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:12] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:13] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:13] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:13] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:39] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:39] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (108, 23, '0201/19', '2026-02-01', '2026-02-09', '2026-02-01 14:07:39', 'Átutalás', '1', '0', '0') 
+[14:07:39] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (120, 108, 26, 8, 1, 100, 20, 100, 20, 120, 'Utiköltség
+Utiköltség KM díjazással. Plusz utólagosan módosított megjegyzés.') 
+[14:07:40] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:07:42] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:42] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:07:42] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:07:42] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:08:03] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:08:03] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:08:03] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:08:10] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:08:10] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:04] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[15:53:04] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[15:53:14] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:16] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:16] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:20] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:20] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:20] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:22] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:22] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:22] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:23] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:23] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:23] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:24] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:24] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:24] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:45] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (111, 24, '0201/20', '2026-02-01', '2026-02-09', '2026-02-01 15:53:45', 'Készpénz', '1', '0', '0') 
+[15:53:45] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (123, 111, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt
+Ez egy teszt leírás!') 
+[15:53:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:53:50] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:50] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:53:50] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:53:50] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:55:36] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:55:36] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:27] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:27] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[15:59:27] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[15:59:30] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:30] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:30] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:30] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:30] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:30] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:31] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:31] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:31] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:33] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:33] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:33] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:35] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:44] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:44] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES (112, 24, 'tfztfv', '2026-02-01', '2026-02-09', '2026-02-01 15:59:44', 'Átutalás', '1', '0', '0') 
+[15:59:44] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (124, 112, 27, 8, 1, 521, 20, 521, 104.2, 625.2, 'Teszt
+Ez egy teszt leírás!') 
+[15:59:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[15:59:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[15:59:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[15:59:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[16:00:19] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[16:00:19] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 

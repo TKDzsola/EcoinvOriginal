@@ -20,6 +20,9 @@ C:\Users\prozs\source\repos\Ecoinv\bin\Debug\runtimes\win-x86\native\libwinpthre
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\runtimes\win-x86\native\qpdf.dll
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\runtimes\win-x86\native\QuestPdfSkia.dll
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\runtimes\win-x86\native\zlib1.dll
+C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x86\libSkiaSharp.dll
+C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x64\libSkiaSharp.dll
+C:\Users\prozs\source\repos\Ecoinv\bin\Debug\arm64\libSkiaSharp.dll
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\Ecoinv.exe.config
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\Ecoinv.exe
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\Ecoinv.pdb
@@ -74,6 +77,3 @@ C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.CoreCompileInputs.cac
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.Up2Date
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.exe
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.pdb
-C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x86\libSkiaSharp.dll
-C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x64\libSkiaSharp.dll
-C:\Users\prozs\source\repos\Ecoinv\bin\Debug\arm64\libSkiaSharp.dll

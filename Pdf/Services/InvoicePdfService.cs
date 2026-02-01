@@ -15,7 +15,8 @@ namespace Ecoinv.Pdf.Services
             CLIENTS client,
             ADRESSES clientAddress,
             ECSYS seller,
-            IEnumerable<SERVICES> allServices)
+            IEnumerable<SERVICES> allServices,
+            string manualFooterNote)
         {
             if (header == null) throw new ArgumentNullException(nameof(header));
             if (details == null) throw new ArgumentNullException(nameof(details));
@@ -39,37 +40,34 @@ namespace Ecoinv.Pdf.Services
                 // --- VEVŐ ---
                 ClientName = client?.NAME ?? string.Empty,
                 ClientTaxNumber = client?.TAX_NUMBER ?? string.Empty,
+
+                // JAVÍTÁS: Kivettem a kommentet (//), így most már átadja az adatot!
+                ClientEuTaxNumber = client?.COMTAX_NUMBER ?? string.Empty,
+
                 ClientAddress = clientAddress != null
                     ? $"{clientAddress.POSTALCODE} {clientAddress.CITY}, {clientAddress.ADDRESS}"
                     : string.Empty,
 
                 PaymentMethod = TranslatePaymentMethod(header.PAYMENT_METHOD),
-                Comment = string.Empty
+
+                // Lábjegyzet
+                Comment = manualFooterNote ?? string.Empty
             };
 
-            // --- TÉTELEK FELDOLGOZÁSA ---
+            // --- TÉTELEK ---
             foreach (var d in details)
             {
-                // 1. Megkeressük az eredeti törzsadatot
                 var service = allServices?.FirstOrDefault(s => s.ID == d.SERVICES_ID);
 
                 string finalName = d.SERVICE_NAME;
-                // Alapesetben a törzsadat leírása jön:
                 string finalDescription = service != null ? service.DESCRIPTION : "";
 
-                // 2. MÓDOSÍTÁS: Most már a perjelet (/) keressük!
                 if (!string.IsNullOrEmpty(d.SERVICE_NAME) && d.SERVICE_NAME.Contains("/"))
                 {
-                    // A Split most a perjel mentén vág
                     var parts = d.SERVICE_NAME.Split('/');
-
-                    // Az első rész a Név (pl. "Utiköltség")
                     finalName = parts[0].Trim();
-
-                    // A második rész a Leírás (pl. "Güssing - München")
                     if (parts.Length > 1)
                     {
-                        // Ha több perjel is van, a maradékot összefűzzük
                         finalDescription = string.Join("/", parts.Skip(1)).Trim();
                     }
                 }
@@ -87,7 +85,6 @@ namespace Ecoinv.Pdf.Services
                 });
             }
 
-            // --- ÖSSZESÍTÉS ---
             model.TotalNet = model.Items.Sum(x => x.NetTotal);
             model.TotalVat = model.Items.Sum(x => x.VatAmount);
             model.TotalGross = model.Items.Sum(x => x.GrossTotal);

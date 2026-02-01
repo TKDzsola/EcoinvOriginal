@@ -50,11 +50,8 @@
                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
                     <Label Content="Vevő kiválasztása:" FontWeight="Bold" Foreground="#4B5563"/>
                     <DockPanel>
-                        <Button Content="🔍 Keresés" 
-                                Command="{Binding CommandMenuCLIENTSClick}"
-                                Width="80" DockPanel.Dock="Right" Margin="5,0,0,0"
-                                Style="{DynamicResource RoundedButtonStyle}"/>
-                        <TextBox Text="{Binding SelectedClientName}" IsReadOnly="True" Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
+                        <Button Content="🔍 Keresés" Command="{Binding CommandMenuCLIENTSClick}" Width="80" DockPanel.Dock="Right" Margin="5,0,0,0" Style="{DynamicResource RoundedButtonStyle}"/>
+                        <TextBox Text="{Binding SelectedClientName, Mode=OneWay}" IsReadOnly="True" Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
                     </DockPanel>
                 </StackPanel>
 
@@ -65,20 +62,14 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
                     <Label Content="Fizetési mód:" FontWeight="Bold" Foreground="#4B5563"/>
-                    <ComboBox ItemsSource="{Binding PaymentMethods}" 
-                              SelectedItem="{Binding SelectedPaymentMethod}"
-                              Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
+                    <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding SelectedPaymentMethod}" Padding="5" Background="#F9FAFB" BorderBrush="#D1D5DB"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
                     <Label Content="Kiállítás dátuma:" FontWeight="Bold" Foreground="#4B5563"/>
-                    <DatePicker SelectedDate="{Binding IssueDate}" 
-                                Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center"
-                                Margin="0,0,0,10"/>
-
+                    <DatePicker SelectedDate="{Binding IssueDate}" Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center" Margin="0,0,0,10"/>
                     <Label Content="Fizetési határidő:" FontWeight="Bold" Foreground="#4B5563"/>
-                    <DatePicker SelectedDate="{Binding PaymentDeadline}" 
-                                Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center"/>
+                    <DatePicker SelectedDate="{Binding PaymentDeadline}" Padding="2" BorderBrush="#D1D5DB" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -87,68 +78,68 @@
                 CornerRadius="8" Padding="15" Margin="0,0,0,15"
                 Visibility="{Binding IsAddItemPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2.5*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="5">
-                    <Label Content="Szolgáltatás:" FontWeight="SemiBold"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0"
-                                  ItemsSource="{Binding Services}" 
-                                  SelectedItem="{Binding SelectedService}"
-                                  DisplayMemberPath="NAME"
-                                  Padding="5" Margin="0,0,5,0"/>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="1" Content="..." 
-                                Command="{Binding CommandMenuSERVICESClick}"
-                                Width="35" Height="28"
-                                Style="{DynamicResource RoundedButtonStyle}"
-                                Background="#90CAF9" Foreground="#1565C0" FontWeight="Bold" FontSize="14"
-                                ToolTip="Szolgáltatás karbantartó"
-                                VerticalAlignment="Stretch"/>
-                    </Grid>
+                    <StackPanel Grid.Column="0" Margin="5">
+                        <Label Content="Szolgáltatás:" FontWeight="SemiBold"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}" DisplayMemberPath="NAME" Padding="5" Margin="0,0,5,0"/>
+                            <Button Grid.Column="1" Content="..." Command="{Binding CommandMenuSERVICESClick}" Width="35" Height="28" Style="{DynamicResource RoundedButtonStyle}" Background="#90CAF9" Foreground="#1565C0" FontWeight="Bold" FontSize="14" ToolTip="Szolgáltatás karbantartó" VerticalAlignment="Stretch"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5">
+                        <Label Content="Mennyiség:" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding EditQty, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="5">
+                        <Label Content="Nettó egységár:" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding EditNetUnitPrice, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Margin="5">
+                        <Label Content="ÁFA kulcs:" FontWeight="SemiBold"/>
+                        <ComboBox ItemsSource="{Binding VatRates}" SelectedItem="{Binding SelectedVatRate}" DisplayMemberPath="NAME" Padding="5"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Grid.Row="1" Margin="5,10,5,5">
+                    <Label Content="Megjegyzés a tételhez (pl. időszak, rendszám):" FontWeight="SemiBold" Foreground="#4B5563"/>
+                    <TextBox Text="{Binding EditItemComment, UpdateSourceTrigger=PropertyChanged}" 
+                             AcceptsReturn="True" TextWrapping="Wrap" Height="50"
+                             Padding="5" BorderBrush="#C7D2FE" Background="White"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Margin="5">
-                    <Label Content="Mennyiség:" FontWeight="SemiBold"/>
-                    <TextBox Text="{Binding EditQty, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2" Margin="5">
-                    <Label Content="Nettó egységár:" FontWeight="SemiBold"/>
-                    <TextBox Text="{Binding EditNetUnitPrice, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="3" Margin="5">
-                    <Label Content="ÁFA kulcs:" FontWeight="SemiBold"/>
-                    <ComboBox ItemsSource="{Binding VatRates}" SelectedItem="{Binding SelectedVatRate}" DisplayMemberPath="NAME" Padding="5"/>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5,15,5,5">
+                    <Button Content="{Binding PrimaryButtonText}" Command="{Binding CommandPrimaryAction}" Width="140" Height="35" Margin="0,0,10,0" Style="{DynamicResource RoundedButtonStyle}" Background="#10B981" Foreground="White" FontWeight="Bold"/>
+                    <Button Content="{Binding SecondaryButtonText}" Command="{Binding CommandSecondaryAction}" Width="140" Height="35" Style="{DynamicResource RoundedButtonStyle}" Background="#EF4444" Foreground="White"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
-            <Button Content="{Binding PrimaryButtonText}" 
-                    Command="{Binding CommandPrimaryAction}"
-                    Width="140" Height="35" Margin="0,0,10,0"
-                    Style="{DynamicResource RoundedButtonStyle}" Background="#10B981" Foreground="White" FontWeight="Bold"/>
-            <Button Content="{Binding SecondaryButtonText}" 
-                    Command="{Binding CommandSecondaryAction}"
-                    Width="140" Height="35"
-                    Style="{DynamicResource RoundedButtonStyle}" Background="#EF4444" Foreground="White"/>
+            <Button Content="Új tétel" Command="{Binding CommandAddItem}" Width="100" Height="35" Margin="0,0,10,0" Style="{DynamicResource RoundedButtonStyle}"/>
+            <Button Content="Tétel törlése" Command="{Binding CommandRemoveItem}" Width="120" Height="35" Style="{DynamicResource RoundedButtonStyle}" Background="#EF4444" Foreground="White"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="3" ItemsSource="{Binding InvoiceDetails}" SelectedItem="{Binding SelectedInvoiceDetail}"
-                  AutoGenerateColumns="False" CanUserAddRows="False"
-                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                  Background="White" BorderBrush="#E5E7EB" RowHeight="30">
+        <DataGrid Grid.Row="3" ItemsSource="{Binding InvoiceDetails}" SelectedItem="{Binding SelectedInvoiceDetail}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" Background="White" BorderBrush="#E5E7EB" RowHeight="30">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Padding" Value="10,5"/>
@@ -157,10 +148,7 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Megnevezés (Név | Megjegyzés)" 
-                                    Binding="{Binding SERVICE_NAME, UpdateSourceTrigger=PropertyChanged}" 
-                                    Width="3*"
-                                    IsReadOnly="False">
+                <DataGridTextColumn Header="Megnevezés (Név | Megjegyzés)" Binding="{Binding SERVICE_NAME, UpdateSourceTrigger=PropertyChanged}" Width="3*" IsReadOnly="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -177,65 +165,62 @@
                         <Style TargetType="TextBox">
                             <Setter Property="Background" Value="#FFFBEB"/>
                             <Setter Property="Padding" Value="2"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="AcceptsReturn" Value="True"/>
                         </Style>
                     </DataGridTextColumn.EditingElementStyle>
                 </DataGridTextColumn>
-
                 <DataGridTextColumn Header="Menny." Binding="{Binding QTY}" Width="0.8*"/>
                 <DataGridTextColumn Header="Nettó ár" Binding="{Binding NET_UNIT_PRICE, StringFormat={}{0:N2} €}" Width="1*"/>
                 <DataGridTextColumn Header="ÁFA %" Binding="{Binding VAT_PERCENT}" Width="0.8*"/>
-                <DataGridTextColumn Header="Nettó érték" Binding="{Binding LINE_TOTAL_NET, StringFormat={}{0:N2} €}" Width="1.2*"/>
-                <DataGridTextColumn Header="Bruttó érték" Binding="{Binding LINE_TOTAL_GROSS, StringFormat={}{0:N2} €}" Width="1.2*"/>
+                <DataGridTextColumn Header="Nettó érték" Binding="{Binding LINE_TOTAL_NET, StringFormat={}{0:N2} €}" Width="1.2*" IsReadOnly="True" Foreground="Gray"/>
+                <DataGridTextColumn Header="Bruttó érték" Binding="{Binding LINE_TOTAL_GROSS, StringFormat={}{0:N2} €}" Width="1.2*" IsReadOnly="True" FontWeight="Bold"/>
             </DataGrid.Columns>
         </DataGrid>
 
         <Border Grid.Row="4" Background="White" CornerRadius="8" Padding="15" Margin="0,15,0,0" Effect="{StaticResource CardShadow}">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="💾 Számla mentése &amp; PDF" 
-                            Command="{Binding CommandSaveInvoice}"
-                            Width="200" Height="40" Margin="0,0,15,0"
-                            FontSize="14" FontWeight="Bold" Style="{DynamicResource RoundedButtonStyle}"/>
-                    <Button Content="Mégse" 
-                            Command="{Binding CommandCloseWindow}"
-                            Width="100" Height="40" Style="{DynamicResource RoundedButtonStyle}"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <StackPanel Margin="15,0">
-                        <TextBlock Text="Nettó összesen:" Foreground="Gray" FontSize="12"/>
-                        <TextBlock Text="{Binding TotalNet, StringFormat={}{0:N2} €}" FontSize="16" FontWeight="Bold"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,15">
+                    <Label Content="Megjegyzés (Lábjegyzet):" FontWeight="Bold" Foreground="#4B5563" DockPanel.Dock="Top"/>
+                    <TextBox Text="{Binding FooterNote}" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" BorderBrush="#D1D5DB" Padding="5"/>
+                </DockPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="💾 Számla mentése &amp; PDF" Command="{Binding CommandSaveInvoice}" Width="200" Height="40" Margin="0,0,15,0" FontSize="14" FontWeight="Bold" Style="{DynamicResource RoundedButtonStyle}"/>
+                        <Button Content="Mégse" Command="{Binding CommandCloseWindow}" Width="100" Height="40" Style="{DynamicResource RoundedButtonStyle}"/>
                     </StackPanel>
-                    <StackPanel Margin="15,0">
-                        <TextBlock Text="ÁFA tartalom:" Foreground="Gray" FontSize="12"/>
-                        <TextBlock Text="{Binding TotalVat, StringFormat={}{0:N2} €}" FontSize="16" FontWeight="Bold"/>
-                    </StackPanel>
-                    <Border Background="#ECFDF5" CornerRadius="5" Padding="10,0">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Fizetendő:" Foreground="#059669" FontSize="12"/>
-                            <TextBlock Text="{Binding TotalGross, StringFormat={}{0:N2} €}" FontSize="20" FontWeight="ExtraBold" Foreground="#059669"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <StackPanel Margin="15,0">
+                            <TextBlock Text="Nettó összesen:" Foreground="Gray" FontSize="12"/>
+                            <TextBlock Text="{Binding TotalNet, StringFormat={}{0:N2} €}" FontSize="16" FontWeight="Bold"/>
                         </StackPanel>
-                    </Border>
-                </StackPanel>
+                        <StackPanel Margin="15,0">
+                            <TextBlock Text="ÁFA tartalom:" Foreground="Gray" FontSize="12"/>
+                            <TextBlock Text="{Binding TotalVat, StringFormat={}{0:N2} €}" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                        <Border Background="#ECFDF5" CornerRadius="5" Padding="10,0">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Fizetendő:" Foreground="#059669" FontSize="12"/>
+                                <TextBlock Text="{Binding TotalGross, StringFormat={}{0:N2} €}" FontSize="20" FontWeight="ExtraBold" Foreground="#059669"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Border>
 
         <Border Grid.Row="5" Margin="0,15,0,0" BorderBrush="#FF64CCf1" BorderThickness="1" CornerRadius="2">
             <Grid Background="AntiqueWhite">
-                <Button Name="QuitBtn"
-                        Content="Kilép"
-                        HorizontalAlignment="Right"
-                        Height="25"
-                        Margin="0,5,10,8"
-                        Width="60"
-                        Command="{Binding CommandQuitBase}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        Style="{DynamicResource RoundedButtonStyle}" />
+                <Button Name="QuitBtn" Content="Kilép" HorizontalAlignment="Right" Height="25" Margin="0,5,10,8" Width="60" Command="{Binding CommandQuitBase}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{DynamicResource RoundedButtonStyle}" />
             </Grid>
         </Border>
-
     </Grid>
 </Window>

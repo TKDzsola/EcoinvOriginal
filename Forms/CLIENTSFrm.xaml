@@ -118,6 +118,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
                                 <Label Content="Név:" Grid.Row="0"/>
@@ -126,14 +127,17 @@
                                 <Label Content="Adószám:" Grid.Row="1"/>
                                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentClient.TAX_NUMBER}" Margin="2" Width="150" HorizontalAlignment="Left"/>
 
-                                <Label Content="Telefonszám:" Grid.Row="2"/>
-                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentClient.PHONE}" Margin="2" Width="150" HorizontalAlignment="Left"/>
+                                <Label Content="Közösségi adószám:" Grid.Row="2"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentClient.COMTAX_NUMBER}" Margin="2" Width="150" HorizontalAlignment="Left"/>
 
-                                <Label Content="E-mail:" Grid.Row="3"/>
-                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CurrentClient.EMAIL}" Margin="2"/>
+                                <Label Content="Telefonszám:" Grid.Row="3"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CurrentClient.PHONE}" Margin="2" Width="150" HorizontalAlignment="Left"/>
 
-                                <Label Content="Aktív kliens:" Grid.Row="4"/>
-                                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding CurrentClient.CACTIVE, Converter={StaticResource in2bool}}" VerticalAlignment="Center" Margin="2"/>
+                                <Label Content="E-mail:" Grid.Row="4"/>
+                                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding CurrentClient.EMAIL}" Margin="2"/>
+
+                                <Label Content="Aktív kliens:" Grid.Row="5"/>
+                                <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding CurrentClient.CACTIVE, Converter={StaticResource in2bool}}" VerticalAlignment="Center" Margin="2"/>
                             </Grid>
                         </StackPanel>
                     </Border>

@@ -18,12 +18,12 @@ namespace Ecoinv.Pdf.Services
 
         public InvoiceExportManager()
         {
-            // Licenc beállítása
             QuestPDF.Settings.License = LicenseType.Community;
             _pdfService = new InvoicePdfService();
         }
 
-        public void ExportInvoiceById(int invoiceId)
+        // MÓDOSÍTÁS: manualFooterNote paraméter hozzáadva
+        public void ExportInvoiceById(int invoiceId, string manualFooterNote = "")
         {
             using (FBConnectX conn = new FBConnectX())
             {
@@ -53,16 +53,9 @@ namespace Ecoinv.Pdf.Services
 
                     var allDetails = detailTable.GetList(conn);
                     var details = allDetails.Where(x => x.INVOICEHEADERS_ID == invoiceId).ToList();
-
-                    // Fontos: Az allServices kelleni fog a leírásokhoz (ha nincs egyedi), 
-                    // de NEM írjuk felül a neveket!
                     var allServices = serviceTable.GetList(conn);
-
-                    // --- ITT VOLT A HIBA! KIVETTEM A CIKLUST! ---
-                    // Korábban itt írtuk felül a te beírt szövegedet a törzsadattal.
-                    // Most már a 'details' lista azt tartalmazza, amit te beírtál (pl. "Teszt|aaaa")
-
                     var allClients = clientTable.GetList(conn);
+
                     CLIENTS client = null;
                     ADRESSES address = null;
 
@@ -79,9 +72,9 @@ namespace Ecoinv.Pdf.Services
                     var allEcsys = ecsysTable.GetList(conn);
                     var sellerData = allEcsys.FirstOrDefault();
 
-                    // --- MODELL ÉPÍTÉSE ---
-                    // Az _pdfService fogja feldolgozni a "|" jelet
-                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData, allServices);
+                    // --- MODELL ÉPÍTÉSE (Átadjuk a manualFooterNote-ot) ---
+                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(
+                        header, details, client, address, sellerData, allServices, manualFooterNote);
 
                     // --- SZTORNÓ KEZELÉS ---
                     bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
@@ -96,7 +89,6 @@ namespace Ecoinv.Pdf.Services
                             if (originalHeader != null) pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
                         }
 
-                        // Mínuszolás
                         pdfModel.TotalNet = Math.Abs(pdfModel.TotalNet) * -1;
                         pdfModel.TotalVat = Math.Abs(pdfModel.TotalVat) * -1;
                         pdfModel.TotalGross = Math.Abs(pdfModel.TotalGross) * -1;

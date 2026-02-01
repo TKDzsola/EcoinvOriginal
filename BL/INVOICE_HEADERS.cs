@@ -56,7 +56,10 @@ namespace Ecoinv.BL
     public partial class INVOICE_HEADERSTable
     {
         private readonly string selectSQL = "SELECT h.*, c.NAME as CLIENT_NAME FROM INVOICE_HEADERS h LEFT JOIN CLIENTS c ON h.CLIENT_ID = c.ID";
+
+        // EREDETI ÁLLAPOT: Nincs FOOTER_NOTE
         private readonly string insSQL = "INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID) VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')";
+
         private readonly string updStornoSQL = "UPDATE INVOICE_HEADERS SET SZLASTAT = '2' WHERE ID = {0}";
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_INVOICE_HEADERS_ID, 1) FROM RDB$DATABASE";
 
@@ -116,14 +119,10 @@ namespace Ecoinv.BL
             return newId;
         }
 
-        // --- ÚJ RÉSZ: Számla törlése (gyerekekkel együtt) ---
         public void Delete(int id, FBConnectX conn)
         {
-            // 1. Tételek törlése
             var detailsTable = new INVOICE_DETAILSTable();
             detailsTable.DeleteByHeaderId(id, conn);
-
-            // 2. Fejsor törlése
             string sql = string.Format("DELETE FROM INVOICE_HEADERS WHERE ID = {0}", id);
             conn?.DeleteSQL(sql);
         }
