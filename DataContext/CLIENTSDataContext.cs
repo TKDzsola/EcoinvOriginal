@@ -1,49 +1,37 @@
-﻿using Ecoinv.BL;
-using Ecoinv.Common;
-using Ecoinv.Components;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Ecoinv.BL;
+using Ecoinv.Common;
+using Ecoinv.Components;
 
 namespace Ecoinv.DataContext
 {
     public class CLIENTSDataContext : DataContextBase
     {
         private readonly CLIENTSTable _clientsTable;
-        private readonly ADRESSESTable _addressesTable;
-        private readonly CLIENT_TYPESTable _typeTable; // Dinamikus típusokhoz
+        private readonly CLIENT_TYPESTable _typesTable;
+        private readonly ADRESSESTable _addressTable;
+        private readonly INVOICE_HEADERSTable _invoiceTable;
 
         public CLIENTSDataContext()
         {
-            // Példányosítjuk az adatbázis-kezelőket
             _clientsTable = new CLIENTSTable();
-            _addressesTable = new ADRESSESTable();
-            _typeTable = new CLIENT_TYPESTable();
+            _typesTable = new CLIENT_TYPESTable();
+            _addressTable = new ADRESSESTable();
+            _invoiceTable = new INVOICE_HEADERSTable();
 
             ClientsList = new ObservableCollection<CLIENTS>();
-            ClientTypes = new ObservableCollection<CLIENT_TYPES>(); // Adatbázis objektumok listája
+            ClientTypes = new ObservableCollection<CLIENT_TYPES>();
 
-            // PARANCSOK (Gombok működése)
-            CommandNew = new DelegateCommand(_ => DoNew(), _ => DataContextBase.IsAdmin);
-            CommandModify = new DelegateCommand(_ => DoModify(), _ => SelectedClient != null && DataContextBase.IsAdmin);
-            CommandSave = new DelegateCommand(_ => DoSave(), _ => IsEditing && DataContextBase.IsAdmin);
-            CommandDelete = new DelegateCommand(_ => DoDelete(), _ => SelectedClient != null && DataContextBase.IsAdmin);
-            CommandSelect = new DelegateCommand(_ => DoSelect(), _ => SelectedClient != null);
-            CommandSearch = new DelegateCommand(_ => DoSearch());
-
-            // Alapértelmezett állapot
+            LoadTypes();
+            RefreshData();
             IsEditing = false;
-            IsActiveOnly = false;
-            SearchText = "";
-
-            // Kezdeti adatok betöltése (Típusok és Ügyfelek)
-            LoadInitialData();
         }
 
-        // --- ÚJ: Adatbázis-alapú betöltés ---
-        private void LoadInitialData()
+        private void LoadTypes()
         {
             using (FBConnectX conn = new FBConnectX())
             {
@@ -51,29 +39,35 @@ namespace Ecoinv.DataContext
                 {
                     conn.GetConnectionX();
                     conn.FBConnOpenX();
-
-                    // Kliens típusok betöltése a táblából
-                    var types = _typeTable.GetList(conn);
                     ClientTypes.Clear();
-                    foreach (var t in types)
-                    {
-                        ClientTypes.Add(t);
-                    }
-
-                    // Ügyféllista betöltése
-                    DoSearch();
+                    var list = _typesTable.GetList(conn);
+                    foreach (var t in list) ClientTypes.Add(t);
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Kezdeti betöltési hiba");
-                }
+                catch (Exception ex) { Logger.LogError(ex, "Típusok betöltése hiba"); }
             }
         }
 
-        // --- TULAJDONSÁGOK (Properties) ---
+        private void RefreshData()
+        {
+            using (FBConnectX conn = new FBConnectX())
+            {
+                try
+                {
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
+                    ClientsList.Clear();
+                    var list = _clientsTable.GetList(conn);
+                    var filtered = list.AsEnumerable();
+                    if (!string.IsNullOrWhiteSpace(SearchText))
+                        filtered = filtered.Where(x => x.NAME.ToLower().Contains(SearchText.ToLower()));
+                    foreach (var c in filtered) ClientsList.Add(c);
+                }
+                catch (Exception ex) { Logger.LogError(ex, "Ügyfél betöltési hiba"); }
+            }
+        }
 
         public ObservableCollection<CLIENTS> ClientsList { get; private set; }
-        public ObservableCollection<CLIENT_TYPES> ClientTypes { get; private set; } // Adatbázisból jövő típusok
+        public ObservableCollection<CLIENT_TYPES> ClientTypes { get; private set; }
 
         private CLIENTS _selectedClient;
         public CLIENTS SelectedClient
@@ -83,252 +77,60 @@ namespace Ecoinv.DataContext
             {
                 if (SetPropertyValue(nameof(SelectedClient), ref _selectedClient, value))
                 {
-                    if (value != null)
-                    {
-                        IsEditing = false;
-                        LoadClientDetails(value);
-                    }
-                }
-            }
-        }
-
-        private CLIENTS _currentClient;
-        public CLIENTS CurrentClient
-        {
-            get => _currentClient;
-            set => SetPropertyValue(nameof(CurrentClient), ref _currentClient, value);
-        }
-
-        private ADRESSES _currentAddress;
-        public ADRESSES CurrentAddress
-        {
-            get => _currentAddress;
-            set => SetPropertyValue(nameof(CurrentAddress), ref _currentAddress, value);
-        }
-
-        private string _searchText;
-        public string SearchText
-        {
-            get => _searchText;
-            set => SetPropertyValue(nameof(SearchText), ref _searchText, value);
-        }
-
-        private bool _isActiveOnly;
-        public bool IsActiveOnly
-        {
-            get => _isActiveOnly;
-            set => SetPropertyValue(nameof(IsActiveOnly), ref _isActiveOnly, value);
-        }
-
-        // --- ICOMMAND definíciók ---
-        public ICommand CommandNew { get; }
-        public ICommand CommandModify { get; }
-        public ICommand CommandSave { get; }
-        public ICommand CommandDelete { get; }
-        public ICommand CommandSelect { get; }
-        public ICommand CommandSearch { get; }
-
-        // --- METÓDUSOK ---
-
-        private void DoSearch()
-        {
-            // --- EASTER EGG (Titkos kód) ---
-            if (!string.IsNullOrEmpty(SearchText) && SearchText.Trim().ToLower() == "creators")
-            {
-                MessageBox.Show("Ecoinv Rendszer\nVerzió: 2.0\nFejlesztette: [TE NEVED]", "Névjegy");
-                SearchText = "";
-                return;
-            }
-
-            using (FBConnectX conn = new FBConnectX())
-            {
-                try
-                {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
-
-                    // Lekérjük az összes ügyfelet
-                    var fullList = _clientsTable.GetList(conn);
-
-                    // Szűrés a memóriában (Név + Megjegyzés alapú keresés)
-                    var filtered = fullList.Where(x =>
-                        (string.IsNullOrEmpty(SearchText) ||
-                         (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())) ||
-                         (x.INTERNAL_NOTE != null && x.INTERNAL_NOTE.ToLower().Contains(SearchText.ToLower())))
-                        &&
-                        (!IsActiveOnly || (x.CACTIVE != null && x.CACTIVE.Trim() == "1"))
-                    ).OrderBy(x => x.NAME).ToList();
-
-                    // Lista frissítése
-                    ClientsList.Clear();
-                    foreach (var item in filtered)
-                    {
-                        ClientsList.Add(item);
-                    }
-
-                    // Reset
-                    if (CurrentClient == null) CurrentClient = new CLIENTS();
-                    if (CurrentAddress == null) CurrentAddress = new ADRESSES();
+                    if (value != null) LoadDetails(value.ID);
+                    else CustomerDebt = 0;
                     IsEditing = false;
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Keresési hiba");
-                }
             }
         }
 
-        private void LoadClientDetails(CLIENTS client)
+        private decimal _customerDebt;
+        public decimal CustomerDebt
         {
-            CurrentClient = client;
+            get => _customerDebt;
+            set => SetPropertyValue(nameof(CustomerDebt), ref _customerDebt, value);
+        }
+
+        public CLIENTS CurrentClient { get; set; }
+        public ADRESSES CurrentAddress { get; set; }
+        public string SearchText { get; set; }
+
+        private void LoadDetails(int clientId)
+        {
             using (FBConnectX conn = new FBConnectX())
             {
                 try
                 {
                     conn.GetConnectionX();
                     conn.FBConnOpenX();
-                    // Cím betöltése
-                    var addresses = _addressesTable.GetList(conn, client.ID);
-                    var address = addresses.FirstOrDefault();
+                    CurrentClient = _clientsTable.GetList(conn).FirstOrDefault(x => x.ID == clientId);
+                    CurrentAddress = _addressTable.GetList(conn).FirstOrDefault(x => x.CLIENT_ID == clientId) ?? new ADRESSES { CLIENT_ID = clientId };
 
-                    CurrentAddress = address ?? new ADRESSES { CLIENT_ID = client.ID, AACTIVE = "1", ATYPE = "1" };
+                    var invoices = _invoiceTable.SearchInvoices(conn, CurrentClient.NAME, null, null, null, null);
+                    CustomerDebt = Math.Round(invoices.Sum(x => x.DEBT_AMOUNT), 2);
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Részletek betöltése hiba");
-                }
+                catch (Exception ex) { Logger.LogError(ex, "Részletek betöltése hiba"); }
             }
         }
 
-        private void DoNew()
-        {
-            SelectedClient = null;
+        public ICommand CommandSearch => new DelegateCommand(_ => RefreshData());
+        public ICommand CommandSelect => new DelegateCommand(p => DoSelect(p), _ => SelectedClient != null && !IsEditing);
 
-            CurrentClient = new CLIENTS
-            {
-                CACTIVE = "1"
-            };
-
-            // Alapértelmezett típus beállítása az első adatbázis-elemre
-            if (ClientTypes.Count > 0)
-            {
-                CurrentClient.CLIENT_TYPE = ClientTypes[0].TYPE_NAME;
-            }
-
-            CurrentAddress = new ADRESSES
-            {
-                AACTIVE = "1",
-                ATYPE = "1"
-            };
-
-            IsEditing = true;
-        }
-
-        private void DoModify()
-        {
-            if (CurrentClient != null && CurrentClient.ID > 0)
-            {
-                IsEditing = true;
-            }
-        }
-
-        private void DoSave()
-        {
-            if (string.IsNullOrWhiteSpace(CurrentClient.NAME))
-            {
-                MessageBox.Show("A név megadása kötelező!");
-                return;
-            }
-
-            using (FBConnectX conn = new FBConnectX())
-            {
-                try
-                {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
-
-                    if (string.IsNullOrEmpty(CurrentClient.CACTIVE)) CurrentClient.CACTIVE = "0";
-
-                    // Mentés (Insert/Update kezelve a Save metóduson belül)
-                    _clientsTable.Save(CurrentClient, conn);
-
-                    CurrentAddress.CLIENT_ID = CurrentClient.ID;
-                    if (CurrentAddress.ID <= 0)
-                    {
-                        _addressesTable.Insert(CurrentAddress, conn);
-                    }
-                    else
-                    {
-                        _addressesTable.Update(CurrentAddress, conn);
-                    }
-
-                    MessageBox.Show("Sikeres mentés!");
-                    DoSearch();
-
-                    var savedItem = ClientsList.FirstOrDefault(x => x.ID == CurrentClient.ID);
-                    if (savedItem != null) SelectedClient = savedItem;
-
-                    IsEditing = false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Mentési hiba");
-                    MessageBox.Show("Hiba a mentés során: " + ex.Message);
-                }
-            }
-        }
-
-        private void DoDelete()
-        {
-            if (SelectedClient == null) return;
-
-            if (MessageBox.Show("Biztosan törölni szeretnéd az ügyfelet?", "Törlés megerősítése", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                using (FBConnectX conn = new FBConnectX())
-                {
-                    try
-                    {
-                        conn.GetConnectionX();
-                        conn.FBConnOpenX();
-
-                        var addresses = _addressesTable.GetList(conn, SelectedClient.ID);
-                        foreach (var addr in addresses)
-                        {
-                            _addressesTable.Delete(addr, conn);
-                        }
-
-                        _clientsTable.Delete(SelectedClient, conn);
-
-                        DoSearch();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex, "Törlési hiba");
-                        MessageBox.Show("Nem sikerült törölni: " + ex.Message);
-                    }
-                }
-            }
-        }
-
-        private void DoSelect()
+        private void DoSelect(object param)
         {
             if (SelectedClient != null)
             {
-                DataContextBase.SelectedClientForInvoice = SelectedClient.ID;
-
-                foreach (Window window in Application.Current.Windows)
+                if (CustomerDebt > 0)
                 {
-                    if (window.DataContext == this)
-                    {
-                        window.Close();
-                        break;
-                    }
+                    string msg = $"FIGYELEM!\n\nEnnek az ügyfélnek {CustomerDebt:N2} € kintlévősége van!\n\nBiztosan folytatni szeretné a számlázást?";
+                    if (MessageBox.Show(msg, "Kintlévőség figyelmeztetés", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
                 }
-            }
-            else
-            {
-                MessageBox.Show("Nincs kiválasztva ügyfél!");
+
+                DataContextBase.SelectedClientForInvoice = SelectedClient.ID;
+                if (param is Window win) win.Close();
             }
         }
+
+        public new ICommand CommandQuitBase => new DelegateCommand(p => { if (p is Window win) win.Close(); }, _ => true);
     }
 }

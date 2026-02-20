@@ -179,7 +179,6 @@ namespace Ecoinv.DataContext
                         SelectedVatRate = VatRates.FirstOrDefault(v => v.ID == value.VATRATE_ID);
 
                         // JAVÍTÁS: Betöltjük a leírást az adatbázisból (DESCRIPTION mező)
-                        // Ha az adatbázisban NULL lenne, akkor üres stringet adunk
                         EditItemComment = value.DESCRIPTION ?? "";
                     }
                 }
@@ -207,7 +206,6 @@ namespace Ecoinv.DataContext
             set => SetPropertyValue(nameof(EditNetUnitPrice), ref _editNetUnitPrice, value);
         }
 
-        // Tétel megjegyzés szerkesztése
         private string _editItemComment;
         public string EditItemComment
         {
@@ -280,7 +278,6 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- VEVŐ KIVÁLASZTÁS ---
         private void DoOpenClientsWindow()
         {
             DataContextBase.SelectedClientForInvoice = 0;
@@ -312,7 +309,6 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- SZOLGÁLTATÁSOK ---
         private void DoOpenServicesWindow()
         {
             var win = new SERVICESFrm();
@@ -320,14 +316,13 @@ namespace Ecoinv.DataContext
             LoadServices();
         }
 
-        // --- TÉTEL KEZELÉS ---
         private void ShowAddItemPanel()
         {
             SelectedService = null;
             SelectedVatRate = null;
             EditQty = 1;
             EditNetUnitPrice = 0;
-            EditItemComment = ""; // Töröljük a megjegyzést nyitáskor
+            EditItemComment = "";
             IsAddItemPanelVisible = true;
         }
 
@@ -349,8 +344,6 @@ namespace Ecoinv.DataContext
                 return;
             }
 
-            // Összeállítjuk a nevet: Szolgáltatás neve + sortörés + Megjegyzés
-            // Így a számlán és a PDF-en is külön sorba kerül a leírás
             string finalName = SelectedService.NAME;
             if (!string.IsNullOrWhiteSpace(EditItemComment))
             {
@@ -391,7 +384,7 @@ namespace Ecoinv.DataContext
             OnPropertyChanged(nameof(TotalGross));
         }
 
-        // --- MENTÉS ---
+        // --- MENTÉS (MÓDOSÍTVA) ---
         private void DoSaveInvoice()
         {
             if (!CanSaveInvoice()) return;
@@ -403,7 +396,7 @@ namespace Ecoinv.DataContext
                     conn.GetConnectionX();
                     conn.FBConnOpenX();
 
-                    // 1. Fejléc
+                    // 1. Fejléc összeállítása a számított végösszeggel
                     var header = new INVOICE_HEADERS
                     {
                         CLIENT_ID = SelectedClient.ID,
@@ -413,12 +406,14 @@ namespace Ecoinv.DataContext
                         PAYMENT_METHOD = SelectedPaymentMethod,
                         SZLASTAT = "1",
                         FIZSTAT = "0",
-                        STORNO_ID = "0"
+                        STORNO_ID = "0",
+                        PAID_AMOUNT = 0, // Új számlánál a befizetés még 0
+                        TOTAL_GROSS = TotalGross // Erika kérése: Itt mentjük el a bruttó végösszeget
                     };
 
                     _headerTable.Insert(header, conn);
 
-                    // 2. Tételek
+                    // 2. Tételek mentése
                     foreach (var item in InvoiceDetails)
                     {
                         item.INVOICEHEADERS_ID = header.ID;

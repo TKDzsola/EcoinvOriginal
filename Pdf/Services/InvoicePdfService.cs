@@ -23,12 +23,10 @@ namespace Ecoinv.Pdf.Services
 
             var model = new InvoicePdfModel
             {
-                // --- FEJLÉC ADATOK ---
                 InvoiceNumber = header.INVOICE_NUMBER,
                 IssueDate = header.ISSUE_DATE ?? DateTime.Now,
                 DueDate = header.DUE_DATE ?? DateTime.Now,
 
-                // --- ELADÓ ---
                 SellerName = seller?.SZKNEV ?? "Unbekannt",
                 SellerAddress = seller?.SZKCIM ?? string.Empty,
                 SellerTaxNumber = seller?.SZKTAX ?? string.Empty,
@@ -37,11 +35,8 @@ namespace Ecoinv.Pdf.Services
                 SellerIBAN = seller?.IBAN ?? string.Empty,
                 SellerBIC = seller?.BIC ?? string.Empty,
 
-                // --- VEVŐ ---
                 ClientName = client?.NAME ?? string.Empty,
                 ClientTaxNumber = client?.TAX_NUMBER ?? string.Empty,
-
-                // JAVÍTÁS: Kivettem a kommentet (//), így most már átadja az adatot!
                 ClientEuTaxNumber = client?.COMTAX_NUMBER ?? string.Empty,
 
                 ClientAddress = clientAddress != null
@@ -49,12 +44,9 @@ namespace Ecoinv.Pdf.Services
                     : string.Empty,
 
                 PaymentMethod = TranslatePaymentMethod(header.PAYMENT_METHOD),
-
-                // Lábjegyzet
                 Comment = manualFooterNote ?? string.Empty
             };
 
-            // --- TÉTELEK ---
             foreach (var d in details)
             {
                 var service = allServices?.FirstOrDefault(s => s.ID == d.SERVICES_ID);
@@ -77,17 +69,18 @@ namespace Ecoinv.Pdf.Services
                     Name = finalName,
                     Description = finalDescription,
                     Quantity = d.QTY,
-                    NetUnitPrice = d.NET_UNIT_PRICE,
-                    NetTotal = d.LINE_TOTAL_NET,
-                    VatPercent = d.VAT_PERCENT,
-                    VatAmount = d.VAT_AMOUNT,
-                    GrossTotal = d.LINE_TOTAL_GROSS
+                    NetUnitPrice = Math.Round(d.NET_UNIT_PRICE, 2),
+                    NetTotal = Math.Round(d.LINE_TOTAL_NET, 2),
+                    VatPercent = Math.Round(d.VAT_PERCENT, 2),
+                    VatAmount = Math.Round(d.VAT_AMOUNT, 2),
+                    GrossTotal = Math.Round(d.LINE_TOTAL_GROSS, 2)
                 });
             }
 
-            model.TotalNet = model.Items.Sum(x => x.NetTotal);
-            model.TotalVat = model.Items.Sum(x => x.VatAmount);
-            model.TotalGross = model.Items.Sum(x => x.GrossTotal);
+            // TECH LEAD JAVÍTÁS: Kerekített összesítés az Euro bizonylathoz
+            model.TotalNet = Math.Round(model.Items.Sum(x => x.NetTotal), 2);
+            model.TotalVat = Math.Round(model.Items.Sum(x => x.VatAmount), 2);
+            model.TotalGross = Math.Round(model.Items.Sum(x => x.GrossTotal), 2);
 
             return model;
         }

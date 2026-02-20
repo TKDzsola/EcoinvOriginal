@@ -1,223 +1,146 @@
 ﻿<Window x:Class="Ecoinv.Forms.SEARCHINVOICEFrm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
-        xmlns:components="clr-namespace:Ecoinv.Components"
-        Title="Számla keresése"
-        Height="700"
-        Width="1100"
-        Background="#F9FAFB"
-        WindowStartupLocation="CenterScreen">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ecoinv.Forms"
+        xmlns:vm="clr-namespace:Ecoinv.DataContext"
+        mc:Ignorable="d"
+        x:Name="SearchWindow"
+        Title="Számla keresése és Pénzügyi rendezés" Height="750" Width="1150" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
-        <dataContext:SEARCHINVOICEDataContext />
+        <vm:SEARCHINVOICEDataContext />
     </Window.DataContext>
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Components/RoundedButton.xaml"/>
-                <ResourceDictionary Source="../Components/ShadowLabel.xaml"/>
+                <ResourceDictionary Source="../Components/RoundedButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <components:StatusToTextConverter x:Key="StatusToTextConverter"/>
-
-            <DropShadowEffect x:Key="CardShadow"
-                              Color="#33000000"
-                              BlurRadius="10"
-                              ShadowDepth="3"/>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
+    <Grid Background="#F5F5F5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="320"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0" 
-                Background="White"
-                CornerRadius="12"
-                Padding="25"
-                Effect="{StaticResource CardShadow}"
-                Margin="0 0 20 0">
+        <Border Margin="15" Background="White" CornerRadius="20">
+            <Border.Effect>
+                <DropShadowEffect Color="Gray" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+            </Border.Effect>
+            <StackPanel Margin="20">
+                <TextBlock Text="Keresési feltételek" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
 
-            <StackPanel>
-                <TextBlock Text="Számla keresése"
-                           FontSize="22"
-                           FontWeight="Bold"
-                           Foreground="#1F2937"
-                           Margin="0 0 0 20"/>
+                <Label Content="Ügyfél neve:"/>
+                <TextBox Text="{Binding SearchClientName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Height="30" VerticalContentAlignment="Center"/>
 
-                <StackPanel Margin="0 0 0 15">
-                    <TextBlock Text="Ügyfél neve"
-                               FontWeight="SemiBold"
-                               Margin="0 0 0 5"/>
-                    <TextBox Height="36"
-                             Padding="8"
-                             Background="#F3F4F6"
-                             BorderBrush="#D1D5DB"
-                             Text="{Binding SearchClientName, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
+                <Label Content="Számlastátusz:"/>
+                <ComboBox ItemsSource="{Binding StatusList}" 
+                          SelectedValue="{Binding SelectedStatus}" 
+                          SelectedValuePath="Code" 
+                          DisplayMemberPath="Text" 
+                          Margin="0,0,0,10" Height="30"/>
 
-                <StackPanel Margin="0 0 0 15">
-                    <TextBlock Text="Számlaszám"
-                               FontWeight="SemiBold"
-                               Margin="0 0 0 5"/>
-                    <TextBox Height="36"
-                             Padding="8"
-                             Background="#F3F4F6"
-                             BorderBrush="#D1D5DB"
-                             Text="{Binding SearchInvoiceNumber, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
+                <Label Content="Dátum intervallum:"/>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <DatePicker SelectedDate="{Binding FromDate}"/>
+                    <TextBlock Grid.Column="1" Text="-" VerticalAlignment="Center" Margin="5,0"/>
+                    <DatePicker Grid.Column="2" SelectedDate="{Binding ToDate}"/>
+                </Grid>
 
-                <StackPanel Margin="0 0 0 15">
-                    <TextBlock Text="Dátum intervallum"
-                               FontWeight="SemiBold"
-                               Margin="0 0 0 5"/>
+                <CheckBox Content="Csak a kifizetetlenek" IsChecked="{Binding OnlyUnpaid}" Foreground="Red" FontWeight="Bold" Margin="0,10"/>
 
-                    <StackPanel Orientation="Horizontal">
-                        <DatePicker Width="125"
-                                    SelectedDate="{Binding FromDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <TextBlock Text=" - "
-                                   VerticalAlignment="Center"
-                                   Margin="5 0"/>
-
-                        <DatePicker Width="125"
-                                    SelectedDate="{Binding ToDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Margin="0 0 0 15">
-                    <TextBlock Text="Státusz"
-                               FontWeight="SemiBold"
-                               Margin="0 0 0 5"/>
-
-                    <ComboBox Height="36"
-                              Padding="5"
-                              Background="#F3F4F6"
-                              BorderBrush="#D1D5DB"
-                              ItemsSource="{Binding StatusList}"
-                              SelectedValue="{Binding SelectedStatus, Mode=TwoWay}"
-                              DisplayMemberPath="Text"
-                              SelectedValuePath="Code"/>
-                </StackPanel>
-
-                <Button Content="Keresés"
-                        Height="44"
-                        Cursor="Hand"
-                        Command="{Binding CommandSearch}"
-                        Style="{DynamicResource RoundedButtonStyle}"
-                        Margin="0 20 0 0"/>
+                <Button Content="KERESÉS" Command="{Binding CommandSearch}" Margin="0,15,0,0" Height="45" 
+                        Background="#64CCf1" Foreground="White" FontWeight="Bold"
+                        Style="{StaticResource RoundedButtonStyle}"/>
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="0" Grid.Column="1"
-                Background="White"
-                CornerRadius="12"
-                Padding="20"
-                Effect="{StaticResource CardShadow}">
+        <Grid Grid.Column="1" Margin="0,15,15,15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <DockPanel LastChildFill="True">
+            <Border Background="White" CornerRadius="10" Padding="10">
+                <DataGrid ItemsSource="{Binding INVOICE_HEADERSList}" SelectedItem="{Binding SelectedINVOICE_HEADERS}" 
+                          AutoGenerateColumns="False" CanUserAddRows="False" GridLinesVisibility="Horizontal" 
+                          Background="White" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Számlaszám" Binding="{Binding INVOICE_NUMBER}" Width="110" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Kelt" Binding="{Binding ISSUE_DATE, StringFormat={}{0:yyyy.MM.dd}}" Width="90" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Vevő" Binding="{Binding CLIENT_NAME}" Width="*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Bruttó" Binding="{Binding TOTAL_GROSS, StringFormat={}{0:N2}}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Befizetve" Width="90" FontWeight="Bold" Foreground="Green">
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="PAID_AMOUNT" StringFormat="{}{0:N2}" UpdateSourceTrigger="LostFocus"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Hátralék" Binding="{Binding DEBT_AMOUNT, StringFormat={}{0:N2}}" Width="90" IsReadOnly="True" FontWeight="Bold"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
 
-                <StackPanel DockPanel.Dock="Bottom"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            Margin="0 20 0 0">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,15">
+                <Button Content="Teljes befizetés" Command="{Binding CommandSetPaid}" Width="140" Height="40" Margin="5" 
+                        Background="Goldenrod" Foreground="White" FontWeight="Bold"
+                        Style="{StaticResource RoundedButtonStyle}"/>
 
-                    <Button Content="Megtekintés"
-                            Width="140"
-                            Height="40"
-                            Margin="5"
-                            Command="{Binding CommandOpen}"
-                            Style="{DynamicResource RoundedButtonStyle}"/>
+                <Button Content="Nyomtatás / PDF" Command="{Binding CommandPrint}" Width="140" Height="40" Margin="5" 
+                        Background="ForestGreen" Foreground="White"
+                        Style="{StaticResource RoundedButtonStyle}"/>
 
-                    <Button Content="Nyomtatás / PDF"
-                            Width="150"
-                            Height="40"
-                            Margin="5"
-                            Command="{Binding CommandPrint}"
-                            Style="{DynamicResource RoundedButtonStyle}"/>
+                <Button Content="Sztornó" Command="{Binding CommandStorno}" Width="100" Height="40" Margin="5" 
+                        Background="#E74C3C" Foreground="White"
+                        Style="{StaticResource RoundedButtonStyle}"/>
 
-                    <Button Content="Sztornó"
-                            Width="120"
-                            Height="40"
-                            Background="#DC2626"
-                            Foreground="White"
-                            Margin="5"
-                            Command="{Binding CommandStorno}"
-                            Style="{DynamicResource RoundedButtonStyle}"/>
+                <Button Content="Törlés" Command="{Binding CommandDelete}" Width="100" Height="40" Margin="5" 
+                        Background="#C0392B" Foreground="White" 
+                        Style="{StaticResource RoundedButtonStyle}"/>
+            </StackPanel>
 
-                    <Button Content="🗑️ Törlés"
-                            Width="120"
-                            Height="40"
-                            Background="#7F1D1D"
-                            Foreground="White"
-                            Margin="5"
-                            Command="{Binding CommandDelete}"
-                            Style="{DynamicResource RoundedButtonStyle}"
-                            ToolTip="Végleges törlés (Csak Admin)"/>
-
+            <Border Grid.Row="2" CornerRadius="10" Padding="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#FFF0F0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TotalDebt}" Value="0">
+                                <Setter Property="Background" Value="#E8F5E9"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Kintlévőség összesen: " FontSize="18" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalDebt, StringFormat={}{0:N2} €}" FontSize="24" FontWeight="Bold" Margin="10,0,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TotalDebt}" Value="0">
+                                        <Setter Property="Foreground" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
+            </Border>
+        </Grid>
 
-                <Border Background="#F9FAFB"
-                        CornerRadius="10"
-                        Padding="10">
-
-                    <DataGrid ItemsSource="{Binding INVOICE_HEADERSList}"
-                              SelectedItem="{Binding SelectedINVOICE_HEADERS}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              BorderBrush="#E5E7EB">
-
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Számlaszám"
-                                                Binding="{Binding INVOICE_NUMBER}"
-                                                Width="150"/>
-
-                            <DataGridTextColumn Header="Kelt"
-                                                Binding="{Binding ISSUE_DATE, StringFormat=\{0:yyyy.MM.dd\}}"
-                                                Width="120"/>
-
-                            <DataGridTextColumn Header="Vevő"
-                                                Binding="{Binding CLIENT_NAME}"
-                                                Width="200"/>
-
-                            <DataGridTextColumn Header="Státusz"
-                                                Binding="{Binding SZLASTAT, Converter={StaticResource StatusToTextConverter}}"
-                                                Width="160"/>
-                        </DataGrid.Columns>
-
-                    </DataGrid>
-                </Border>
-
-            </DockPanel>
-
-        </Border>
-
-        <Border Grid.Row="1" Grid.ColumnSpan="2" 
-                Margin="0,15,0,0" 
-                BorderBrush="#FF64CCf1" 
-                BorderThickness="1" 
-                CornerRadius="2">
-            <Grid Background="AntiqueWhite">
-                <Button Content="Kilép"
-                        HorizontalAlignment="Right"
-                        Height="25"
-                        Margin="0,5,10,8"
-                        Width="60"
-                        Command="{Binding CommandQuitBase}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        Style="{DynamicResource RoundedButtonStyle}" />
-            </Grid>
-        </Border>
-
+        <Button Grid.Column="1" Content="Bezár" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                Width="80" Margin="0,0,20,5" Height="30" Background="#64CCf1" Foreground="White"
+                Command="{Binding CommandQuitBase}" 
+                CommandParameter="{Binding ElementName=SearchWindow}" 
+                Style="{StaticResource RoundedButtonStyle}"/>
     </Grid>
-
 </Window>
