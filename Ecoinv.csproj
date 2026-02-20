@@ -175,6 +175,7 @@
     </Compile>
     <Compile Include="BL\CLIENTS.cs" />
     <Compile Include="BL\ADRESSES.cs" />
+    <Compile Include="BL\CLIENT_TYPES.cs" />
     <Compile Include="BL\ECSYS.cs" />
     <Compile Include="BL\EUSERS.cs" />
     <Compile Include="BL\INVOICE_DETAILS.cs" />

@@ -7,8 +7,6 @@ namespace Ecoinv.BL
 {
     public partial class CLIENTS : TableBaseClass
     {
-        // --- ADATMEZŐK (A KÉPED ALAPJÁN PONTOSÍTVA) ---
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int __id;
         public int ID
@@ -76,20 +74,38 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(CACTIVE), ref __cactive, value);
         }
 
+        // ÚJ (Erika kérése): Ügyfél típusa (pl. Vállalkozó / Munkavállaló)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __client_type;
+        public string CLIENT_TYPE
+        {
+            get => __client_type;
+            set => SetPropertyValue(nameof(CLIENT_TYPE), ref __client_type, value);
+        }
+
+        // ÚJ (Erika kérése): Belső megjegyzés saját részre
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string __internal_note;
+        public string INTERNAL_NOTE
+        {
+            get => __internal_note;
+            set => SetPropertyValue(nameof(INTERNAL_NOTE), ref __internal_note, value);
+        }
+
         public object PrimaryKeyValue => ID;
     }
 
     public partial class CLIENTSTable
     {
-        // SQL: Minden mezőt felsorolunk, ami a képen van
-        private readonly string selectSQL = "SELECT ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER FROM CLIENTS ORDER BY NAME";
+        // SQL: Minden mezőt felsorolunk, immár az új típus és megjegyzés oszlopokkal együtt
+        private readonly string selectSQL = "SELECT ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER, CLIENT_TYPE, INTERNAL_NOTE FROM CLIENTS ORDER BY NAME";
 
         private readonly string insSQL =
-            "INSERT INTO CLIENTS (ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER) " +
-            "VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')";
+            "INSERT INTO CLIENTS (ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER, CLIENT_TYPE, INTERNAL_NOTE) " +
+            "VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')";
 
         private readonly string updSQL =
-            "UPDATE CLIENTS SET NAME='{1}', TAX_NUMBER='{2}', PHONE='{3}', EMAIL='{4}', BANKACCOUNT='{5}', CACTIVE='{6}', COMTAX_NUMBER='{7}' WHERE ID={0}";
+            "UPDATE CLIENTS SET NAME='{1}', TAX_NUMBER='{2}', PHONE='{3}', EMAIL='{4}', BANKACCOUNT='{5}', CACTIVE='{6}', COMTAX_NUMBER='{7}', CLIENT_TYPE='{8}', INTERNAL_NOTE='{9}' WHERE ID={0}";
 
         private readonly string delSQL = "DELETE FROM CLIENTS WHERE ID={0}";
 
@@ -111,19 +127,21 @@ namespace Ecoinv.BL
         {
             string active = string.IsNullOrEmpty(item.CACTIVE) ? "1" : item.CACTIVE;
 
-            // BIZTONSÁG: Aposztrófok kezelése (hogy az O'Neil ne okozzon hibát)
+            // BIZTONSÁG: Aposztrófok kezelése
             string safeName = item.NAME?.Replace("'", "''") ?? "";
             string safeTax = item.TAX_NUMBER?.Replace("'", "''") ?? "";
             string safePhone = item.PHONE?.Replace("'", "''") ?? "";
             string safeEmail = item.EMAIL?.Replace("'", "''") ?? "";
             string safeBank = item.BANKACCOUNT?.Replace("'", "''") ?? "";
             string safeComTax = item.COMTAX_NUMBER?.Replace("'", "''") ?? "";
+            string safeClientType = item.CLIENT_TYPE?.Replace("'", "''") ?? "";
+            string safeInternalNote = item.INTERNAL_NOTE?.Replace("'", "''") ?? "";
 
             if (item.ID <= 0) // Új felvétel
             {
                 item.ID = GetGenerator(conn);
                 conn.InsertSQL(string.Format(insSQL,
-                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax));
+                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeClientType, safeInternalNote));
 
                 if (__innerList != null && !__innerList.Contains(item))
                     __innerList.Add(item);
@@ -131,7 +149,7 @@ namespace Ecoinv.BL
             else // Módosítás
             {
                 conn.UpdateSQL(string.Format(updSQL,
-                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax));
+                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeClientType, safeInternalNote));
             }
         }
 

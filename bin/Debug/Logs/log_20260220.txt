@@ -1,0 +1,55 @@
+[14:54:25] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:54:25] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[14:54:25] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[14:54:29] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:54:29] [ERROR] [TableBaseClass.cs::InternalGetList:97] - TableBaseClass.InternalGetList hiba. SQL: SELECT ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER, CLIENT_TYPE, INTERNAL_NOTE FROM CLIENTS ORDER BY NAME 
+   >>> HIBA: Dynamic SQL Error
+SQL error code = -206
+Column unknown
+CLIENT_TYPE
+At line 1, column 81
+   >>> STACK:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 87
+[14:54:29] [ERROR] [CLIENTSDataContext.cs::DoSearch:142] - Keresési hiba 
+   >>> HIBA: Dynamic SQL Error
+SQL error code = -206
+Column unknown
+CLIENT_TYPE
+At line 1, column 81
+   >>> STACK:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 99
+   a következő helyen: Ecoinv.BL.TableBaseClass.GetListBase[T](String selectSQL, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 57
+   a következő helyen: Ecoinv.BL.TableBaseClass.GetListBase[T](String selectSQL, FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 49
+   a következő helyen: Ecoinv.BL.CLIENTSTable.GetList(FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\CLIENTS.cs, sor: 119
+   a következő helyen: Ecoinv.DataContext.CLIENTSDataContext.DoSearch() hely: C:\Users\prozs\source\repos\Ecoinv\DataContext\CLIENTSDataContext.cs, sor: 119
+[14:54:29] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:54:29] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:54:32] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[14:54:32] [ERROR] [TableBaseClass.cs::InternalGetList:97] - TableBaseClass.InternalGetList hiba. SQL: SELECT ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER, CLIENT_TYPE, INTERNAL_NOTE FROM CLIENTS ORDER BY NAME 
+   >>> HIBA: Dynamic SQL Error
+SQL error code = -206
+Column unknown
+CLIENT_TYPE
+At line 1, column 81
+   >>> STACK:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 87
+[14:54:32] [ERROR] [CLIENTSDataContext.cs::DoSearch:142] - Keresési hiba 
+   >>> HIBA: Dynamic SQL Error
+SQL error code = -206
+Column unknown
+CLIENT_TYPE
+At line 1, column 81
+   >>> STACK:    a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader(CommandBehavior behavior)
+   a következő helyen: FirebirdSql.Data.FirebirdClient.FbCommand.ExecuteReader()
+   a következő helyen: Ecoinv.BL.TableBaseClass.InternalGetList[T](String sql, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 99
+   a következő helyen: Ecoinv.BL.TableBaseClass.GetListBase[T](String selectSQL, FBConnectX conn, FbParameter[] parameters) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 57
+   a következő helyen: Ecoinv.BL.TableBaseClass.GetListBase[T](String selectSQL, FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\TableBaseClass.cs, sor: 49
+   a következő helyen: Ecoinv.BL.CLIENTSTable.GetList(FBConnectX conn) hely: C:\Users\prozs\source\repos\Ecoinv\BL\CLIENTS.cs, sor: 119
+   a következő helyen: Ecoinv.DataContext.CLIENTSDataContext.DoSearch() hely: C:\Users\prozs\source\repos\Ecoinv\DataContext\CLIENTSDataContext.cs, sor: 119
+[14:54:32] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:54:32] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[14:55:14] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[14:55:14] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 

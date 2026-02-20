@@ -1,4 +1,4 @@
-﻿using Ecoinv.BL; // FONTOS: Ez látja az új CLIENTS.cs-t
+﻿using Ecoinv.BL;
 using Ecoinv.Common;
 using Ecoinv.Components;
 using System;
@@ -13,14 +13,17 @@ namespace Ecoinv.DataContext
     {
         private readonly CLIENTSTable _clientsTable;
         private readonly ADRESSESTable _addressesTable;
+        private readonly CLIENT_TYPESTable _typeTable; // Dinamikus típusokhoz
 
         public CLIENTSDataContext()
         {
             // Példányosítjuk az adatbázis-kezelőket
             _clientsTable = new CLIENTSTable();
             _addressesTable = new ADRESSESTable();
+            _typeTable = new CLIENT_TYPESTable();
 
             ClientsList = new ObservableCollection<CLIENTS>();
+            ClientTypes = new ObservableCollection<CLIENT_TYPES>(); // Adatbázis objektumok listája
 
             // PARANCSOK (Gombok működése)
             CommandNew = new DelegateCommand(_ => DoNew(), _ => DataContextBase.IsAdmin);
@@ -35,13 +38,42 @@ namespace Ecoinv.DataContext
             IsActiveOnly = false;
             SearchText = "";
 
-            // Induláskor betöltjük a listát (ha nincs hiba)
-            try { DoSearch(); } catch { }
+            // Kezdeti adatok betöltése (Típusok és Ügyfelek)
+            LoadInitialData();
+        }
+
+        // --- ÚJ: Adatbázis-alapú betöltés ---
+        private void LoadInitialData()
+        {
+            using (FBConnectX conn = new FBConnectX())
+            {
+                try
+                {
+                    conn.GetConnectionX();
+                    conn.FBConnOpenX();
+
+                    // Kliens típusok betöltése a táblából
+                    var types = _typeTable.GetList(conn);
+                    ClientTypes.Clear();
+                    foreach (var t in types)
+                    {
+                        ClientTypes.Add(t);
+                    }
+
+                    // Ügyféllista betöltése
+                    DoSearch();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Kezdeti betöltési hiba");
+                }
+            }
         }
 
         // --- TULAJDONSÁGOK (Properties) ---
 
         public ObservableCollection<CLIENTS> ClientsList { get; private set; }
+        public ObservableCollection<CLIENT_TYPES> ClientTypes { get; private set; } // Adatbázisból jövő típusok
 
         private CLIENTS _selectedClient;
         public CLIENTS SelectedClient
@@ -118,9 +150,11 @@ namespace Ecoinv.DataContext
                     // Lekérjük az összes ügyfelet
                     var fullList = _clientsTable.GetList(conn);
 
-                    // Szűrés a memóriában (Gyors és biztonságos)
+                    // Szűrés a memóriában (Név + Megjegyzés alapú keresés)
                     var filtered = fullList.Where(x =>
-                        (string.IsNullOrEmpty(SearchText) || (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())))
+                        (string.IsNullOrEmpty(SearchText) ||
+                         (x.NAME != null && x.NAME.ToLower().Contains(SearchText.ToLower())) ||
+                         (x.INTERNAL_NOTE != null && x.INTERNAL_NOTE.ToLower().Contains(SearchText.ToLower())))
                         &&
                         (!IsActiveOnly || (x.CACTIVE != null && x.CACTIVE.Trim() == "1"))
                     ).OrderBy(x => x.NAME).ToList();
@@ -155,9 +189,9 @@ namespace Ecoinv.DataContext
                     conn.FBConnOpenX();
                     // Cím betöltése
                     var addresses = _addressesTable.GetList(conn, client.ID);
-                    var address = addresses.FirstOrDefault(); // Vesszük az elsőt
+                    var address = addresses.FirstOrDefault();
 
-                    CurrentAddress = address ?? new ADRESSES { CLIENT_ID = client.ID };
+                    CurrentAddress = address ?? new ADRESSES { CLIENT_ID = client.ID, AACTIVE = "1", ATYPE = "1" };
                 }
                 catch (Exception ex)
                 {
@@ -170,11 +204,16 @@ namespace Ecoinv.DataContext
         {
             SelectedClient = null;
 
-            // JAVÍTVA: Itt volt a "COUNTRY" hiba. Töröltem a hibás sort.
             CurrentClient = new CLIENTS
             {
-                CACTIVE = "1" // Alapból aktív
+                CACTIVE = "1"
             };
+
+            // Alapértelmezett típus beállítása az első adatbázis-elemre
+            if (ClientTypes.Count > 0)
+            {
+                CurrentClient.CLIENT_TYPE = ClientTypes[0].TYPE_NAME;
+            }
 
             CurrentAddress = new ADRESSES
             {
@@ -195,7 +234,6 @@ namespace Ecoinv.DataContext
 
         private void DoSave()
         {
-            // Alapvető ellenőrzés
             if (string.IsNullOrWhiteSpace(CurrentClient.NAME))
             {
                 MessageBox.Show("A név megadása kötelező!");
@@ -209,14 +247,11 @@ namespace Ecoinv.DataContext
                     conn.GetConnectionX();
                     conn.FBConnOpenX();
 
-                    // Biztosítjuk, hogy a CACTIVE mező ki legyen töltve
                     if (string.IsNullOrEmpty(CurrentClient.CACTIVE)) CurrentClient.CACTIVE = "0";
 
-                    // --- JAVÍTVA: Insert/Update helyett SAVE ---
-                    // Ez oldja meg az 'Insert' és 'Update' hiányzó metódus hibát!
+                    // Mentés (Insert/Update kezelve a Save metóduson belül)
                     _clientsTable.Save(CurrentClient, conn);
 
-                    // Cím mentése (Feltételezzük, hogy az Addresses tábla még a régi módon működik)
                     CurrentAddress.CLIENT_ID = CurrentClient.ID;
                     if (CurrentAddress.ID <= 0)
                     {
@@ -228,9 +263,8 @@ namespace Ecoinv.DataContext
                     }
 
                     MessageBox.Show("Sikeres mentés!");
-                    DoSearch(); // Lista frissítése
+                    DoSearch();
 
-                    // Visszaállunk a mentett elemre
                     var savedItem = ClientsList.FirstOrDefault(x => x.ID == CurrentClient.ID);
                     if (savedItem != null) SelectedClient = savedItem;
 
@@ -257,14 +291,12 @@ namespace Ecoinv.DataContext
                         conn.GetConnectionX();
                         conn.FBConnOpenX();
 
-                        // Először a címeket töröljük (FK kényszer miatt)
                         var addresses = _addressesTable.GetList(conn, SelectedClient.ID);
                         foreach (var addr in addresses)
                         {
                             _addressesTable.Delete(addr, conn);
                         }
 
-                        // Majd az ügyfelet
                         _clientsTable.Delete(SelectedClient, conn);
 
                         DoSearch();
@@ -272,7 +304,7 @@ namespace Ecoinv.DataContext
                     catch (Exception ex)
                     {
                         Logger.LogError(ex, "Törlési hiba");
-                        MessageBox.Show("Nem sikerült törölni (lehet, hogy van hozzá rendelve számla?): " + ex.Message);
+                        MessageBox.Show("Nem sikerült törölni: " + ex.Message);
                     }
                 }
             }
@@ -284,7 +316,6 @@ namespace Ecoinv.DataContext
             {
                 DataContextBase.SelectedClientForInvoice = SelectedClient.ID;
 
-                // Ablak bezárása
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.DataContext == this)
