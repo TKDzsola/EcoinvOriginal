@@ -3,44 +3,50 @@
   "WorkspaceRootPath": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\invoice_headers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\invoice_headers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\pdf\\services\\invoicepdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\services\\invoicepdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\forms\\searchinvoicefrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\searchinvoicefrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\invoice_details.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\invoice_details.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\datacontext\\searchinvoicedatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\searchinvoicedatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\client_types.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\bl\\client_types.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\client_types.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\bl\\clients.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:pdf\\documents\\invoicepdfdocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|Ecoinv||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\components\\converter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:components\\converter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\clientsfrm.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:datacontext\\clientsdatacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\forms\\usercontrolpages\\clientsdetailucpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\usercontrolpages\\clientsdetailucpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\bl\\clients.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\clients.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\bl\\adresses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:bl\\adresses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\forms\\usercontrolpages\\adressesucpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:forms\\usercontrolpages\\adressesucpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|C:\\Users\\prozs\\source\\repos\\Ecoinv\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|solutionrelative:app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9FD0B465-811D-4A6B-9C8C-85145451FE67}|Ecoinv.csproj|c:\\users\\prozs\\source\\repos\\ecoinv\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,135 +56,138 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "InvoicePdfService.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Services\\InvoicePdfService.cs",
-              "RelativeDocumentMoniker": "Pdf\\Services\\InvoicePdfService.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Services\\InvoicePdfService.cs",
-              "RelativeToolTip": "Pdf\\Services\\InvoicePdfService.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAqwFgAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T20:52:48.746Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "InvoicePdfDocument.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
-              "RelativeDocumentMoniker": "Pdf\\Documents\\InvoicePdfDocument.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
-              "RelativeToolTip": "Pdf\\Documents\\InvoicePdfDocument.cs",
-              "ViewState": "AgIAAGEAAAAAAAAAAAAqwHAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T20:52:28.419Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "INVOICE_DETAILS.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_DETAILS.cs",
-              "RelativeDocumentMoniker": "BL\\INVOICE_DETAILS.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_DETAILS.cs",
-              "RelativeToolTip": "BL\\INVOICE_DETAILS.cs",
-              "ViewState": "AgIAAI8AAAAAAAAAAAAqwJcAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T20:38:46.728Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "INVOICE_HEADERS.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_HEADERS.cs",
-              "RelativeDocumentMoniker": "BL\\INVOICE_HEADERS.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\INVOICE_HEADERS.cs",
-              "RelativeToolTip": "BL\\INVOICE_HEADERS.cs",
-              "ViewState": "AgIAAIIAAAAAAAAAAAA6wJcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T20:35:58.944Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "SEARCHINVOICEDataContext.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\SEARCHINVOICEDataContext.cs",
-              "RelativeDocumentMoniker": "DataContext\\SEARCHINVOICEDataContext.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\SEARCHINVOICEDataContext.cs",
-              "RelativeToolTip": "DataContext\\SEARCHINVOICEDataContext.cs",
-              "ViewState": "AgIAAKUAAAAAAAAAAAAqwLsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T20:17:05.507Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SEARCHINVOICEFrm.xaml",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\SEARCHINVOICEFrm.xaml",
-              "RelativeDocumentMoniker": "Forms\\SEARCHINVOICEFrm.xaml",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\SEARCHINVOICEFrm.xaml",
-              "RelativeToolTip": "Forms\\SEARCHINVOICEFrm.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-02-20T20:12:46.354Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CLIENT_TYPES.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENT_TYPES.cs",
-              "RelativeDocumentMoniker": "BL\\CLIENT_TYPES.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENT_TYPES.cs",
-              "RelativeToolTip": "BL\\CLIENT_TYPES.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAuwCQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:42:47.287Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CLIENTS.cs",
-              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
-              "RelativeDocumentMoniker": "BL\\CLIENTS.cs",
-              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
-              "RelativeToolTip": "BL\\CLIENTS.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAADwv6EAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:42:07.328Z",
+              "Title": "Ecoinv",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Ecoinv.csproj",
+              "RelativeDocumentMoniker": "Ecoinv.csproj",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Ecoinv.csproj",
+              "RelativeToolTip": "Ecoinv.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-02-28T21:16:48.616Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "InvoicePdfDocument.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
+              "RelativeDocumentMoniker": "Pdf\\Documents\\InvoicePdfDocument.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Pdf\\Documents\\InvoicePdfDocument.cs",
+              "RelativeToolTip": "Pdf\\Documents\\InvoicePdfDocument.cs",
+              "ViewState": "AgIAAHsAAAAAAAAAAAA3wJMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T21:04:33.842Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CLIENT_TYPES.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENT_TYPES.cs",
+              "RelativeDocumentMoniker": "BL\\CLIENT_TYPES.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENT_TYPES.cs",
+              "RelativeToolTip": "BL\\CLIENT_TYPES.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAowBcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T20:40:25.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CLIENTS.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
+              "RelativeDocumentMoniker": "BL\\CLIENTS.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\CLIENTS.cs",
+              "RelativeToolTip": "BL\\CLIENTS.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAkwJsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T17:36:25.209Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ADRESSES.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\ADRESSES.cs",
+              "RelativeDocumentMoniker": "BL\\ADRESSES.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\BL\\ADRESSES.cs",
+              "RelativeToolTip": "BL\\ADRESSES.cs",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAkwJ4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T19:57:55.378Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Converter.cs",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Components\\Converter.cs",
+              "RelativeDocumentMoniker": "Components\\Converter.cs",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Components\\Converter.cs",
+              "RelativeToolTip": "Components\\Converter.cs",
+              "ViewState": "AgIAALYAAAAAAAAAAAA3wM4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T19:24:10.371Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "CLIENTSDataContext.cs",
               "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\CLIENTSDataContext.cs",
               "RelativeDocumentMoniker": "DataContext\\CLIENTSDataContext.cs",
               "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\DataContext\\CLIENTSDataContext.cs",
               "RelativeToolTip": "DataContext\\CLIENTSDataContext.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAqwIcAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAANkAAAAAAAAAAAA4wPAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:35:59.902Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-28T19:18:09.93Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
+              "Title": "AdressesUCPage.xaml",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\UserControlPages\\AdressesUCPage.xaml",
+              "RelativeDocumentMoniker": "Forms\\UserControlPages\\AdressesUCPage.xaml",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\UserControlPages\\AdressesUCPage.xaml",
+              "RelativeToolTip": "Forms\\UserControlPages\\AdressesUCPage.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-28T17:53:55.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "CLIENTSFrm.xaml",
               "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\CLIENTSFrm.xaml",
               "RelativeDocumentMoniker": "Forms\\CLIENTSFrm.xaml",
               "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\CLIENTSFrm.xaml",
               "RelativeToolTip": "Forms\\CLIENTSFrm.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-02-20T19:35:49.84Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-28T17:37:55.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ClientsDetailUCPage.xaml",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\UserControlPages\\ClientsDetailUCPage.xaml",
+              "RelativeDocumentMoniker": "Forms\\UserControlPages\\ClientsDetailUCPage.xaml",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\Forms\\UserControlPages\\ClientsDetailUCPage.xaml",
+              "RelativeToolTip": "Forms\\UserControlPages\\ClientsDetailUCPage.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-28T17:37:35.768Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\App.config",
+              "RelativeDocumentMoniker": "App.config",
+              "ToolTip": "C:\\Users\\prozs\\source\\repos\\Ecoinv\\App.config",
+              "RelativeToolTip": "App.config",
+              "ViewState": "AgIAACkAAAAAAAAAAAAAACkAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2026-02-25T14:39:11.212Z"
             }
           ]
         }

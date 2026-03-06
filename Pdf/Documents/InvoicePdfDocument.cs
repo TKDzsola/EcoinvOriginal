@@ -12,7 +12,6 @@ namespace Ecoinv.Pdf.Documents
     public class InvoicePdfDocument : IDocument
     {
         private readonly InvoicePdfModel _model;
-
         public InvoicePdfDocument(InvoicePdfModel model) { _model = model; }
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -75,6 +74,21 @@ namespace Ecoinv.Pdf.Documents
             container.PaddingVertical(40).Column(column =>
             {
                 column.Item().Element(ComposeTable);
+
+                // JAVÍTVA: ÁFA Összesítő a bal oldalon, Empty() hiba nélkül
+                column.Item().PaddingTop(10).Row(row =>
+                {
+                    row.RelativeItem().Column(c =>
+                    {
+                        foreach (var group in _model.Items.GroupBy(x => x.VatPercent))
+                        {
+                            c.Item().Text($"1 {group.Key:N0} %");
+                            c.Item().Text($"{group.Sum(x => x.VatAmount):N2} €");
+                        }
+                    });
+                    row.RelativeItem().PaddingVertical(5); // JAVÍTVA: Empty() helyett padding
+                });
+
                 column.Item().PaddingTop(25).Row(row =>
                 {
                     row.RelativeItem().Column(c => { c.Item().Text($"Zahlung: {_model.PaymentMethod}"); });
@@ -92,7 +106,15 @@ namespace Ecoinv.Pdf.Documents
         {
             container.Table(table =>
             {
-                table.ColumnsDefinition(columns => { columns.ConstantColumn(25); columns.RelativeColumn(3); columns.RelativeColumn(1); columns.RelativeColumn(1.2f); columns.RelativeColumn(1.2f); columns.RelativeColumn(1.2f); columns.RelativeColumn(1.2f); });
+                // JAVÍTVA: Csak 4 oszlopot definiálunk a szétesés ellen
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(25);  // #
+                    columns.RelativeColumn(3);   // Bezeichnung (Name + Desc)
+                    columns.RelativeColumn(1);   // Menge
+                    columns.RelativeColumn(1.2f); // Brutto (€)
+                });
+
                 table.Header(header => {
                     header.Cell().Element(CellStyle).Text("#").Bold();
                     header.Cell().Element(CellStyle).Text("Bezeichnung").Bold();
@@ -100,10 +122,20 @@ namespace Ecoinv.Pdf.Documents
                     header.Cell().Element(CellStyle).AlignRight().Text("Brutto (€)").Bold();
                     static IContainer CellStyle(IContainer container) => container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Grey.Lighten1);
                 });
+
                 foreach (var item in _model.Items.Select((x, i) => new { Item = x, Index = i + 1 }))
                 {
                     table.Cell().Element(CellStyle).Text(item.Index.ToString());
-                    table.Cell().Element(CellStyle).Text(item.Item.Name).Bold();
+
+                    // JAVÍTVA: Megnevezés ÉS leírás egy oszlopba a torlódás ellen
+                    table.Cell().Element(CellStyle).Column(c => {
+                        c.Item().Text(item.Item.Name).Bold();
+                        if (!string.IsNullOrEmpty(item.Item.Description))
+                        {
+                            c.Item().Text(item.Item.Description).FontSize(9).Italic();
+                        }
+                    });
+
                     table.Cell().Element(CellStyle).AlignRight().Text($"{item.Item.Quantity:N0}");
                     table.Cell().Element(CellStyle).AlignRight().Text($"{item.Item.GrossTotal:N2} €").Bold();
                     static IContainer CellStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);

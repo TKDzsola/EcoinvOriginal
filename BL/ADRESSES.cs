@@ -35,7 +35,6 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(CITY), ref __city, value);
         }
 
-        // ADDRESS mező az adatbázisban (Utca + Házszám)
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __address;
         public string ADDRESS
@@ -44,7 +43,7 @@ namespace Ecoinv.BL
             set
             {
                 SetPropertyValue(nameof(ADDRESS), ref __address, value);
-                OnPropertyChanged(nameof(STREET)); // PDF miatt
+                OnPropertyChanged(nameof(STREET));
             }
         }
 
@@ -57,14 +56,13 @@ namespace Ecoinv.BL
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string __aactive = "1";
+        private string __aactive = "I";
         public string AACTIVE
         {
             get => __aactive;
             set => SetPropertyValue(nameof(AACTIVE), ref __aactive, value);
         }
 
-        // POSTALCODE mező az adatbázisban (INTEGER!)
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int __postalcode;
         public int POSTALCODE
@@ -73,31 +71,19 @@ namespace Ecoinv.BL
             set
             {
                 SetPropertyValue(nameof(POSTALCODE), ref __postalcode, value);
-                OnPropertyChanged(nameof(ZIP)); // PDF miatt
+                OnPropertyChanged(nameof(ZIP));
             }
         }
-
-        // --- PDF / ÚJ KÓD KOMPATIBILITÁS ---
 
         public string ZIP
         {
             get => POSTALCODE.ToString();
-            set
-            {
-                if (int.TryParse(value, out int result)) POSTALCODE = result;
-            }
+            set { if (int.TryParse(value, out int result)) POSTALCODE = result; }
         }
 
-        public string STREET
-        {
-            get => ADDRESS;
-            set => ADDRESS = value;
-        }
-
-        // Dummy mezők, hogy a PDF generáló ne szálljon el
+        public string STREET { get => ADDRESS; set => ADDRESS = value; }
         public string COUNTRY { get => ""; set { } }
         public string HOUSE_NUMBER { get => ""; set { } }
-
         public object PrimaryKeyValue => ID;
     }
 
@@ -106,34 +92,16 @@ namespace Ecoinv.BL
     // ========================================================================
     public partial class ADRESSESTable
     {
-        private readonly string selectAllSQL =
-            "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES";
-
-        private readonly string selectByIdSQL =
-            "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES WHERE CLIENT_ID = {0}";
-
-        private readonly string insSQL =
-            "INSERT INTO ADRESSES (ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE) " +
-            "VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', {6})";
-
-        private readonly string updSQL =
-            "UPDATE ADRESSES SET CITY='{2}', ADDRESS='{3}', ATYPE='{4}', AACTIVE='{5}', POSTALCODE={6} " +
-            "WHERE ID={0}";
-
+        private readonly string selectAllSQL = "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES";
+        private readonly string selectByIdSQL = "SELECT ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE FROM ADRESSES WHERE CLIENT_ID = {0}";
+        private readonly string insSQL = "INSERT INTO ADRESSES (ID, CLIENT_ID, CITY, ADDRESS, ATYPE, AACTIVE, POSTALCODE) VALUES ({0}, {1}, '{2}', '{3}', '{4}', '{5}', {6})";
+        private readonly string updSQL = "UPDATE ADRESSES SET CITY='{2}', ADDRESS='{3}', ATYPE='{4}', AACTIVE='{5}', POSTALCODE={6} WHERE ID={0}";
         private readonly string delSQL = "DELETE FROM ADRESSES WHERE ID = {0}";
-
         private readonly string selGenSQL = "SELECT GEN_ID(GEN_ADRESSES_ID, 1) FROM RDB$DATABASE";
 
         private ObservableCollection<ADRESSES> __innerList;
 
-        // --- LEKÉRDEZÉSEK ---
-
-        public ObservableCollection<ADRESSES> GetList(FBConnectX conn, int clientId)
-        {
-            string sql = string.Format(selectByIdSQL, clientId);
-            return TableBaseClass.GetListBase<ADRESSES>(sql, conn);
-        }
-
+        // JAVÍTVA: Paraméter nélküli GetList a DataContext híváshoz
         public ObservableCollection<ADRESSES> GetList(FBConnectX conn)
         {
             if (__innerList != null) return __innerList;
@@ -141,73 +109,51 @@ namespace Ecoinv.BL
             return __innerList;
         }
 
-        private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
+        // Túlterhelt verzió a clientId-hoz
+        public ObservableCollection<ADRESSES> GetList(FBConnectX conn, int clientId)
+        {
+            string sql = string.Format(selectByIdSQL, clientId);
+            return TableBaseClass.GetListBase<ADRESSES>(sql, conn);
+        }
 
-        // --- MENTÉS LOGIKA ---
+        private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
 
         public void Save(ADRESSES item, FBConnectX conn)
         {
-            if (item.ID <= 0) Insert(item, conn);
-            else Update(item, conn);
+            string originalType = item.ATYPE;
+            // Konverzió a Firebird 1 karakteres mezője miatt
+            if (item.ATYPE == "Számlázási") item.ATYPE = "1";
+            else if (item.ATYPE == "Levelezési") item.ATYPE = "2";
+            else if (item.ATYPE == "Telephely") item.ATYPE = "3";
+
+            // Konverzió az I/N státuszhoz
+            if (item.AACTIVE == "1" || string.IsNullOrEmpty(item.AACTIVE)) item.AACTIVE = "I";
+            else if (item.AACTIVE == "0") item.AACTIVE = "N";
+
+            try
+            {
+                if (item.ID <= 0) Insert(item, conn);
+                else Update(item, conn);
+            }
+            finally { item.ATYPE = originalType; }
         }
 
+        // JAVÍTVA: Publikus metódusok a DataContext számára
         public void Insert(ADRESSES item, FBConnectX conn)
         {
             item.ID = GetGenerator(conn);
-            // Null értékek kezelése
-            string atype = string.IsNullOrEmpty(item.ATYPE) ? "1" : item.ATYPE;
-            string aactive = string.IsNullOrEmpty(item.AACTIVE) ? "1" : item.AACTIVE;
-            string city = item.CITY ?? "";
-            string address = item.ADDRESS ?? "";
-
-            string sql = string.Format(insSQL,
-                item.ID, item.CLIENT_ID, city, address, atype, aactive, item.POSTALCODE);
-
-            conn.InsertSQL(sql);
+            conn.InsertSQL(string.Format(insSQL, item.ID, item.CLIENT_ID, item.CITY?.Replace("'", "''"), item.ADDRESS?.Replace("'", "''"), item.ATYPE, item.AACTIVE, item.POSTALCODE));
         }
 
         public void Update(ADRESSES item, FBConnectX conn)
         {
-            string atype = string.IsNullOrEmpty(item.ATYPE) ? "1" : item.ATYPE;
-            string aactive = string.IsNullOrEmpty(item.AACTIVE) ? "1" : item.AACTIVE;
-            string city = item.CITY ?? "";
-            string address = item.ADDRESS ?? "";
-
-            string sql = string.Format(updSQL,
-                item.ID, item.CLIENT_ID, city, address, atype, aactive, item.POSTALCODE);
-
-            conn.UpdateSQL(sql);
+            conn.UpdateSQL(string.Format(updSQL, item.ID, item.CLIENT_ID, item.CITY?.Replace("'", "''"), item.ADDRESS?.Replace("'", "''"), item.ATYPE, item.AACTIVE, item.POSTALCODE));
         }
 
         public void Delete(ADRESSES item, FBConnectX conn)
         {
             conn.DeleteSQL(string.Format(delSQL, item.ID));
             if (__innerList != null) __innerList.Remove(item);
-        }
-
-        public void Delete(int id, FBConnectX conn)
-        {
-            conn.DeleteSQL(string.Format(delSQL, id));
-        }
-
-        // ====================================================================
-        // FONTOS: RÉGI KÓD TÁMOGATÁSA (LEGACY METHODS)
-        // EZ A RÉSZ HIÁNYZOTT VAGY NEM LÁTSZÓDOTT!
-        // ====================================================================
-
-        public void NewADRESSES_M(ADRESSES item, FBConnectX conn)
-        {
-            Insert(item, conn);
-        }
-
-        public void ReUpdateADRESSES_M(ADRESSES item, FBConnectX conn)
-        {
-            Update(item, conn);
-        }
-
-        public void DelNewADRESSES_M(ADRESSES item, FBConnectX conn)
-        {
-            Delete(item, conn);
         }
     }
 }

@@ -1,0 +1,127 @@
+[21:17:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:18] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[21:17:18] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[21:17:23] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:23] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:23] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:23] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:23] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:23] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:25] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:25] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:25] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:25] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:25] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:25] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:26] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:26] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:32] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:32] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:32] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:34] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:34] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:34] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:35] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:35] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:35] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:35] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:36] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:36] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:36] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:37] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:37] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:37] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:17:38] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:17:38] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:17:38] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:00] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:00] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:00] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:10] [INFO] [RégiKód] - UPDATE sikeres: UPDATE INVOICE_HEADERS SET PAID_AMOUNT = 1 WHERE ID = 95 
+[21:18:10] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:10] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:43] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:43] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:43] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:43] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:43] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:43] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:44] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:44] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:44] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:44] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:44] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:44] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:45] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:46] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:46] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:46] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:48] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:48] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:48] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:18:50] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:18:50] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:18:50] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:19:03] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:19:03] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID, PAID_AMOUNT, TOTAL_GROSS) VALUES (96, 24, '5555', '2026-02-24', '2026-03-04', '2026-02-24 21:19:03', 'Átutalás', '1', '0', '0', 0, 3063.6) 
+[21:19:03] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (101, 96, 26, 8, 851, 3, 20, 2553, 510.6, 3063.6, 'Utiköltség
+Km díjazással.') 
+[21:19:04] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:19:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:19:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:19:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:19:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:19:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:19:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:19:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:08] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:08] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:08] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:11] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:11] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:11] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:11] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:11] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:13] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:13] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:13] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:18] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:18] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:18] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:20:21] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:20:21] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:20:21] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:21:09] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:21:09] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_HEADERS (ID, CLIENT_ID, INVOICE_NUMBER, ISSUE_DATE, DUE_DATE, CREATED, PAYMENT_METHOD, SZLASTAT, FIZSTAT, STORNO_ID, PAID_AMOUNT, TOTAL_GROSS) VALUES (97, 24, '556', '2026-02-24', '2026-03-04', '2026-02-24 21:21:09', 'Átutalás', '1', '0', '0', 0, 72) 
+[21:21:09] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (102, 97, 26, 8, 1, 10, 20, 10, 2, 12, 'Utiköltség
+Km díjazással.') 
+[21:21:09] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (103, 97, 26, 8, 1, 20, 20, 20, 4, 24, 'Utiköltség
+Km díjazással.') 
+[21:21:09] [INFO] [RégiKód] - INSERT sikeres: INSERT INTO INVOICE_DETAILS (ID, INVOICEHEADERS_ID, SERVICES_ID, VATRATE_ID, QTY, NET_UNIT_PRICE, VAT_PERCENT, LINE_TOTAL_NET, VAT_AMOUNT, LINE_TOTAL_GROSS, SERVICE_NAME) VALUES (104, 97, 26, 8, 1, 30, 20, 30, 6, 36, 'Utiköltség
+Km díjazással.') 
+[21:21:10] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:21:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:21:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:21:12] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:21:12] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:21:15] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[21:21:15] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:21:15] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[21:37:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[21:37:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 

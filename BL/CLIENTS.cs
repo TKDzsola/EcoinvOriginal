@@ -47,7 +47,6 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(EMAIL), ref __email, value);
         }
 
-        // ÚJ: A képen látható Bankszámlaszám
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __bankaccount;
         public string BANKACCOUNT
@@ -56,7 +55,6 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(BANKACCOUNT), ref __bankaccount, value);
         }
 
-        // ÚJ: A képen látható Közösségi adószám
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __comtax_number;
         public string COMTAX_NUMBER
@@ -65,16 +63,14 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(COMTAX_NUMBER), ref __comtax_number, value);
         }
 
-        // Apa kérése: Aktív státusz (CACTIVE)
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string __cactive = "1";
+        private string __cactive = "I";
         public string CACTIVE
         {
             get => __cactive;
             set => SetPropertyValue(nameof(CACTIVE), ref __cactive, value);
         }
 
-        // ÚJ (Erika kérése): Ügyfél típusa (pl. Vállalkozó / Munkavállaló)
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __client_type;
         public string CLIENT_TYPE
@@ -83,7 +79,6 @@ namespace Ecoinv.BL
             set => SetPropertyValue(nameof(CLIENT_TYPE), ref __client_type, value);
         }
 
-        // ÚJ (Erika kérése): Belső megjegyzés saját részre
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string __internal_note;
         public string INTERNAL_NOTE
@@ -97,7 +92,6 @@ namespace Ecoinv.BL
 
     public partial class CLIENTSTable
     {
-        // SQL: Minden mezőt felsorolunk, immár az új típus és megjegyzés oszlopokkal együtt
         private readonly string selectSQL = "SELECT ID, NAME, TAX_NUMBER, PHONE, EMAIL, BANKACCOUNT, CACTIVE, COMTAX_NUMBER, CLIENT_TYPE, INTERNAL_NOTE FROM CLIENTS ORDER BY NAME";
 
         private readonly string insSQL =
@@ -122,39 +116,39 @@ namespace Ecoinv.BL
 
         private int GetGenerator(FBConnectX conn) => DBFunc.Get_Generator(selGenSQL, conn);
 
-        // EZ A METÓDUS VÉGZI A MENTÉST (Insert és Update egyben)
         public void Save(CLIENTS item, FBConnectX conn)
         {
-            string active = string.IsNullOrEmpty(item.CACTIVE) ? "1" : item.CACTIVE;
+            string active = string.IsNullOrEmpty(item.CACTIVE) ? "I" : item.CACTIVE;
 
-            // BIZTONSÁG: Aposztrófok kezelése
             string safeName = item.NAME?.Replace("'", "''") ?? "";
             string safeTax = item.TAX_NUMBER?.Replace("'", "''") ?? "";
             string safePhone = item.PHONE?.Replace("'", "''") ?? "";
             string safeEmail = item.EMAIL?.Replace("'", "''") ?? "";
             string safeBank = item.BANKACCOUNT?.Replace("'", "''") ?? "";
             string safeComTax = item.COMTAX_NUMBER?.Replace("'", "''") ?? "";
-            string safeClientType = item.CLIENT_TYPE?.Replace("'", "''") ?? "";
             string safeInternalNote = item.INTERNAL_NOTE?.Replace("'", "''") ?? "";
 
-            if (item.ID <= 0) // Új felvétel
+            string safeType = item.CLIENT_TYPE?.Replace("'", "''") ?? "";
+
+            if (item.ID <= 0)
             {
                 item.ID = GetGenerator(conn);
                 conn.InsertSQL(string.Format(insSQL,
-                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeClientType, safeInternalNote));
+                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeType, safeInternalNote));
 
-                if (__innerList != null && !__innerList.Contains(item))
+                if (__innerList != null && !__innerList.Any(x => x.ID == item.ID))
                     __innerList.Add(item);
             }
-            else // Módosítás
+            else
             {
                 conn.UpdateSQL(string.Format(updSQL,
-                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeClientType, safeInternalNote));
+                    item.ID, safeName, safeTax, safePhone, safeEmail, safeBank, active, safeComTax, safeType, safeInternalNote));
             }
         }
 
         public void Delete(CLIENTS item, FBConnectX conn)
         {
+            if (item == null) return;
             conn.DeleteSQL(string.Format(delSQL, item.ID));
             if (__innerList != null) __innerList.Remove(item);
         }

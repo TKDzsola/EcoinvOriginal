@@ -5,146 +5,102 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dataContext="clr-namespace:Ecoinv.DataContext"
              mc:Ignorable="d"
+             x:Name="AddressUC"
              d:DataContext="{d:DesignInstance Type=dataContext:CLIENTSDataContext}"
-             d:DesignHeight="250"
+             d:DesignHeight="300"
              d:DesignWidth="800">
 
-  <UserControl.Resources>
-    <ResourceDictionary Source="/Components/Converters.xaml" />
-  </UserControl.Resources>
+    <UserControl.Resources>
+    </UserControl.Resources>
 
-  <Border BorderBrush="#FF64CCF1"
-          BorderThickness="1"
-          CornerRadius="3"
-          Padding="10"
-          Background="AntiqueWhite">
+    <Border BorderBrush="#FF64CCF1"
+            BorderThickness="1"
+            CornerRadius="3"
+            Padding="10"
+            Background="AntiqueWhite">
 
-    <StackPanel>
-      <!-- 🔹 Fejléc -->
-      <Label Content="Számlázási cím adatok"
-             FontWeight="Bold"
-             FontSize="16"
-             Foreground="#2A4B7C"
-             HorizontalAlignment="Center"
-             Margin="0,0,0,8"/>
+        <StackPanel>
+            <Label Content="Számlázási cím adatok"
+                   FontWeight="Bold"
+                   FontSize="16"
+                   Foreground="#2A4B7C"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,8"/>
 
-      <!-- 🔹 Grid a címmezőknek -->
-      <Grid IsEnabled="{Binding Path=IsEditing}">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="180"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <!-- Aktív cím -->
-          <RowDefinition Height="Auto"/>
-          <!-- Cím ID -->
-          <RowDefinition Height="Auto"/>
-          <!-- Irsz -->
-          <RowDefinition Height="Auto"/>
-          <!-- Város -->
-          <RowDefinition Height="Auto"/>
-          <!-- Cím -->
-          <RowDefinition Height="Auto"/>
-          <!-- Cím típusa -->
-          <RowDefinition Height="Auto"/>
-          <!-- Számlázási cím megegyezik -->
-        </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <!-- ✅ Aktív cím felül -->
-        <Label Grid.Row="0" Grid.Column="0"
-               Content="Aktív cím:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <CheckBox Grid.Row="0" Grid.Column="1"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Margin="5,2,0,5"
-                  IsChecked="{Binding Path=CliAdr.AACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource in2bool}}"
-                  IsEnabled="{Binding Path=IsEditing}" />
+                <Label Grid.Row="0" Grid.Column="0" Content="Aktív cím:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <CheckBox Grid.Row="0" Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="5,2,0,5"
+                          IsChecked="{Binding AACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource in2bool}}" />
 
-        <!-- 🆔 Cím azonosító -->
-        <Label Grid.Row="1" Grid.Column="0"
-               Content="Cím azonosító:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="1"
-                 Width="50"
-                 HorizontalAlignment="Left"
-                 Margin="5,2,0,5"
-                 IsEnabled="False"
-                 TextAlignment="Center"
-                 FontFamily="Consolas"
-                 Text="{Binding Path=CliAdr.ID}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="Cím azonosító:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Width="50"
+                         HorizontalAlignment="Left"
+                         Margin="5,2,0,5"
+                         IsEnabled="False"
+                         TextAlignment="Center"
+                         FontFamily="Consolas"
+                         Text="{Binding ID, Mode=OneWay}" />
 
-        <!-- 📮 Irányítószám -->
-        <Label Grid.Row="2" Grid.Column="0"
-               Content="Irányítószám:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="1"
-                 Width="60"
-                 HorizontalAlignment="Left"
-                 Margin="5,2,0,5"
-                 FontFamily="Consolas"
-                 TextAlignment="Center"
-                 MaxLength="4"
-                 Text="{Binding Path=CliAdr.POSTALCODE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding Path=IsEditing}" />
+                <Label Grid.Row="2" Grid.Column="0" Content="Irányítószám:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1"
+                         Width="60"
+                         HorizontalAlignment="Left"
+                         Margin="5,2,0,5"
+                         FontFamily="Consolas"
+                         TextAlignment="Center"
+                         MaxLength="10"
+                         Text="{Binding POSTALCODE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <!-- 🏙 Város -->
-        <Label Grid.Row="3" Grid.Column="0"
-               Content="Város:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="1"
-                 Width="150"
-                 HorizontalAlignment="Left"
-                 Margin="5,2,0,5"
-                 MaxLength="50"
-                 Text="{Binding Path=CliAdr.CITY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding Path=IsEditing}" />
+                <Label Grid.Row="3" Grid.Column="0" Content="Város:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1"
+                         Width="200"
+                         HorizontalAlignment="Left"
+                         Margin="5,2,0,5"
+                         MaxLength="50"
+                         Text="{Binding CITY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <!-- 🏠 Cím -->
-        <Label Grid.Row="4" Grid.Column="0"
-               Content="Cím:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <TextBox Grid.Row="4" Grid.Column="1"
-                 Width="300"
-                 HorizontalAlignment="Left"
-                 Margin="5,2,0,5"
-                 MaxLength="100"
-                 Text="{Binding Path=CliAdr.ADDRESS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding Path=IsEditing}" />
+                <Label Grid.Row="4" Grid.Column="0" Content="Cím:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1"
+                         Width="350"
+                         HorizontalAlignment="Left"
+                         Margin="5,2,0,5"
+                         MaxLength="100"
+                         Text="{Binding ADDRESS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <!-- 🗂 Cím típusa -->
-        <Label Grid.Row="5" Grid.Column="0"
-               Content="Cím típusa:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"/>
-        <ComboBox Grid.Row="5" Grid.Column="1"
-                  Width="150"
-                  HorizontalAlignment="Left"
-                  Margin="5,2,0,5"
-                  IsEditable="True"
-                  IsEnabled="{Binding Path=IsEditing}"
-                  SelectedValue="{Binding Path=CliAdr.ATYPE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Label Grid.Row="5" Grid.Column="0" Content="Cím típusa:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="5" Grid.Column="1"
+                          Width="180"
+                          HorizontalAlignment="Left"
+                          Margin="5,2,0,5"
+                          ItemsSource="{Binding Tag, ElementName=AddressUC}"
+                          SelectedItem="{Binding ATYPE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <!-- 📨 Számlázási cím megegyezik -->
-        <Label Grid.Row="6" Grid.Column="0"
-               Content="Megegyezik a levelezési címmel:"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"
-               Margin="0,5,0,0"/>
-        <CheckBox Grid.Row="6" Grid.Column="1"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Margin="5,5,0,0"
-                  IsChecked="{Binding Path=CliAdr.AACTIVE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  IsEnabled="{Binding Path=IsEditing}" />
-      </Grid>
-    </StackPanel>
-  </Border>
+                <Label Grid.Row="6" Grid.Column="0" Content="Megegyezik a levelezési címmel:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                <CheckBox Grid.Row="6" Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="5,5,0,0"
+                          IsChecked="{Binding IS_CORRESPONDENCE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+        </StackPanel>
+    </Border>
 </UserControl>
