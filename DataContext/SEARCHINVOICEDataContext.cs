@@ -34,14 +34,6 @@ namespace Ecoinv.DataContext
 
             StatusList = new ObservableCollection<StatusItem>();
             LoadStatusList();
-
-            CommandSearch = new DelegateCommand(_ => DoSearch());
-            CommandPrint = new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
-            CommandStorno = new DelegateCommand(_ => DoStorno(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.SZLASTAT != "2" && IsAdmin);
-            CommandDelete = new DelegateCommand(_ => DoDelete(), _ => SelectedINVOICE_HEADERS != null && IsAdmin);
-
-            // TECH LEAD JAVÍTÁS: A gomb legyen aktív, ha van kiválasztott számla és a hátralék nem nulla
-            CommandSetPaid = new DelegateCommand(_ => DoSetPaid(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.DEBT_AMOUNT != 0);
         }
 
         private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -50,15 +42,17 @@ namespace Ecoinv.DataContext
             {
                 if (sender is INVOICE_HEADERS item)
                 {
-                    using (FBConnectX conn = new FBConnectX())
+                    try
                     {
-                        conn.GetConnectionX(); conn.FBConnOpenX();
-                        _invoiceTable.UpdatePaidAmount(item.ID, item.PAID_AMOUNT, conn);
-                        UpdateTotals();
-
-                        // Kényszerített frissítés a gombok állapotára
-                        RefreshCommandStates();
+                        DatabaseHelper.Execute(conn =>
+                        {
+                            _invoiceTable.UpdatePaidAmount(item.ID, item.PAID_AMOUNT, conn);
+                            UpdateTotals();
+                        }, "Befizetés mentési hiba");
                     }
+                    catch (Exception ex) { Logger.LogError(ex, "Befizetés mentési hiba"); }
+
+                    RefreshCommandStates();
                 }
             }
         }
@@ -66,7 +60,6 @@ namespace Ecoinv.DataContext
         private void DoSetPaid()
         {
             if (SelectedINVOICE_HEADERS == null) return;
-            // Kiegyenlítés: a befizetett összeg legyen egyenlő a bruttóval
             SelectedINVOICE_HEADERS.PAID_AMOUNT = SelectedINVOICE_HEADERS.TOTAL_GROSS;
         }
 
@@ -82,11 +75,23 @@ namespace Ecoinv.DataContext
 
         public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
         public ObservableCollection<StatusItem> StatusList { get; }
-        public ICommand CommandSearch { get; }
-        public ICommand CommandPrint { get; }
-        public ICommand CommandStorno { get; }
-        public ICommand CommandDelete { get; }
-        public ICommand CommandSetPaid { get; }
+
+        // --- PARANCSOK (cache-elve ??= operátorral) ---
+
+        private ICommand _commandSearch;
+        public ICommand CommandSearch => _commandSearch ??= new DelegateCommand(_ => DoSearch());
+
+        private ICommand _commandPrint;
+        public ICommand CommandPrint => _commandPrint ??= new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
+
+        private ICommand _commandStorno;
+        public ICommand CommandStorno => _commandStorno ??= new DelegateCommand(_ => DoStorno(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.SZLASTAT != "2" && IsAdmin);
+
+        private ICommand _commandDelete;
+        public ICommand CommandDelete => _commandDelete ??= new DelegateCommand(_ => DoDelete(), _ => SelectedINVOICE_HEADERS != null && IsAdmin);
+
+        private ICommand _commandSetPaid;
+        public ICommand CommandSetPaid => _commandSetPaid ??= new DelegateCommand(_ => DoSetPaid(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.DEBT_AMOUNT != 0);
 
         private INVOICE_HEADERS _selectedInvoice;
         public INVOICE_HEADERS SelectedINVOICE_HEADERS
@@ -119,19 +124,18 @@ namespace Ecoinv.DataContext
 
         private void DoSearch()
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX(); conn.FBConnOpenX();
                     var res = _invoiceTable.SearchInvoices(conn, SearchClientName, SearchInvoiceNumber, FromDate, ToDate, SelectedStatus);
                     INVOICE_HEADERSList.Clear();
                     var filtered = OnlyUnpaid ? res.Where(x => x.DEBT_AMOUNT != 0) : res;
                     foreach (var i in filtered) INVOICE_HEADERSList.Add(i);
                     UpdateTotals();
-                }
-                catch (Exception ex) { Logger.LogError(ex, "Keresési hiba"); }
+                }, "Keresési hiba");
             }
+            catch (Exception ex) { Logger.LogError(ex, "Keresési hiba"); }
         }
 
         private void DoPrint()
@@ -151,20 +155,20 @@ namespace Ecoinv.DataContext
             if (MessageBox.Show("Biztosan sztornózod a számlát?", "Megerősítés", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
 
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX(); conn.FBConnOpenX();
                     _invoiceTable.SetStorno(SelectedINVOICE_HEADERS.ID, conn);
                     int newId = _invoiceTable.InsertStorno(SelectedINVOICE_HEADERS, conn);
                     _detailsTable.CopyItems(SelectedINVOICE_HEADERS.ID, newId, conn);
-                    DoSearch();
-                    MessageBox.Show("Sikeres sztornózás!");
-                    new InvoiceExportManager().ExportInvoiceById(newId);
-                }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
+                }, "Sztornózási hiba");
+
+                DoSearch();
+                MessageBox.Show("Sikeres sztornózás!");
+                new InvoiceExportManager().ExportInvoiceById(SelectedINVOICE_HEADERS.ID);
             }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         private void DoDelete()
@@ -172,16 +176,16 @@ namespace Ecoinv.DataContext
             if (SelectedINVOICE_HEADERS == null) return;
             if (MessageBox.Show("Végleges törlés?", "FIGYELEM", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                using (FBConnectX conn = new FBConnectX())
+                try
                 {
-                    try
+                    DatabaseHelper.Execute(conn =>
                     {
-                        conn.GetConnectionX(); conn.FBConnOpenX();
                         _invoiceTable.Delete(SelectedINVOICE_HEADERS.ID, conn);
-                        DoSearch();
-                    }
-                    catch (Exception ex) { MessageBox.Show(ex.Message); }
+                    }, "Számla törlési hiba");
+
+                    DoSearch();
                 }
+                catch (Exception ex) { MessageBox.Show(ex.Message); }
             }
         }
     }

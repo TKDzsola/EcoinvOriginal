@@ -57,6 +57,8 @@ namespace Ecoinv.BL
 
         private ObservableCollection<SERVICES> __innerList;
 
+        public void InvalidateCache() => __innerList = null;
+
         public ObservableCollection<SERVICES> GetList(FBConnectX conn)
         {
             if (__innerList != null) return __innerList;

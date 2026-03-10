@@ -106,7 +106,7 @@
 
                     <StackPanel Grid.Column="1" Margin="5">
                         <Label Content="Mennyiség:" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding EditQty, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+                        <TextBox Text="{Binding EditQty, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N1}}" Padding="5"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Margin="5">
@@ -170,7 +170,7 @@
                         </Style>
                     </DataGridTextColumn.EditingElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Menny." Binding="{Binding QTY}" Width="0.8*"/>
+                <DataGridTextColumn Header="Menny." Binding="{Binding QTY, StringFormat={}{0:N1}}" Width="0.8*"/>
                 <DataGridTextColumn Header="Nettó ár" Binding="{Binding NET_UNIT_PRICE, StringFormat={}{0:N2} €}" Width="1*"/>
                 <DataGridTextColumn Header="ÁFA %" Binding="{Binding VAT_PERCENT}" Width="0.8*"/>
                 <DataGridTextColumn Header="Nettó érték" Binding="{Binding LINE_TOTAL_NET, StringFormat={}{0:N2} €}" Width="1.2*" IsReadOnly="True" Foreground="Gray"/>

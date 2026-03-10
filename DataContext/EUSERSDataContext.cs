@@ -19,7 +19,6 @@ namespace Ecoinv.DataContext
             alkTable = new EUSERSTable();
             EUSERSList = new ObservableCollection<EUSERS>();
 
-            // VÉDELEM AZ ÖSSZEOMLÁS ELLEN
             try
             {
                 RefreshData();
@@ -32,21 +31,19 @@ namespace Ecoinv.DataContext
 
         private void RefreshData()
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                alkTable.InvalidateCache();
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
-
                     EUSERSList.Clear();
                     var list = alkTable.GetList(conn);
                     foreach (var item in list) EUSERSList.Add(item);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Felhasználók betöltése sikertelen");
-                }
+                }, "Felhasználók betöltése sikertelen");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Felhasználók betöltése sikertelen");
             }
         }
 
@@ -65,12 +62,19 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- PARANCSOK ---
+        // --- PARANCSOK (cache-elve ??= operátorral) ---
 
-        public ICommand CommandNew => new DelegateCommand(_ => DoNew(), _ => IsAdmin);
-        public ICommand CommandSave => new DelegateCommand(_ => DoSave(), _ => IsEditing && IsAdmin);
-        public ICommand CommandDelete => new DelegateCommand(_ => DoDelete(), _ => SelectedEUSERS != null && IsAdmin && !IsEditing);
-        public ICommand CommandModify => new DelegateCommand(_ => IsEditing = true, _ => SelectedEUSERS != null && IsAdmin);
+        private ICommand _commandNew;
+        public ICommand CommandNew => _commandNew ??= new DelegateCommand(_ => DoNew(), _ => IsAdmin);
+
+        private ICommand _commandSave;
+        public ICommand CommandSave => _commandSave ??= new DelegateCommand(_ => DoSave(), _ => IsEditing && IsAdmin);
+
+        private ICommand _commandDelete;
+        public ICommand CommandDelete => _commandDelete ??= new DelegateCommand(_ => DoDelete(), _ => SelectedEUSERS != null && IsAdmin && !IsEditing);
+
+        private ICommand _commandModify;
+        public ICommand CommandModify => _commandModify ??= new DelegateCommand(_ => IsEditing = true, _ => SelectedEUSERS != null && IsAdmin);
 
         private void DoNew()
         {
@@ -85,31 +89,26 @@ namespace Ecoinv.DataContext
                 MessageBox.Show("Felhasználónév kötelező!");
                 return;
             }
-            // Ha új felhasználó és nincs jelszó megadva
             if (SelectedEUSERS.ID <= 0 && string.IsNullOrEmpty(SelectedEUSERS.UPSSW))
             {
                 MessageBox.Show("Új felhasználónál a jelszó kötelező!");
                 return;
             }
 
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
-
                     alkTable.Save(SelectedEUSERS, conn);
+                }, "User mentési hiba");
 
-                    MessageBox.Show("Sikeres mentés!");
-                    IsEditing = false;
-                    RefreshData();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "User mentési hiba");
-                    MessageBox.Show("Hiba: " + ex.Message);
-                }
+                MessageBox.Show("Sikeres mentés!");
+                IsEditing = false;
+                RefreshData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hiba: " + ex.Message);
             }
         }
 
@@ -117,21 +116,18 @@ namespace Ecoinv.DataContext
         {
             if (MessageBox.Show("Biztosan törölni szeretnéd?", "Törlés", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                using (FBConnectX conn = new FBConnectX())
+                try
                 {
-                    try
+                    DatabaseHelper.Execute(conn =>
                     {
-                        conn.GetConnectionX();
-                        conn.FBConnOpenX();
-
                         alkTable.Delete(SelectedEUSERS, conn);
-                        RefreshData();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex, "User törlési hiba");
-                        MessageBox.Show("Hiba: " + ex.Message);
-                    }
+                    }, "User törlési hiba");
+
+                    RefreshData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hiba: " + ex.Message);
                 }
             }
         }

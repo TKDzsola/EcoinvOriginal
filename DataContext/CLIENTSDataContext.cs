@@ -29,28 +29,25 @@ namespace Ecoinv.DataContext
 
         private void LoadTypes()
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
                     ClientTypes.Clear();
                     var list = _typesTable.GetList(conn);
                     foreach (var t in list) ClientTypes.Add(t);
-                }
-                catch (Exception ex) { Logger.LogError(ex, "Típusok betöltése hiba"); }
+                }, "Típusok betöltése hiba");
             }
+            catch (Exception ex) { Logger.LogError(ex, "Típusok betöltése hiba"); }
         }
 
         private void RefreshData()
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                _clientsTable.InvalidateCache();
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
                     ClientsList.Clear();
                     var list = _clientsTable.GetList(conn);
                     var filtered = list.AsEnumerable();
@@ -63,9 +60,9 @@ namespace Ecoinv.DataContext
                     }
 
                     foreach (var c in filtered) ClientsList.Add(c);
-                }
-                catch (Exception ex) { Logger.LogError(ex, "Ügyfél betöltési hiba"); }
+                }, "Ügyfél betöltési hiba");
             }
+            catch (Exception ex) { Logger.LogError(ex, "Ügyfél betöltési hiba"); }
         }
 
         private CLIENTS _selectedClient;
@@ -121,12 +118,10 @@ namespace Ecoinv.DataContext
 
         private void LoadDetails(int clientId)
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
                     CurrentClient = _clientsTable.GetList(conn).FirstOrDefault(x => x.ID == clientId);
                     CurrentAddress = _addressTable.GetList(conn, clientId).FirstOrDefault() ?? new ADRESSES { ID = -1, CLIENT_ID = clientId };
 
@@ -135,17 +130,20 @@ namespace Ecoinv.DataContext
                         var invoices = _invoiceTable.SearchInvoices(conn, CurrentClient.NAME, null, null, null, null);
                         CustomerDebt = Math.Round(invoices.Sum(x => x.DEBT_AMOUNT), 2);
                     }
-                }
-                catch (Exception ex) { Logger.LogError(ex, "Részletek betöltése hiba"); }
+                }, "Részletek betöltése hiba");
             }
+            catch (Exception ex) { Logger.LogError(ex, "Részletek betöltése hiba"); }
         }
 
-        public ICommand CommandSearch => new DelegateCommand(_ => RefreshData());
+        // --- PARANCSOK (cache-elve ??= operátorral) ---
 
-        public ICommand CommandNew => new DelegateCommand(_ => {
+        private ICommand _commandSearch;
+        public ICommand CommandSearch => _commandSearch ??= new DelegateCommand(_ => RefreshData());
+
+        private ICommand _commandNew;
+        public ICommand CommandNew => _commandNew ??= new DelegateCommand(_ => {
             SelectedClient = null;
 
-            // JAVÍTVA: Az új ügyfél kap egy alapértelmezett típust a listából Erika kérése szerint
             string defaultType = ClientTypes.FirstOrDefault()?.TYPE_NAME ?? "";
 
             CurrentClient = new CLIENTS
@@ -160,18 +158,18 @@ namespace Ecoinv.DataContext
             DeleteButtonText = "Mégse";
         }, _ => !IsEditing);
 
-        public ICommand CommandModify => new DelegateCommand(_ => {
+        private ICommand _commandModify;
+        public ICommand CommandModify => _commandModify ??= new DelegateCommand(_ => {
             IsEditing = true;
             DeleteButtonText = "Mégse";
         }, _ => SelectedClient != null && !IsEditing);
 
-        public ICommand CommandSave => new DelegateCommand(_ => {
-            using (FBConnectX conn = new FBConnectX())
+        private ICommand _commandSave;
+        public ICommand CommandSave => _commandSave ??= new DelegateCommand(_ => {
+            try
             {
-                try
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX(); conn.FBConnOpenX();
-
                     if (CurrentClient != null)
                     {
                         _clientsTable.Save(CurrentClient, conn);
@@ -190,17 +188,18 @@ namespace Ecoinv.DataContext
 
                         CurrentAddress.ATYPE = originalType;
                     }
+                }, "Ügyfél mentési hiba");
 
-                    IsEditing = false;
-                    DeleteButtonText = "Töröl";
-                    RefreshData();
-                    MessageBox.Show("Sikeres mentés!", "Mentés", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex) { MessageBox.Show("Hiba: " + ex.Message); }
+                IsEditing = false;
+                DeleteButtonText = "Töröl";
+                RefreshData();
+                MessageBox.Show("Sikeres mentés!", "Mentés", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            catch (Exception ex) { MessageBox.Show("Hiba: " + ex.Message); }
         }, _ => IsEditing);
 
-        public ICommand CommandDelete => new DelegateCommand(_ => {
+        private ICommand _commandDelete;
+        public ICommand CommandDelete => _commandDelete ??= new DelegateCommand(_ => {
             if (IsEditing)
             {
                 IsEditing = false; DeleteButtonText = "Töröl";
@@ -210,17 +209,22 @@ namespace Ecoinv.DataContext
             {
                 if (MessageBox.Show("Biztosan törli?", "Törlés", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    using (FBConnectX conn = new FBConnectX())
+                    try
                     {
-                        conn.GetConnectionX(); conn.FBConnOpenX();
-                        if (SelectedClient != null) _clientsTable.Delete(SelectedClient, conn);
+                        DatabaseHelper.Execute(conn =>
+                        {
+                            if (SelectedClient != null) _clientsTable.Delete(SelectedClient, conn);
+                        }, "Ügyfél törlési hiba");
+
                         RefreshData();
                     }
+                    catch (Exception ex) { MessageBox.Show("Hiba: " + ex.Message); }
                 }
             }
         }, _ => SelectedClient != null || IsEditing);
 
-        public ICommand CommandSelect => new DelegateCommand(p => DoSelect(p), _ => SelectedClient != null && !IsEditing);
+        private ICommand _commandSelect;
+        public ICommand CommandSelect => _commandSelect ??= new DelegateCommand(p => DoSelect(p), _ => SelectedClient != null && !IsEditing);
 
         private void DoSelect(object param)
         {
@@ -236,6 +240,7 @@ namespace Ecoinv.DataContext
             }
         }
 
-        public new ICommand CommandQuitBase => new DelegateCommand(p => { if (p is Window win) win.Close(); }, _ => true);
+        private ICommand _commandQuitBase;
+        public new ICommand CommandQuitBase => _commandQuitBase ??= new DelegateCommand(p => { if (p is Window win) win.Close(); }, _ => true);
     }
 }

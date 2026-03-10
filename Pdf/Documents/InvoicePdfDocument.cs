@@ -12,7 +12,70 @@ namespace Ecoinv.Pdf.Documents
     public class InvoicePdfDocument : IDocument
     {
         private readonly InvoicePdfModel _model;
-        public InvoicePdfDocument(InvoicePdfModel model) { _model = model; }
+        private byte[] _logoBytes;
+
+        public InvoicePdfDocument(InvoicePdfModel model)
+        {
+            _model = model;
+            LoadLogo();
+        }
+
+        /// <summary>
+        /// A logót előre betöltjük byte[]-be, mert a QuestPDF rendereléskor
+        /// a using blokk már lezárná a stream-et — és ezért tűnt el a kép.
+        /// Több assembly-ből is próbálkozunk (executing + entry), mert WPF-ben
+        /// az embedded resource gyakran a fő projekt assembly-ben van.
+        /// </summary>
+        private void LoadLogo()
+        {
+            try
+            {
+                var assemblies = new[]
+                {
+                    Assembly.GetExecutingAssembly(),
+                    Assembly.GetEntryAssembly()
+                };
+
+                foreach (var assembly in assemblies)
+                {
+                    if (assembly == null) continue;
+
+                    var resourceName = assembly.GetManifestResourceNames()
+                        .FirstOrDefault(x => x.EndsWith("econtologo.jpg", StringComparison.OrdinalIgnoreCase));
+
+                    if (!string.IsNullOrEmpty(resourceName))
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            if (stream != null)
+                            {
+                                using (var ms = new MemoryStream())
+                                {
+                                    stream.CopyTo(ms);
+                                    _logoBytes = ms.ToArray();
+                                }
+                                break; // sikerült, nem kell tovább keresni
+                            }
+                        }
+                    }
+                }
+
+                // Ha embedded resource nem található, próbáljuk fájlból betölteni
+                if (_logoBytes == null || _logoBytes.Length == 0)
+                {
+                    var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    var logoPath = Path.Combine(baseDir, "econtologo.jpg");
+                    if (File.Exists(logoPath))
+                    {
+                        _logoBytes = File.ReadAllBytes(logoPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Logo betöltési hiba: {ex.Message}");
+            }
+        }
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public DocumentSettings GetSettings() => DocumentSettings.Default;
@@ -36,25 +99,25 @@ namespace Ecoinv.Pdf.Documents
             {
                 row.RelativeItem().Column(column =>
                 {
-                    bool logoFound = false;
-                    try
+                    // JAVÍTVA: byte[]-ből töltjük a logót, így a rendereléskor is elérhető
+                    if (_logoBytes != null && _logoBytes.Length > 0)
                     {
-                        var assembly = Assembly.GetExecutingAssembly();
-                        var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith("econtologo.jpg", StringComparison.OrdinalIgnoreCase));
-                        if (!string.IsNullOrEmpty(resourceName))
-                        {
-                            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                            {
-                                if (stream != null) { column.Item().Width(150).Image(stream); logoFound = true; }
-                            }
-                        }
+                        column.Item().Width(150).Image(_logoBytes);
                     }
-                    catch { }
-                    if (!logoFound) column.Item().Text("ECONT").Style(titleStyle);
+                    else
+                    {
+                        column.Item().Text("ECONT").Style(titleStyle);
+                    }
+
                     column.Item().Height(10);
                     column.Item().Text(_model.SellerName).Bold();
                     column.Item().Text(_model.SellerAddress);
-                    column.Item().Text($"Steuernummer: {_model.SellerTaxNumber}");
+
+                    if (!string.IsNullOrEmpty(_model.SellerTaxNumber))
+                        column.Item().Text($"Steuernummer: {_model.SellerTaxNumber}");
+
+                    if (!string.IsNullOrEmpty(_model.SellerEuTaxNumber))
+                        column.Item().Text($"UID-Nr.: {_model.SellerEuTaxNumber}");
                 });
                 row.RelativeItem().Column(column =>
                 {
@@ -63,6 +126,13 @@ namespace Ecoinv.Pdf.Documents
                     column.Item().Height(20);
                     column.Item().AlignRight().Text(_model.ClientName).Bold();
                     column.Item().AlignRight().Text(_model.ClientAddress);
+
+                    if (!string.IsNullOrEmpty(_model.ClientTaxNumber))
+                        column.Item().AlignRight().Text($"Steuernummer: {_model.ClientTaxNumber}");
+
+                    if (!string.IsNullOrEmpty(_model.ClientEuTaxNumber))
+                        column.Item().AlignRight().Text($"UID-Nr.: {_model.ClientEuTaxNumber}");
+
                     column.Item().Height(15);
                     column.Item().AlignRight().Text($"Datum: {_model.IssueDate:yyyy.MM.dd}");
                 });
@@ -75,7 +145,6 @@ namespace Ecoinv.Pdf.Documents
             {
                 column.Item().Element(ComposeTable);
 
-                // JAVÍTVA: ÁFA Összesítő a bal oldalon, Empty() hiba nélkül
                 column.Item().PaddingTop(10).Row(row =>
                 {
                     row.RelativeItem().Column(c =>
@@ -83,10 +152,10 @@ namespace Ecoinv.Pdf.Documents
                         foreach (var group in _model.Items.GroupBy(x => x.VatPercent))
                         {
                             c.Item().Text($"1 {group.Key:N0} %");
-                            c.Item().Text($"{group.Sum(x => x.VatAmount):N2} €");
+                            c.Item().Text($"{group.Sum(x => x.VatAmount):N1} €");
                         }
                     });
-                    row.RelativeItem().PaddingVertical(5); // JAVÍTVA: Empty() helyett padding
+                    row.RelativeItem().PaddingVertical(5);
                 });
 
                 column.Item().PaddingTop(25).Row(row =>
@@ -94,9 +163,9 @@ namespace Ecoinv.Pdf.Documents
                     row.RelativeItem().Column(c => { c.Item().Text($"Zahlung: {_model.PaymentMethod}"); });
                     row.RelativeItem().Column(c =>
                     {
-                        c.Item().Row(r => { r.RelativeItem().AlignRight().Text("Netto:"); r.RelativeItem().AlignRight().Text($"{_model.TotalNet:N2} €"); });
-                        c.Item().Row(r => { r.RelativeItem().AlignRight().Text("MwSt:"); r.RelativeItem().AlignRight().Text($"{_model.TotalVat:N2} €"); });
-                        c.Item().PaddingTop(5).Row(r => { r.RelativeItem().AlignRight().Text("Gesamt:").FontSize(14).Bold(); r.RelativeItem().AlignRight().Text($"{_model.TotalGross:N2} €").FontSize(14).Bold(); });
+                        c.Item().Row(r => { r.RelativeItem().AlignRight().Text("Netto:"); r.RelativeItem().AlignRight().Text($"{_model.TotalNet:N1} €"); });
+                        c.Item().Row(r => { r.RelativeItem().AlignRight().Text("MwSt:"); r.RelativeItem().AlignRight().Text($"{_model.TotalVat:N1} €"); });
+                        c.Item().PaddingTop(5).Row(r => { r.RelativeItem().AlignRight().Text("Gesamt:").FontSize(14).Bold(); r.RelativeItem().AlignRight().Text($"{_model.TotalGross:N1} €").FontSize(14).Bold(); });
                     });
                 });
             });
@@ -106,13 +175,12 @@ namespace Ecoinv.Pdf.Documents
         {
             container.Table(table =>
             {
-                // JAVÍTVA: Csak 4 oszlopot definiálunk a szétesés ellen
                 table.ColumnsDefinition(columns =>
                 {
-                    columns.ConstantColumn(25);  // #
-                    columns.RelativeColumn(3);   // Bezeichnung (Name + Desc)
-                    columns.RelativeColumn(1);   // Menge
-                    columns.RelativeColumn(1.2f); // Brutto (€)
+                    columns.ConstantColumn(25);
+                    columns.RelativeColumn(3);
+                    columns.RelativeColumn(1);
+                    columns.RelativeColumn(1.2f);
                 });
 
                 table.Header(header => {
@@ -127,7 +195,6 @@ namespace Ecoinv.Pdf.Documents
                 {
                     table.Cell().Element(CellStyle).Text(item.Index.ToString());
 
-                    // JAVÍTVA: Megnevezés ÉS leírás egy oszlopba a torlódás ellen
                     table.Cell().Element(CellStyle).Column(c => {
                         c.Item().Text(item.Item.Name).Bold();
                         if (!string.IsNullOrEmpty(item.Item.Description))
@@ -136,7 +203,8 @@ namespace Ecoinv.Pdf.Documents
                         }
                     });
 
-                    table.Cell().Element(CellStyle).AlignRight().Text($"{item.Item.Quantity:N0}");
+                    // JAVÍTVA: N2 formátum a tizedes mennyiséghez (pl. 1,5 óra)
+                    table.Cell().Element(CellStyle).AlignRight().Text($"{item.Item.Quantity:N2}");
                     table.Cell().Element(CellStyle).AlignRight().Text($"{item.Item.GrossTotal:N2} €").Bold();
                     static IContainer CellStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
                 }

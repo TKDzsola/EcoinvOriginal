@@ -51,17 +51,28 @@ namespace Ecoinv.Pdf.Services
             {
                 var service = allServices?.FirstOrDefault(s => s.ID == d.SERVICES_ID);
 
-                string finalName = d.SERVICE_NAME;
-                string finalDescription = service != null ? service.DESCRIPTION : "";
+                string finalName = d.SERVICE_NAME ?? "";
+                string finalDescription = "";
 
-                if (!string.IsNullOrEmpty(d.SERVICE_NAME) && d.SERVICE_NAME.Contains("/"))
+                // A SERVICE_NAME tartalmazhat sortörést: "Név\nLeírás"
+                // Ilyenkor az első sor a név, a többi a leírás
+                if (finalName.Contains("\n"))
                 {
-                    var parts = d.SERVICE_NAME.Split('/');
+                    var lines = finalName.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    finalName = lines[0].Trim();
+                    finalDescription = string.Join("\n", lines.Skip(1)).Trim();
+                }
+                // A SERVICE_NAME tartalmazhat "/" elválasztót is: "Név/Leírás"
+                else if (finalName.Contains("/"))
+                {
+                    var parts = finalName.Split('/');
                     finalName = parts[0].Trim();
-                    if (parts.Length > 1)
-                    {
-                        finalDescription = string.Join("/", parts.Skip(1)).Trim();
-                    }
+                    finalDescription = string.Join("/", parts.Skip(1)).Trim();
+                }
+                else
+                {
+                    // Ha nincs beágyazott leírás, használjuk a SERVICES táblából
+                    finalDescription = service?.DESCRIPTION ?? "";
                 }
 
                 model.Items.Add(new InvoicePdfItem

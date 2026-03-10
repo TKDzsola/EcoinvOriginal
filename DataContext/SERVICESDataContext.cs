@@ -25,10 +25,6 @@ namespace Ecoinv.DataContext
             try { RefreshData(); } catch { }
         }
 
-        // --- ITT VOLTAK A DUPLIKÁLT TULAJDONSÁGOK (TÖRÖLVE) ---
-        // A ContentBtnNewSave és ContentBtnModifyCancel változókat
-        // most már a DataContextBase-ből örököljük, nem definiáljuk újra.
-
         private void UpdateLabels()
         {
             if (IsEditing)
@@ -45,13 +41,12 @@ namespace Ecoinv.DataContext
 
         private void RefreshData()
         {
-            using (FBConnectX conn = new FBConnectX())
+            try
             {
-                try
+                alkTable.InvalidateCache();
+                vatTable.InvalidateCache();
+                DatabaseHelper.Execute(conn =>
                 {
-                    conn.GetConnectionX();
-                    conn.FBConnOpenX();
-
                     var vats = vatTable.GetList(conn);
                     VatRates = new ObservableCollection<VATRATES>(vats);
                     OnPropertyChanged(nameof(VatRates));
@@ -59,11 +54,11 @@ namespace Ecoinv.DataContext
                     SERVICESList.Clear();
                     var list = alkTable.GetList(conn);
                     foreach (var item in list) SERVICESList.Add(item);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Hiba");
-                }
+                }, "Szolgáltatások betöltése sikertelen");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Szolgáltatások betöltése sikertelen");
             }
         }
 
@@ -120,9 +115,10 @@ namespace Ecoinv.DataContext
             }
         }
 
-        // --- PARANCSOK ---
+        // --- PARANCSOK (cache-elve ??= operátorral) ---
 
-        public ICommand CommandNewSave => new DelegateCommand(_ => DoNewSave(), _ => IsAdmin);
+        private ICommand _commandNewSave;
+        public ICommand CommandNewSave => _commandNewSave ??= new DelegateCommand(_ => DoNewSave(), _ => IsAdmin);
 
         private void DoNewSave()
         {
@@ -131,29 +127,27 @@ namespace Ecoinv.DataContext
                 if (string.IsNullOrWhiteSpace(SelectedSERVICES.NAME)) { MessageBox.Show("Név kötelező!"); return; }
                 if (SelectedVatRate == null) { MessageBox.Show("ÁFA kulcs kötelező!"); return; }
 
-                using (FBConnectX conn = new FBConnectX())
+                try
                 {
-                    try
+                    DatabaseHelper.Execute(conn =>
                     {
-                        conn.GetConnectionX();
-                        conn.FBConnOpenX();
                         alkTable.Save(SelectedSERVICES, conn);
+                    }, "Szolgáltatás mentési hiba");
 
-                        int savedId = SelectedSERVICES.ID;
+                    int savedId = SelectedSERVICES.ID;
 
-                        MessageBox.Show("Sikeres mentés!");
-                        RefreshData();
+                    MessageBox.Show("Sikeres mentés!");
+                    RefreshData();
 
-                        IsEditing = false;
-                        UpdateLabels();
+                    IsEditing = false;
+                    UpdateLabels();
 
-                        var saved = SERVICESList.FirstOrDefault(x => x.ID == savedId);
-                        if (saved != null) SelectedSERVICES = saved;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Hiba: " + ex.Message);
-                    }
+                    var saved = SERVICESList.FirstOrDefault(x => x.ID == savedId);
+                    if (saved != null) SelectedSERVICES = saved;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hiba: " + ex.Message);
                 }
             }
             else // ÚJ
@@ -167,7 +161,8 @@ namespace Ecoinv.DataContext
             }
         }
 
-        public ICommand CommandModifyCancel => new DelegateCommand(_ => DoModifyCancel(), _ => SelectedSERVICES != null && IsAdmin);
+        private ICommand _commandModifyCancel;
+        public ICommand CommandModifyCancel => _commandModifyCancel ??= new DelegateCommand(_ => DoModifyCancel(), _ => SelectedSERVICES != null && IsAdmin);
 
         private void DoModifyCancel()
         {
@@ -184,25 +179,25 @@ namespace Ecoinv.DataContext
             }
         }
 
-        public ICommand CommandDelete => new DelegateCommand(_ => DoDelete(), _ => SelectedSERVICES != null && IsAdmin && !IsEditing);
+        private ICommand _commandDelete;
+        public ICommand CommandDelete => _commandDelete ??= new DelegateCommand(_ => DoDelete(), _ => SelectedSERVICES != null && IsAdmin && !IsEditing);
 
         private void DoDelete()
         {
             if (MessageBox.Show("Biztosan törölni szeretnéd?", "Törlés", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                using (FBConnectX conn = new FBConnectX())
+                try
                 {
-                    try
+                    DatabaseHelper.Execute(conn =>
                     {
-                        conn.GetConnectionX();
-                        conn.FBConnOpenX();
                         alkTable.Delete(SelectedSERVICES, conn);
-                        RefreshData();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Hiba: " + ex.Message);
-                    }
+                    }, "Szolgáltatás törlési hiba");
+
+                    RefreshData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hiba: " + ex.Message);
                 }
             }
         }
