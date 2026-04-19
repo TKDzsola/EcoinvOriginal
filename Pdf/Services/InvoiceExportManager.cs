@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
+using System.Diagnostics;
 using Microsoft.Win32;
 using Ecoinv.BL;
 using Ecoinv.Common;
@@ -23,7 +25,11 @@ namespace Ecoinv.Pdf.Services
             _pdfService = new InvoicePdfService();
         }
 
+<<<<<<< Updated upstream
         public void ExportInvoiceById(int invoiceId)
+=======
+        public void ExportInvoiceById(int invoiceId, string manualFooterNote = "")
+>>>>>>> Stashed changes
         {
             using (FBConnectX conn = new FBConnectX())
             {
@@ -34,7 +40,6 @@ namespace Ecoinv.Pdf.Services
 
                     if (conn.GetConStateX() != System.Data.ConnectionState.Open) return;
 
-                    // --- ADATOK LEKÉRÉSE ---
                     var headerTable = new INVOICE_HEADERSTable();
                     var detailTable = new INVOICE_DETAILSTable();
                     var clientTable = new CLIENTSTable();
@@ -80,14 +85,17 @@ namespace Ecoinv.Pdf.Services
                     var sellerData = allEcsys.FirstOrDefault();
 
                     // --- MODELL ÉPÍTÉSE ---
+<<<<<<< Updated upstream
                     // Az _pdfService fogja feldolgozni a "|" jelet
                     InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(header, details, client, address, sellerData, allServices);
+=======
+                    InvoicePdfModel pdfModel = _pdfService.BuildInvoicePdfModel(
+                        header, details, client, address, sellerData, allServices, manualFooterNote);
+>>>>>>> Stashed changes
 
                     // --- SZTORNÓ KEZELÉS ---
-                    bool isStornoStatus = (header.SZLASTAT != null && header.SZLASTAT.Trim() == "2");
-                    bool isStornoNumber = (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-"));
-
-                    if (isStornoStatus || isStornoNumber)
+                    if ((header.SZLASTAT != null && header.SZLASTAT.Trim() == "2") ||
+                        (header.INVOICE_NUMBER != null && header.INVOICE_NUMBER.Trim().ToUpper().StartsWith("ST-")))
                     {
                         pdfModel.IsStorno = true;
                         if (!string.IsNullOrEmpty(header.STORNO_ID) && int.TryParse(header.STORNO_ID.Trim(), out int originalId))
@@ -95,6 +103,7 @@ namespace Ecoinv.Pdf.Services
                             var originalHeader = allHeaders.FirstOrDefault(h => h.ID == originalId);
                             if (originalHeader != null) pdfModel.OriginalInvoiceNumber = originalHeader.INVOICE_NUMBER;
                         }
+<<<<<<< Updated upstream
 
                         // Mínuszolás
                         pdfModel.TotalNet = Math.Abs(pdfModel.TotalNet) * -1;
@@ -108,9 +117,10 @@ namespace Ecoinv.Pdf.Services
                             item.VatAmount = Math.Abs(item.VatAmount) * -1;
                             item.GrossTotal = Math.Abs(item.GrossTotal) * -1;
                         }
+=======
+>>>>>>> Stashed changes
                     }
 
-                    // --- MENTÉS ---
                     var saveDialog = new SaveFileDialog
                     {
                         Filter = "PDF dokumentum (*.pdf)|*.pdf",
@@ -121,16 +131,100 @@ namespace Ecoinv.Pdf.Services
                     {
                         var document = new InvoicePdfDocument(pdfModel);
                         document.GeneratePdf(saveDialog.FileName);
-
-                        if (MessageBox.Show("A PDF elkészült!\nSzeretnéd megnyitni?", "Kész", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(saveDialog.FileName) { UseShellExecute = true });
-                        }
+                        OpenFileWithFallback(saveDialog.FileName);
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        // ✅ ÚJ: Lista exportálása Erika kérésére
+        public void ExportInvoiceList(List<INVOICE_HEADERS> list)
+        {
+            if (list == null || !list.Any()) return;
+
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "PDF dokumentum (*.pdf)|*.pdf",
+                FileName = $"Szamla_Lista_{DateTime.Now:yyyyMMdd}.pdf"
+            };
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    QuestPDF.Fluent.Document.Create(container =>
+                    {
+                        container.Page(page =>
+                        {
+                            page.Margin(30);
+                            page.Header().Text("Számla összesítő lista").FontSize(20).SemiBold().FontColor("#2196F3");
+
+                            page.Content().PaddingVertical(10).Table(table =>
+                            {
+                                table.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn(2);
+                                    columns.RelativeColumn(4);
+                                    columns.RelativeColumn(2);
+                                    columns.RelativeColumn(2);
+                                });
+
+                                table.Header(header =>
+                                {
+                                    header.Cell().BorderBottom(1).Padding(5).Text("Sorszám").Bold();
+                                    header.Cell().BorderBottom(1).Padding(5).Text("Vevő").Bold();
+                                    header.Cell().BorderBottom(1).Padding(5).AlignRight().Text("Bruttó").Bold();
+                                    header.Cell().BorderBottom(1).Padding(5).AlignRight().Text("Hátralék").Bold();
+                                });
+
+                                foreach (var item in list)
+                                {
+                                    table.Cell().Padding(5).Text(item.INVOICE_NUMBER);
+                                    table.Cell().Padding(5).Text(item.CLIENT_NAME);
+                                    table.Cell().Padding(5).AlignRight().Text(item.TOTAL_GROSS.ToString("N2") + " €");
+                                    table.Cell().Padding(5).AlignRight().Text(item.DEBT_AMOUNT.ToString("N2") + " €");
+                                }
+                            });
+
+                            page.Footer().AlignCenter().Text(x => {
+                                x.Span("Oldal: ");
+                                x.CurrentPageNumber();
+                            });
+                        });
+                    }).GeneratePdf(saveDialog.FileName);
+
+                    OpenFileWithFallback(saveDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Hiba a lista generálása során: {ex.Message}");
+                }
+            }
+        }
+
+        // ✅ PROFI MEGOLDÁS: Adobe Reader hiba áthidalása
+        private void OpenFileWithFallback(string filePath)
+        {
+            if (!File.Exists(filePath)) return;
+
+            if (MessageBox.Show("A PDF elkészült!\nSzeretnéd megnyitni?", "Kész", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = filePath,
+                        UseShellExecute = true
+                    });
+                }
+                catch
+                {
+                    // Ha a PDF társítás hibás Erika gépén, az explorer.exe kényszeríti a megnyitást
+                    Process.Start("explorer.exe", $"\"{filePath}\"");
                 }
             }
         }

@@ -49,9 +49,74 @@ namespace Ecoinv.DataContext
             );
         }
 
+<<<<<<< Updated upstream
         public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
         public ObservableCollection<StatusItem> StatusList { get; }
 
+=======
+        private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(INVOICE_HEADERS.PAID_AMOUNT))
+            {
+                if (sender is INVOICE_HEADERS item)
+                {
+                    try
+                    {
+                        DatabaseHelper.Execute(conn =>
+                        {
+                            _invoiceTable.UpdatePaidAmount(item.ID, item.PAID_AMOUNT, conn);
+                            UpdateTotals();
+                        }, "Befizetés mentési hiba");
+                    }
+                    catch (Exception ex) { Logger.LogError(ex, "Befizetés mentési hiba"); }
+
+                    RefreshCommandStates();
+                }
+            }
+        }
+
+        private void DoSetPaid()
+        {
+            if (SelectedINVOICE_HEADERS == null) return;
+            SelectedINVOICE_HEADERS.PAID_AMOUNT = SelectedINVOICE_HEADERS.TOTAL_GROSS;
+        }
+
+        private void RefreshCommandStates()
+        {
+            ((DelegateCommand)CommandStorno).RaiseCanExecuteChanged();
+            ((DelegateCommand)CommandDelete).RaiseCanExecuteChanged();
+            ((DelegateCommand)CommandPrint).RaiseCanExecuteChanged();
+            ((DelegateCommand)CommandSetPaid).RaiseCanExecuteChanged();
+            ((DelegateCommand)CommandPrintList).RaiseCanExecuteChanged(); // Frissítve az új parancshoz
+        }
+
+        private void UpdateTotals() => OnPropertyChanged(nameof(TotalDebt));
+
+        public ObservableCollection<INVOICE_HEADERS> INVOICE_HEADERSList { get; }
+        public ObservableCollection<StatusItem> StatusList { get; }
+
+        // --- PARANCSOK ---
+
+        private ICommand _commandSearch;
+        public ICommand CommandSearch => _commandSearch ??= new DelegateCommand(_ => DoSearch());
+
+        private ICommand _commandPrint;
+        public ICommand CommandPrint => _commandPrint ??= new DelegateCommand(_ => DoPrint(), _ => SelectedINVOICE_HEADERS != null);
+
+        // ✅ ÚJ PARANCS: Lista nyomtatása Erika kérésére
+        private ICommand _commandPrintList;
+        public ICommand CommandPrintList => _commandPrintList ??= new DelegateCommand(_ => DoPrintInvoiceList(), _ => INVOICE_HEADERSList.Count > 0);
+
+        private ICommand _commandStorno;
+        public ICommand CommandStorno => _commandStorno ??= new DelegateCommand(_ => DoStorno(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.SZLASTAT != "2" && IsAdmin);
+
+        private ICommand _commandDelete;
+        public ICommand CommandDelete => _commandDelete ??= new DelegateCommand(_ => DoDelete(), _ => SelectedINVOICE_HEADERS != null && IsAdmin);
+
+        private ICommand _commandSetPaid;
+        public ICommand CommandSetPaid => _commandSetPaid ??= new DelegateCommand(_ => DoSetPaid(), _ => SelectedINVOICE_HEADERS != null && SelectedINVOICE_HEADERS.DEBT_AMOUNT != 0);
+
+>>>>>>> Stashed changes
         private INVOICE_HEADERS _selectedInvoice;
         public INVOICE_HEADERS SelectedINVOICE_HEADERS
         {
@@ -89,6 +154,7 @@ namespace Ecoinv.DataContext
             {
                 try
                 {
+<<<<<<< Updated upstream
                     localConn.GetConnectionX();
                     localConn.FBConnOpenX();
 
@@ -108,6 +174,21 @@ namespace Ecoinv.DataContext
                     Logger.LogError(ex, "Számla keresési hiba");
                     MessageBox.Show($"Hiba: {ex.Message}", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
+=======
+                    var res = _invoiceTable.SearchInvoices(conn, SearchClientName, SearchInvoiceNumber, FromDate, ToDate, SelectedStatus);
+
+                    // ✅ JAVÍTÁS: Sorszám szerinti csökkenő rendezés (Erikának így kényelmesebb lesz)
+                    var sortedResult = res.OrderByDescending(x => x.INVOICE_NUMBER).ToList();
+
+                    INVOICE_HEADERSList.Clear();
+                    var filtered = OnlyUnpaid ? sortedResult.Where(x => x.DEBT_AMOUNT != 0) : sortedResult;
+
+                    foreach (var i in filtered) INVOICE_HEADERSList.Add(i);
+
+                    UpdateTotals();
+                    RefreshCommandStates();
+                }, "Keresési hiba");
+>>>>>>> Stashed changes
             }
         }
 
@@ -125,6 +206,24 @@ namespace Ecoinv.DataContext
             {
                 Logger.LogError(ex, $"Nyomtatási hiba. ID: {SelectedINVOICE_HEADERS.ID}");
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        // ✅ ÚJ FUNKCIÓ: Nyitott számla lista mentése/nyomtatása PDF-be
+        // SEARCHINVOICEDataContext.cs részlet
+        private void DoPrintInvoiceList()
+        {
+            try
+            {
+                // A MessageBox helyett a tényleges exportot hívjuk meg
+                var exportManager = new InvoiceExportManager();
+
+                // Átadjuk a jelenleg szűrt listát az exportálónak
+                exportManager.ExportInvoiceList(INVOICE_HEADERSList.ToList());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hiba a lista generálása során: " + ex.Message);
             }
         }
 

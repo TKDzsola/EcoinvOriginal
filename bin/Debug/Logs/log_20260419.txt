@@ -1,0 +1,17 @@
+[20:39:19] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[20:39:19] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[20:39:19] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[20:39:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[20:39:26] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[20:39:26] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[20:46:06] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[20:46:06] [INFO] [RégiKód] - SelectSQL_FirstRow sikeres. SQL: select upssw, isadmin from eusers where uname = @uname and uactive='I' 
+[20:46:06] [INFO] [RégiKód] - Sikeres bejelentkezés: fbe 
+[20:46:09] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[20:46:09] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[20:46:09] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[20:47:26] [INFO] [RégiKód] - Adatbázis kapcsolat sikeresen megnyitva. 
+[20:47:27] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[20:47:27] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 
+[20:47:45] [INFO] [RégiKód] - Adatbázis kapcsolat lezárva. 
+[20:47:45] [INFO] [RégiKód] - FBConnectX erőforrások felszabadítva (Dispose). 

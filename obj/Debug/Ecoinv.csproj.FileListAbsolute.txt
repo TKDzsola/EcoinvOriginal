@@ -74,7 +74,10 @@ C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.CoreCompileInputs.cac
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.csproj.Up2Date
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.exe
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.pdb
+<<<<<<< Updated upstream
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x86\libSkiaSharp.dll
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\x64\libSkiaSharp.dll
 C:\Users\prozs\source\repos\Ecoinv\bin\Debug\arm64\libSkiaSharp.dll
 C:\Users\prozs\source\repos\Ecoinv\obj\Debug\Ecoinv.exe.config
+=======
+>>>>>>> Stashed changes

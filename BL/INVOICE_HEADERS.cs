@@ -50,6 +50,37 @@ namespace Ecoinv.BL
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private string __client_name;
         public string CLIENT_NAME { get => __client_name; set => SetPropertyValue(nameof(CLIENT_NAME), ref __client_name, value); }
 
+<<<<<<< Updated upstream
+=======
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private decimal __paid_amount;
+        public decimal PAID_AMOUNT
+        {
+            get => __paid_amount;
+            set
+            {
+                decimal roundedValue = Math.Round(value, 2);
+                if (SetPropertyValue(nameof(PAID_AMOUNT), ref __paid_amount, roundedValue))
+                    OnPropertyChanged(nameof(DEBT_AMOUNT));
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private decimal __total_gross;
+        public decimal TOTAL_GROSS
+        {
+            get => __total_gross;
+            set
+            {
+                decimal roundedValue = Math.Round(value, 2);
+                if (SetPropertyValue(nameof(TOTAL_GROSS), ref __total_gross, roundedValue))
+                    OnPropertyChanged(nameof(DEBT_AMOUNT));
+            }
+        }
+
+        // JAVÍTÁS: Ha a TOTAL_GROSS valamilyen régi hiba folytán 0 lenne az adatbázisban, 
+        // a hátralékot akkor is a befizetett összeg alapján mutatjuk (profi fallback).
+        public decimal DEBT_AMOUNT => Math.Round(TOTAL_GROSS - PAID_AMOUNT, 2);
+
+>>>>>>> Stashed changes
         public object PrimaryKeyValue => ID;
     }
 
@@ -164,10 +195,16 @@ namespace Ecoinv.BL
                 parameters.Add(new FbParameter("@statusCode", statusCode));
             }
 
+<<<<<<< Updated upstream
             sql += " ORDER BY h.ID DESC";
 
             var rawList = TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn, parameters.ToArray());
             return rawList.ToList();
+=======
+            // JAVÍTÁS: Erika kérésére sorszám szerint csökkenő sorrendben adjuk vissza a listát.
+            sql += " ORDER BY h.INVOICE_NUMBER DESC";
+            return TableBaseClass.GetListBase<INVOICE_HEADERS>(sql, conn, parameters.ToArray()).ToList();
+>>>>>>> Stashed changes
         }
     }
 }
